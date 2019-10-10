@@ -1,5 +1,6 @@
 import React from 'react'
 import Head from 'next/head'
+import Sidebar from '../components/sidebar'
 import Nav from '../components/nav'
 
 import Button from '@material-ui/core/Button'
@@ -11,6 +12,7 @@ const Home = () => (
       <link rel="icon" href="/favicon.ico" />
     </Head>
 
+    <Sidebar />
     <Nav />
 
     <div className="hero">
