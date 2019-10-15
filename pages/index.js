@@ -1,92 +1,78 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Sidebar from '../components/sidebar'
 import Nav from '../components/nav'
 
-import Button from '@material-ui/core/Button'
+import { Box, Button } from '@material-ui/core'
+import { makeStyles } from '@material-ui/styles'
+import palette from '../variables'
 
-const Home = () => (
-  <div>
-    <Head>
-      <title>Home</title>
-      <link rel="icon" href="/favicon.ico" />
-    </Head>
+import ReactMapGL, { Popup, Marker } from 'react-map-gl'
+import axios from 'axios'
 
-    <Sidebar />
-    <Nav />
+import mapStyle from '../static/map-style'
+//import config from '~/config'
 
-    <div className="hero">
+const useStyles = makeStyles(theme => ({
+  mapContainer: {
+    width: '500px',
+    height: '500px',
+    marginLeft: '500px',
+    backgroundColor: 'wheat'
+  }
+}))
+
+const Home = () => {
+  const classes = useStyles()
+  const [composters, setComposters] = useState([])
+  const [mapViewport, setMapViewport] = useState({
+    width: '100%',
+    height: '100%',
+    latitude: 47.41736,
+    longitude: -1.84653,
+    zoom: 7
+  })
+
+  useEffect(() => {
+    fetchComposters()
+  }, [])
+
+  const fetchComposters = async () => {
+    await axios.get('https://composteur-api.osc-fr1.scalingo.io/composters').then(res => {
+      setComposters(res.data['hydra:member'])
+    })
+  }
+
+  return (
+    <div>
+      <Head>
+        <title>Home</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      <Sidebar />
+      <Nav />
+
       <Button variant="contained" color="primary">
         Se connecter
       </Button>
-      <h1 className="title">Welcome to Compostri!</h1>
-      <p className="description">
-        To get started, edit <code>pages/index.js</code> and save to reload.
-      </p>
 
-      <div className="row">
-        <a href="https://nextjs.org/docs" className="card">
-          <h3>Documentation &rarr;</h3>
-          <p>Learn more about Next.js in the documentation.</p>
-        </a>
-        <a href="https://nextjs.org/learn" className="card">
-          <h3>Next.js Learn &rarr;</h3>
-          <p>Learn about Next.js by following an interactive tutorial!</p>
-        </a>
-        <a href="https://github.com/zeit/next.js/tree/master/examples" className="card">
-          <h3>Examples &rarr;</h3>
-          <p>Find other example boilerplates on the Next.js GitHub.</p>
-        </a>
+      <section className={classes.mapContainer}>
+        <ReactMapGL
+          {...mapViewport}
+          mapStyle="mapbox://styles/mapbox/dark-v8"
+          mapboxApiAccessToken={'pk.eyJ1IjoiY2hhcmxlcy1tbiIsImEiOiJjazFtNjQzZXEwYzF4M2xwb2ZvMXAyNmh0In0.14tRmBImasMw9lyWhRzxTQ'}
+          onViewportChange={viewport => setMapViewport({ viewport })}
+        />
+      </section>
+
+      <div className="hero">
+        <ul>{composters && composters.map(({ key, name }) => <li key={key}>{name}</li>)}</ul>
       </div>
     </div>
-
-    <style jsx>{`
-      .hero {
-        width: 100%;
-        color: #333;
-      }
-      .title {
-        margin: 0;
-        width: 100%;
-        padding-top: 80px;
-        line-height: 1.15;
-        font-size: 48px;
-      }
-      .title,
-      .description {
-        text-align: center;
-      }
-      .row {
-        max-width: 880px;
-        margin: 80px auto 40px;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-      }
-      .card {
-        padding: 18px 18px 24px;
-        width: 220px;
-        text-align: left;
-        text-decoration: none;
-        color: #434343;
-        border: 1px solid #9b9b9b;
-      }
-      .card:hover {
-        border-color: #067df7;
-      }
-      .card h3 {
-        margin: 0;
-        color: #067df7;
-        font-size: 18px;
-      }
-      .card p {
-        margin: 0;
-        padding: 12px 0 0;
-        font-size: 13px;
-        color: #333;
-      }
-    `}</style>
-  </div>
-)
+  )
+}
 
 export default Home
+
+/* <ul>{composters && composters.map(key => <li>{key}</li>)}</ul> */

@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 
-import { Paper, Box, Typography } from '@material-ui/core'
+import { Paper, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import palette from '../variables'
 
@@ -32,7 +32,7 @@ const Sidebar = () => {
 
   return (
     <Paper component="section" elevation={2} className={classes.sidebarContainer}>
-      <Box component="header" className={classes.sidebarHeader}>
+      <header className={classes.sidebarHeader}>
         <Link href="/index" as="/">
           <a>
             <img src="/static/logo.svg" />
@@ -41,9 +41,9 @@ const Sidebar = () => {
         <Typography paragraph={true} align={'center'}>
           Carte des sites de compostage partagé
         </Typography>
-      </Box>
-      <Box component="section" className="sidebarContent"></Box>
-      <Box component="footer" className="sidebarFooter"></Box>
+      </header>
+      <section className="sidebarContent"></section>
+      <section className="sidebarFooter"></section>
     </Paper>
   )
 }
