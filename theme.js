@@ -1,7 +1,6 @@
 import { createMuiTheme } from '@material-ui/core/styles'
 import palette from './variables'
 
-const defaultTheme = createMuiTheme()
 
 const theme = createMuiTheme({
   overrides: {

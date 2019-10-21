@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Sidebar from '../components/sidebar'
-import Nav from '../components/nav'
 
-import { Box, Button } from '@material-ui/core'
+import { Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import palette from '../variables'
+import { RadioButtonChecked } from '@material-ui/icons'
 
 import ReactMapGL, { Popup, Marker } from 'react-map-gl'
 import axios from 'axios'
 
-import mapStyle from '../static/map-style'
-//import config from '~/config'
-
 const useStyles = makeStyles(theme => ({
   mapContainer: {
-    width: '500px',
-    height: '500px',
-    marginLeft: '500px',
-    backgroundColor: 'wheat'
+    marginLeft: '0'
+  },
+  userButton: {
+    position: 'fixed',
+    top: '40px',
+    right: '40px',
+    zIndex: 150
   }
 }))
 
@@ -26,11 +25,13 @@ const Home = () => {
   const classes = useStyles()
   const [composters, setComposters] = useState([])
   const [mapViewport, setMapViewport] = useState({
-    width: '100%',
-    height: '100%',
-    latitude: 47.41736,
-    longitude: -1.84653,
-    zoom: 7
+    width: '100%)',
+    height: '100vh',
+    latitude: 47.1890984,
+    longitude: -1.5704894,
+    zoom: 9,
+    bearing: 0,
+    pitch: 0
   })
 
   useEffect(() => {
@@ -39,7 +40,7 @@ const Home = () => {
 
   const fetchComposters = async () => {
     await axios.get('https://composteur-api.osc-fr1.scalingo.io/composters').then(res => {
-      setComposters(res.data['hydra:member'])
+      setComposters(res.data['hydra:member'].filter(c => c.lat && c.lng))
     })
   }
 
@@ -51,28 +52,28 @@ const Home = () => {
       </Head>
 
       <Sidebar />
-      <Nav />
 
-      <Button variant="contained" color="primary">
+      <Button variant="contained" color="primary" className={classes.userButton}>
         Se connecter
       </Button>
 
       <section className={classes.mapContainer}>
         <ReactMapGL
           {...mapViewport}
-          mapStyle="mapbox://styles/mapbox/dark-v8"
-          mapboxApiAccessToken={'pk.eyJ1IjoiY2hhcmxlcy1tbiIsImEiOiJjazFtNjQzZXEwYzF4M2xwb2ZvMXAyNmh0In0.14tRmBImasMw9lyWhRzxTQ'}
-          onViewportChange={viewport => setMapViewport({ viewport })}
-        />
+          mapStyle="mapbox://styles/arnaudban/cjmefzh8ykcic2sqq0i92vo1h"
+          mapboxApiAccessToken={'pk.eyJ1IjoiYXJuYXVkYmFuIiwiYSI6ImNpbDB5NHZvdzAwOHZ3a201c2pmcW8xemIifQ.TIcJEgmjcYpNoXjlNUP_Wg'}
+          onViewportChange={viewport => setMapViewport(viewport)}
+        >
+          {composters &&
+            composters.map(composter => (
+              <Marker key={composter.id} latitude={composter.lat} longitude={composter.lng}>
+                <RadioButtonChecked />
+              </Marker>
+            ))}
+        </ReactMapGL>
       </section>
-
-      <div className="hero">
-        <ul>{composters && composters.map(({ key, name }) => <li key={key}>{name}</li>)}</ul>
-      </div>
     </div>
   )
 }
 
 export default Home
-
-/* <ul>{composters && composters.map(key => <li>{key}</li>)}</ul> */

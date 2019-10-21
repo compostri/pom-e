@@ -11,7 +11,8 @@ const useStyles = makeStyles(theme => ({
     top: 0,
     minWidth: '420px',
     height: '100%',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    zIndex: 100
   },
   sidebarHeader: {
     textAlign: 'center',
@@ -42,8 +43,8 @@ const Sidebar = () => {
           Carte des sites de compostage partagé
         </Typography>
       </header>
-      <section className="sidebarContent"></section>
-      <section className="sidebarFooter"></section>
+      <section className={classes.sidebarContent} />
+      <section className={classes.sidebarFooter} />
     </Paper>
   )
 }
