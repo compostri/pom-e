@@ -1,8 +1,9 @@
 import React from 'react'
 import Link from 'next/link'
 
-import { Paper, Typography } from '@material-ui/core'
+import { Paper, Typography, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
+
 import palette from '../variables'
 
 const useStyles = makeStyles(theme => ({
@@ -25,10 +26,11 @@ const useStyles = makeStyles(theme => ({
   },
   sidebarFooter: {
     padding: theme.spacing(3.75)
-  }
+  },
+  formControl: {}
 }))
 
-const Sidebar = () => {
+const Sidebar = ({ commune, setCommune, allCommunes }) => {
   const classes = useStyles()
 
   return (
@@ -43,7 +45,28 @@ const Sidebar = () => {
           Carte des sites de compostage partagé
         </Typography>
       </header>
-      <section className={classes.sidebarContent} />
+      <section className={classes.sidebarContent}>
+        <FormControl className={classes.formControl}>
+          <InputLabel htmlFor="communes">Communes</InputLabel>
+          <Select
+            value={commune}
+            onChange={event => {
+              setCommune(event.target.value)
+            }}
+            inputProps={{
+              name: 'communes',
+              id: 'communes'
+            }}
+          >
+            {allCommunes &&
+              allCommunes.map(c => (
+                <MenuItem key={`commune-option-${c.id}`} value={c.id}>
+                  {c.name}
+                </MenuItem>
+              ))}
+          </Select>
+        </FormControl>
+      </section>
       <section className={classes.sidebarFooter} />
     </Paper>
   )

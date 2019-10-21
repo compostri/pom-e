@@ -6,8 +6,8 @@ import { Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import { RadioButtonChecked } from '@material-ui/icons'
 
-import ReactMapGL, { Popup, Marker } from 'react-map-gl'
-import axios from 'axios'
+import ReactMapGL, { Popup, Marker, Source, Layer } from 'react-map-gl'
+import api from '../utils/api'
 
 const useStyles = makeStyles(theme => ({
   mapContainer: {
@@ -21,9 +21,9 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const Home = () => {
+const Home = ({ allCommunes }) => {
   const classes = useStyles()
-  const [composters, setComposters] = useState([])
+  const [composters, setComposters] = useState(null)
   const [mapViewport, setMapViewport] = useState({
     width: '100%)',
     height: '100vh',
@@ -33,17 +33,18 @@ const Home = () => {
     bearing: 0,
     pitch: 0
   })
+  const [selectedCommune, setSelectedCommune] = useState(allCommunes[0].id)
 
   useEffect(() => {
     fetchComposters()
   }, [])
 
   const fetchComposters = async () => {
-    await axios.get('https://composteur-api.osc-fr1.scalingo.io/composters').then(res => {
-      setComposters(res.data['hydra:member'].filter(c => c.lat && c.lng))
-    })
+    const geojson = await api.getComposterGeojson()
+    if (geojson.status === 200) {
+      setComposters(geojson.data)
+    }
   }
-
   return (
     <div>
       <Head>
@@ -51,29 +52,43 @@ const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Sidebar />
+      <Sidebar commune={selectedCommune} setCommune={setSelectedCommune} allCommunes={allCommunes} />
 
-      <Button variant="contained" color="primary" className={classes.userButton}>
+      <Button variant="contained" color="secondary" className={classes.userButton}>
         Se connecter
       </Button>
 
       <section className={classes.mapContainer}>
         <ReactMapGL
           {...mapViewport}
-          mapStyle="mapbox://styles/arnaudban/cjmefzh8ykcic2sqq0i92vo1h"
-          mapboxApiAccessToken={'pk.eyJ1IjoiYXJuYXVkYmFuIiwiYSI6ImNpbDB5NHZvdzAwOHZ3a201c2pmcW8xemIifQ.TIcJEgmjcYpNoXjlNUP_Wg'}
+          mapStyle={process.env.NEXT_STATIC_MAP_BOX_STYLE}
+          mapboxApiAccessToken={process.env.NEXT_STATIC_MAP_BOX_TOKEN}
           onViewportChange={viewport => setMapViewport(viewport)}
         >
-          {composters &&
-            composters.map(composter => (
-              <Marker key={composter.id} latitude={composter.lat} longitude={composter.lng}>
-                <RadioButtonChecked />
-              </Marker>
-            ))}
+          {composters && (
+            <Source type="geojson" data={composters}>
+              <Layer
+                {...{
+                  id: 'data',
+                  type: 'circle',
+                  paint: {
+                    'circle-radius': 8,
+                    'circle-color': 'rgba(55,148,179,1)'
+                  },
+                  filter: ['==', 'commune', selectedCommune]
+                }}
+              />
+            </Source>
+          )}
         </ReactMapGL>
       </section>
     </div>
   )
+}
+
+Home.getInitialProps = async () => {
+  const communes = await api.getCommunes()
+  return { allCommunes: communes.data['hydra:member'] }
 }
 
 export default Home
