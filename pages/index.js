@@ -8,6 +8,7 @@ import { RadioButtonChecked } from '@material-ui/icons'
 
 import ReactMapGL, { Popup, Marker, Source, Layer } from 'react-map-gl'
 import api from '../utils/api'
+import { contains } from '@material-ui/core/utils'
 
 const useStyles = makeStyles(theme => ({
   mapContainer: {
@@ -21,7 +22,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const Home = ({ allCommunes }) => {
+const Home = ({ allCommunes, allCategories }) => {
   const classes = useStyles()
   const [composters, setComposters] = useState(null)
   const [mapViewport, setMapViewport] = useState({
@@ -34,6 +35,7 @@ const Home = ({ allCommunes }) => {
     pitch: 0
   })
   const [selectedCommune, setSelectedCommune] = useState(allCommunes[0].id)
+  const [selectedCategories, setSelectedCategories] = useState(allCategories.map(cat => cat.id))
 
   useEffect(() => {
     fetchComposters()
@@ -52,7 +54,7 @@ const Home = ({ allCommunes }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Sidebar commune={selectedCommune} setCommune={setSelectedCommune} allCommunes={allCommunes} />
+      <Sidebar {...{ allCommunes, allCategories, selectedCommune, setSelectedCommune, selectedCategories, setSelectedCategories }} />
 
       <Button variant="contained" color="secondary" className={classes.userButton}>
         Se connecter
@@ -75,7 +77,7 @@ const Home = ({ allCommunes }) => {
                     'circle-radius': 8,
                     'circle-color': 'rgba(55,148,179,1)'
                   },
-                  filter: ['==', 'commune', selectedCommune]
+                  filter: ['all', ['==', 'commune', selectedCommune], ['in', 'categorie', ...selectedCategories]]
                 }}
               />
             </Source>
@@ -88,7 +90,12 @@ const Home = ({ allCommunes }) => {
 
 Home.getInitialProps = async () => {
   const communes = await api.getCommunes()
-  return { allCommunes: communes.data['hydra:member'] }
+  const cat = await api.getCategories()
+
+  return {
+    allCommunes: communes.data['hydra:member'],
+    allCategories: cat.data['hydra:member']
+  }
 }
 
 export default Home

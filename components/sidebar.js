@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 
-import { Paper, Typography, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
+import { Paper, Typography, FormControl, InputLabel, Select, MenuItem, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 
 import palette from '../variables'
@@ -27,11 +27,21 @@ const useStyles = makeStyles(theme => ({
   sidebarFooter: {
     padding: theme.spacing(3.75)
   },
-  formControl: {}
+  formControl: {
+    display: 'block'
+  }
 }))
 
-const Sidebar = ({ commune, setCommune, allCommunes }) => {
+const Sidebar = ({ allCommunes, allCategories, selectedCommune, setSelectedCommune, selectedCategories, setSelectedCategories }) => {
   const classes = useStyles()
+
+  const toggleCategories = cat => {
+    if (selectedCategories.includes(cat)) {
+      setSelectedCategories(selectedCategories.filter(c => c !== cat))
+    } else {
+      setSelectedCategories([cat, ...selectedCategories])
+    }
+  }
 
   return (
     <Paper component="section" elevation={2} className={classes.sidebarContainer}>
@@ -46,12 +56,22 @@ const Sidebar = ({ commune, setCommune, allCommunes }) => {
         </Typography>
       </header>
       <section className={classes.sidebarContent}>
+        <FormGroup>
+          {allCategories &&
+            allCategories.map(c => (
+              <FormControlLabel
+                control={<Checkbox checked={selectedCategories.includes(c.id)} onChange={() => toggleCategories(c.id)} value={c.id} />}
+                label={c.name}
+              />
+            ))}
+        </FormGroup>
+
         <FormControl className={classes.formControl}>
           <InputLabel htmlFor="communes">Communes</InputLabel>
           <Select
-            value={commune}
+            value={selectedCommune}
             onChange={event => {
-              setCommune(event.target.value)
+              setSelectedCommune(event.target.value)
             }}
             inputProps={{
               name: 'communes',

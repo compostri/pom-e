@@ -25,6 +25,7 @@ class MNApi {
   // composters
   getComposterGeojson = () => this.get('/composters.geojson')
   getCommunes = () => this.get('/communes')
+  getCategories = () => this.get('/categories')
 }
 
 export default new MNApi()
