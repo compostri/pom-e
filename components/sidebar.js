@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 
-import { Paper, Typography, FormControl, InputLabel, Select, MenuItem, FormGroup, FormControlLabel, Checkbox } from '@material-ui/core'
+import { Paper, Typography, FormControl, InputLabel, Select, MenuItem, FormGroup, FormControlLabel, Checkbox, Button, Switch } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 
 import palette from '../variables'
@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3.75)
   },
   formControl: {
-    display: 'block'
+    display: 'block',
   }
 }))
 
@@ -42,6 +42,14 @@ const Sidebar = ({ allCommunes, allCategories, selectedCommune, setSelectedCommu
       setSelectedCategories([cat, ...selectedCategories])
     }
   }
+
+  const [state, setState] = React.useState({
+    checkedA: true,
+  });
+
+  const handleChange = name => event => {
+    setState({ ...state, [name]: event.target.checked });
+  };
 
   return (
     <Paper component="section" elevation={2} className={classes.sidebarContainer}>
@@ -60,14 +68,24 @@ const Sidebar = ({ allCommunes, allCategories, selectedCommune, setSelectedCommu
           {allCategories &&
             allCategories.map(c => (
               <FormControlLabel
-                control={<Checkbox checked={selectedCategories.includes(c.id)} onChange={() => toggleCategories(c.id)} value={c.id} />}
+                control={<><Checkbox checked={selectedCategories.includes(c.id)} onChange={() => toggleCategories(c.id)} value={c.id} /></>}
                 label={c.name}
               />
             ))}
         </FormGroup>
+        
+        <Button variant="contained" className={classes.button}>
+        Tous
+        </Button>
+        <Button variant="outlined" color="primary" className={classes.button}>
+        En service
+        </Button>
+        <Button variant="contained" className={classes.button}>
+        En projet
+        </Button>
 
         <FormControl className={classes.formControl}>
-          <InputLabel htmlFor="communes">Communes</InputLabel>
+          <InputLabel htmlFor="communes">COMMUNES</InputLabel>
           <Select
             value={selectedCommune}
             onChange={event => {
@@ -86,6 +104,15 @@ const Sidebar = ({ allCommunes, allCategories, selectedCommune, setSelectedCommu
               ))}
           </Select>
         </FormControl>
+
+        <FormGroup row>
+          <FormControlLabel
+          control={
+          < Switch checked={state.checkedA} onChange={handleChange('checkedA')} value="checkedA" />
+          }
+          label="Composteur qui accepte de nouveaux adhérents"
+          />
+        </FormGroup>
       </section>
       <section className={classes.sidebarFooter} />
     </Paper>
