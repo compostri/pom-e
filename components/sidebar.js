@@ -70,6 +70,7 @@ const Sidebar = ({ allCommunes, allCategories, selectedCommune, setSelectedCommu
               <FormControlLabel
                 control={<><Checkbox checked={selectedCategories.includes(c.id)} onChange={() => toggleCategories(c.id)} value={c.id} /></>}
                 label={c.name}
+                key={`checkbox-cat-${c.id}`}
               />
             ))}
         </FormGroup>
