@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from 'react'
-import { TextField, List, ListItem, Popover } from '@material-ui/core'
+import { TextField, List, ListItem, Popper, makeStyles } from '@material-ui/core'
 import api from '../utils/api'
 import Link from 'next/link'
+
+const useStyles = makeStyles(theme => ({
+  popperContainer: {
+    backgroundColor: 'white',
+    zIndex: 110
+  }
+}))
 
 const SearchBar = () => {
   const [search, setSearch] = useState('')
   const [listComposter, setListComposter] = useState([])
   const inputRef = React.useRef(null)
   const [open, setOpen] = useState(false)
+  const classes = useStyles()
 
   useEffect(() => {
     if (search.length >= 3) {
@@ -30,34 +38,12 @@ const SearchBar = () => {
     </Link>
   ))
 
-  const handleClose = () => {
-    setOpen(false)
-  }
-
   return (
     <>
       <TextField ref={inputRef} value={search} type="search" variant="outlined" onChange={event => setSearch(event.target.value)} fullWidth />
-      <Popover
-        PaperProps={{
-          style: {
-            width: inputRef.current && inputRef.current.offsetWidth
-          }
-        }}
-        elevation={4}
-        open={open}
-        anchorEl={inputRef.current}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left'
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left'
-        }}
-      >
+      <Popper className={classes.popperContainer} open={open} anchorEl={inputRef.current} placement="bottom-start" disablePortal>
         <List>{composterListe}</List>
-      </Popover>
+      </Popper>
     </>
   )
 }
