@@ -72,7 +72,6 @@ const Home = ({ allCommunes, allCategories }) => {
     }
   }
 
-  const slug = '2'
   return (
     <div>
       <Head>
