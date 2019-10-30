@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import Link from 'next/link'
 import Head from 'next/head'
 import Sidebar from '../components/sidebar'
 
@@ -47,6 +48,8 @@ const Home = ({ allCommunes, allCategories }) => {
       setComposters(geojson.data)
     }
   }
+
+  const slug = '2'
   return (
     <div>
       <Head>
@@ -56,9 +59,11 @@ const Home = ({ allCommunes, allCategories }) => {
 
       <Sidebar {...{ allCommunes, allCategories, selectedCommune, setSelectedCommune, selectedCategories, setSelectedCategories }} />
 
-      <Button variant="contained" color="secondary" className={classes.userButton}>
-        Se connecter
-      </Button>
+      <Link href="/composter/[slug]" as={`/composter/${slug}`} passHref>
+        <Button color="secondary" variant="contained" className={classes.userButton}>
+          Se connecter
+        </Button>
+      </Link>
 
       <section className={classes.mapContainer}>
         <ReactMapGL
