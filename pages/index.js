@@ -37,6 +37,7 @@ const Home = ({ allCommunes, allCategories }) => {
   })
   const [selectedCommune, setSelectedCommune] = useState(allCommunes[0].id)
   const [selectedCategories, setSelectedCategories] = useState(allCategories.map(cat => cat.id))
+  const [selectedStatus, setSelectedStatus] = useState(['Active'])
 
   useEffect(() => {
     fetchComposters()
@@ -57,7 +58,9 @@ const Home = ({ allCommunes, allCategories }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Sidebar {...{ allCommunes, allCategories, selectedCommune, setSelectedCommune, selectedCategories, setSelectedCategories }} />
+      <Sidebar
+        {...{ allCommunes, allCategories, selectedCommune, setSelectedCommune, selectedCategories, setSelectedCategories, selectedStatus, setSelectedStatus }}
+      />
 
       <Link href="/composter/[slug]" as={`/composter/${slug}`} passHref>
         <Button color="secondary" variant="contained" className={classes.userButton}>
@@ -82,7 +85,7 @@ const Home = ({ allCommunes, allCategories }) => {
                     'circle-radius': 8,
                     'circle-color': 'rgba(55,148,179,1)'
                   },
-                  filter: ['all', ['==', 'commune', selectedCommune], ['in', 'categorie', ...selectedCategories]]
+                  filter: ['all', ['==', 'commune', selectedCommune], ['in', 'categorie', ...selectedCategories], ['in', 'status', ...selectedStatus]]
                 }}
               />
             </Source>

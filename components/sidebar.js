@@ -28,11 +28,28 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3.75)
   },
   formControl: {
-    display: 'block',
+    display: 'block'
+  },
+  formControlLabel: {
+    display: 'block'
+  },
+  formSectionTitle: {
+    textTransform: 'uppercase',
+    fontSize: 12,
+    color: palette.greyLight
   }
 }))
 
-const Sidebar = ({ allCommunes, allCategories, selectedCommune, setSelectedCommune, selectedCategories, setSelectedCategories }) => {
+const Sidebar = ({
+  allCommunes,
+  allCategories,
+  selectedCommune,
+  setSelectedCommune,
+  selectedCategories,
+  setSelectedCategories,
+  selectedStatus,
+  setSelectedStatus
+}) => {
   const classes = useStyles()
 
   const toggleCategories = cat => {
@@ -42,14 +59,21 @@ const Sidebar = ({ allCommunes, allCategories, selectedCommune, setSelectedCommu
       setSelectedCategories([cat, ...selectedCategories])
     }
   }
+  const toggleStatus = status => {
+    if (selectedStatus.includes(status)) {
+      setSelectedStatus(selectedStatus.filter(s => s !== status))
+    } else {
+      setSelectedStatus([status, ...selectedStatus])
+    }
+  }
 
   const [state, setState] = React.useState({
-    checkedA: true,
-  });
+    checkedA: true
+  })
 
   const handleChange = name => event => {
-    setState({ ...state, [name]: event.target.checked });
-  };
+    setState({ ...state, [name]: event.target.checked })
+  }
 
   return (
     <Paper component="section" elevation={2} className={classes.sidebarContainer}>
@@ -64,29 +88,45 @@ const Sidebar = ({ allCommunes, allCategories, selectedCommune, setSelectedCommu
         </Typography>
       </header>
       <section className={classes.sidebarContent}>
-        <FormGroup>
+        <FormGroup className={classes.formControl}>
+          <Typography paragraph className={classes.formSectionTitle}>
+            Catégorie
+          </Typography>
           {allCategories &&
             allCategories.map(c => (
               <FormControlLabel
-                control={<><Checkbox checked={selectedCategories.includes(c.id)} onChange={() => toggleCategories(c.id)} value={c.id} /></>}
+                control={
+                  <>
+                    <Checkbox checked={selectedCategories.includes(c.id)} onChange={() => toggleCategories(c.id)} value={c.id} />
+                  </>
+                }
                 label={c.name}
+                className={classes.formControlLabel}
                 key={`checkbox-cat-${c.id}`}
               />
             ))}
         </FormGroup>
-        
-        <Button variant="contained" className={classes.button}>
-        Tous
-        </Button>
-        <Button variant="outlined" color="primary" className={classes.button}>
-        En service
-        </Button>
-        <Button variant="contained" className={classes.button}>
-        En projet
-        </Button>
 
         <FormControl className={classes.formControl}>
-          <InputLabel htmlFor="communes">COMMUNES</InputLabel>
+          <Typography paragraph className={classes.formSectionTitle}>
+            Statut
+          </Typography>
+          {['Active', 'InProject'].map(status => (
+            <Button
+              variant={selectedStatus.includes(status) ? 'outlined' : 'contained'}
+              color={selectedStatus.includes(status) ? 'primary' : undefined}
+              onClick={() => toggleStatus(status)}
+              className={classes.button}
+            >
+              {status === 'Active' ? 'En service' : 'En projet'}
+            </Button>
+          ))}
+        </FormControl>
+
+        <FormControl className={classes.formControl}>
+          <InputLabel htmlFor="communes" className={classes.formSectionTitle}>
+            Communes
+          </InputLabel>
           <Select
             value={selectedCommune}
             onChange={event => {
@@ -108,10 +148,8 @@ const Sidebar = ({ allCommunes, allCategories, selectedCommune, setSelectedCommu
 
         <FormGroup row>
           <FormControlLabel
-          control={
-          < Switch checked={state.checkedA} onChange={handleChange('checkedA')} value="checkedA" />
-          }
-          label="Composteur qui accepte de nouveaux adhérents"
+            control={<Switch checked={state.checkedA} onChange={handleChange('checkedA')} value="checkedA" />}
+            label="Composteur qui accepte de nouveaux adhérents"
           />
         </FormGroup>
       </section>
