@@ -41,7 +41,14 @@ const SearchBar = () => {
   return (
     <>
       <TextField ref={inputRef} value={search} type="search" variant="outlined" onChange={event => setSearch(event.target.value)} fullWidth />
-      <Popper className={classes.popperContainer} open={open} anchorEl={inputRef.current} placement="bottom-start" disablePortal>
+      <Popper
+        style={{ width: inputRef.current && inputRef.current.offsetWidth }}
+        className={classes.popperContainer}
+        open={open}
+        anchorEl={inputRef.current}
+        placement="bottom-start"
+        disablePortal
+      >
         <List>{composterListe}</List>
       </Popper>
     </>
