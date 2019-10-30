@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
+import SearchBar from './SearchBar'
 
 import { Paper, Typography, FormControl, InputLabel, Select, MenuItem, FormGroup, FormControlLabel, Checkbox, Button, Switch } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
@@ -87,6 +88,7 @@ const Sidebar = ({
           Carte des sites de compostage partagé
         </Typography>
       </header>
+      <SearchBar />
       <section className={classes.sidebarContent}>
         <FormGroup className={classes.formControl}>
           <Typography paragraph className={classes.formSectionTitle}>

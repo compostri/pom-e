@@ -26,6 +26,7 @@ class MNApi {
   getComposter = slug => this.get(`/composters/${slug}`)
   getComposterGeojson = () => this.get('/composters.geojson')
   getCommunes = () => this.get('/communes')
+  getComposters = args => this.get('/composters', { params: args })
   getCategories = () => this.get('/categories')
 }
 
