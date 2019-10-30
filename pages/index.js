@@ -118,7 +118,7 @@ const Home = ({ allCommunes, allCategories }) => {
               closeButton={() => setMapPopup(false)}
               closeOnClick={false}
               onClose={() => setMapPopup(false)}
-              anchor="top"
+              offsetTop={-8}
             >
               <PopupContent composter={mapPopup} />
             </Popup>
