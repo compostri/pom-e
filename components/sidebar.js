@@ -117,6 +117,7 @@ const Sidebar = ({
               color={selectedStatus.includes(status) ? 'primary' : undefined}
               onClick={() => toggleStatus(status)}
               className={classes.button}
+              key={`button-status-${status}`}
             >
               {status === 'Active' ? 'En service' : 'En projet'}
             </Button>

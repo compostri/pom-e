@@ -3,13 +3,11 @@ import Link from 'next/link'
 import Head from 'next/head'
 import Sidebar from '../components/sidebar'
 
-import { Button } from '@material-ui/core'
+import { Button, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import { RadioButtonChecked } from '@material-ui/icons'
 
-import ReactMapGL, { Popup, Marker, Source, Layer } from 'react-map-gl'
+import ReactMapGL, { Popup, Source, Layer } from 'react-map-gl'
 import api from '../utils/api'
-import { contains } from '@material-ui/core/utils'
 
 const useStyles = makeStyles(theme => ({
   mapContainer: {
@@ -22,6 +20,14 @@ const useStyles = makeStyles(theme => ({
     zIndex: 150
   }
 }))
+
+const PopupContent = ({ composter }) => (
+  <Link href="/composter/[slug]" as={`/composter/${composter.id}`} passHref>
+    <Button>
+      <Typography paragraph>{composter.name}</Typography>
+    </Button>
+  </Link>
+)
 
 const Home = ({ allCommunes, allCategories }) => {
   const classes = useStyles()
@@ -38,6 +44,7 @@ const Home = ({ allCommunes, allCategories }) => {
   const [selectedCommune, setSelectedCommune] = useState(allCommunes[0].id)
   const [selectedCategories, setSelectedCategories] = useState(allCategories.map(cat => cat.id))
   const [selectedStatus, setSelectedStatus] = useState(['Active'])
+  const [mapPopup, setMapPopup] = useState(false)
 
   useEffect(() => {
     fetchComposters()
@@ -50,7 +57,21 @@ const Home = ({ allCommunes, allCategories }) => {
     }
   }
 
-  const slug = '2'
+  const onMapClick = event => {
+    const { features } = event
+    const composterCircleClicked = features && features.find(f => f.layer.id === 'data')
+
+    if (composterCircleClicked) {
+      setMapPopup({
+        ...composterCircleClicked.properties,
+        lat: composterCircleClicked.geometry.coordinates[1],
+        lng: composterCircleClicked.geometry.coordinates[0]
+      })
+    } else if (mapPopup) {
+      setMapPopup(false)
+    }
+  }
+
   return (
     <div>
       <Head>
@@ -62,11 +83,9 @@ const Home = ({ allCommunes, allCategories }) => {
         {...{ allCommunes, allCategories, selectedCommune, setSelectedCommune, selectedCategories, setSelectedCategories, selectedStatus, setSelectedStatus }}
       />
 
-      <Link href="/composter/[slug]" as={`/composter/${slug}`} passHref>
-        <Button color="secondary" variant="contained" className={classes.userButton}>
-          Se connecter
-        </Button>
-      </Link>
+      <Button color="secondary" variant="contained" className={classes.userButton}>
+        Se connecter
+      </Button>
 
       <section className={classes.mapContainer}>
         <ReactMapGL
@@ -74,6 +93,7 @@ const Home = ({ allCommunes, allCategories }) => {
           mapStyle={process.env.NEXT_STATIC_MAP_BOX_STYLE}
           mapboxApiAccessToken={process.env.NEXT_STATIC_MAP_BOX_TOKEN}
           onViewportChange={viewport => setMapViewport(viewport)}
+          onClick={onMapClick}
         >
           {composters && (
             <Source type="geojson" data={composters}>
@@ -89,6 +109,18 @@ const Home = ({ allCommunes, allCategories }) => {
                 }}
               />
             </Source>
+          )}
+          {mapPopup && (
+            <Popup
+              latitude={mapPopup.lat}
+              longitude={mapPopup.lng}
+              closeButton={() => setMapPopup(false)}
+              closeOnClick={false}
+              onClose={() => setMapPopup(false)}
+              offsetTop={-8}
+            >
+              <PopupContent composter={mapPopup} />
+            </Popup>
           )}
         </ReactMapGL>
       </section>
