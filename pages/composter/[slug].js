@@ -156,7 +156,7 @@ const Header = ({ title }) => {
             <Collapse in={openSubMenu} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 <ListItem button className={classes.nested}>
-                  <Lens className={classes.lens} />
+                  <ListItemIcon><Lens /></ListItemIcon>
                   <ListItemText primary="Composteur 1" />
                 </ListItem>
                 <ListItem button className={classes.nested}>
