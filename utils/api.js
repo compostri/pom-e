@@ -28,6 +28,9 @@ class MNApi {
   getCommunes = () => this.get('/communes')
   getComposters = args => this.get('/composters', { params: args })
   getCategories = () => this.get('/categories')
+
+  // User
+  login = args => this.post('/login_check', args)
 }
 
 export default new MNApi()
