@@ -95,7 +95,6 @@ const Header = ({ title }) => {
   const [open, setOpen] = React.useState(false)
   const [openSubMenu, setOpenSubMenu] = React.useState(true)
   const anchorRef = React.useRef(null)
-  const [selectedIndex, setSelectedIndex] = React.useState(1)
 
   const handleToggle = () => {
     setOpen(open => !open)
