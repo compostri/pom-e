@@ -1,17 +1,31 @@
 import Link from 'next/link'
 import React from 'react'
 import api from '../../utils/api'
-import { Paper, Typography, AppBar, Button, Toolbar, Popper, List, ListItem, ListItemText, ListItemIcon, Collapse, IconButton } from '@material-ui/core'
-import { ExpandMore, ExpandLess, Lens, ChevronLeft } from '@material-ui/icons'
+import {
+  Paper,
+  Typography,
+  AppBar,
+  Button,
+  Toolbar,
+  Popper,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Collapse,
+  IconButton,
+  TextField,
+  InputBase,
+  InputLabel,
+  FormControl
+} from '@material-ui/core'
+import { ExpandMore, ExpandLess, Lens, ChevronLeft, Room, Person, RadioButtonChecked, Lock, WatchLater } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 import palette from '../../variables'
 
 const useStyles = makeStyles(theme => ({
   appBar: {
-    backgroundColor: 'white',
-    shadowColor: palette.greyMedium,
-    shadowOffset: { width: 1, height: 0 },
-    shadowRadius: 2
+    backgroundColor: 'white'
   },
   logo: {
     width: 80,
@@ -87,6 +101,60 @@ const useStyles = makeStyles(theme => ({
   listIcon: {
     minWidth: '25px',
     paddingLeft: theme.spacing(1)
+  },
+  sectionDetail: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    padding: theme.spacing(2, 5, 2, 10)
+  },
+  info: {
+    display: 'flex',
+    padding: theme.spacing(2, 2, 2, 2),
+    marginBottom: theme.spacing(2)
+  },
+  infoRight: {
+    marginLeft: theme.spacing(2)
+  },
+  titleSectionSecondary: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: palette.greyDark,
+    paddingBottom: theme.spacing(2)
+  },
+  listItem: {
+    padding: '0'
+  },
+  infoIcone: {
+    color: palette.greenPrimary,
+    width: '15px',
+    padding: '0'
+  },
+  infoList: {
+    backgroundColor: palette.greyExtraLight,
+    padding: theme.spacing(2, 2, 2, 2)
+  },
+  infoTxt: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: palette.greyMedium,
+    margin: '0'
+  },
+  contactezNous: {
+    padding: theme.spacing(2, 2, 2, 2),
+    marginBottom: theme.spacing(2)
+  },
+  submit: {
+    color: 'white',
+    '&:hover': {
+      backgroundColor: palette.orangeOpacity
+    }
+  },
+  inputGlobal: {
+    margin: theme.spacing(1, 0, 2, 0)
+  },
+  input: {
+    marginTop: theme.spacing(2)
   }
 }))
 
@@ -105,7 +173,7 @@ const Header = ({ title }) => {
   }
 
   return (
-    <AppBar className={classes.appBar} position="static">
+    <AppBar className={classes.appBar} position="static" elevation={1}>
       <Toolbar className={classes.toolbarGlobal} disableGutters>
         <Link href="/" passHref>
           <IconButton className={classes.logo}>
@@ -178,43 +246,101 @@ const Header = ({ title }) => {
     </AppBar>
   )
 }
-/**
- * 
- * 
-DateInauguration: null
-DateInstallation: null
-DateMiseEnRoute: "2009-06-26T00:00:00+00:00"
-address: "allée de la cité"
-animation: 2
-autonomie: 3
-cadena: ""
-commune: {@id: "/communes/2", @type: "Commune", id: 2, name: "Nantes"}
-description: null
-environnement: 3
-id: 2
-lat: 47.207748
-lng: -1.540578
-mc: {@id: "/users/7", @type: "User", id: 7, username: "samir@compostri.fr", email: "samir@compostri.fr"}
-name: "Beaulieu"
-pavilionsVolume: {@id: "/pavilions_volumes/1", @type: "PavilionsVolume", id: 1, volume: "20"}
-pole: null
-quartier: {@id: "/quartiers/17", @type: "Quartier", name: "Nantes Île-de-Nantes"}
-shortDescription: ""
-technique: 3
 
- * @param {*} param0 
- */
 const Content = ({ composter }) => {
+  const classes = useStyles()
+
   return (
     <>
-      <Paper>
-        <Typography variant="h2">Informations sur le site de compostage</Typography>
-        <Typography paragraph>{composter.address} </Typography>
-        <Typography paragraph>{composter.quartier['@type']}</Typography>
-      </Paper>
-      <Paper>
-        <Typography variant="h2">Contactez-nous pour toutes vos questions</Typography>
-      </Paper>
+      <div className={classes.sectionDetail}>
+        <div className={classes.sectionLeft}>
+          <Paper className={classes.info}>
+            <div>
+              {' '}
+              <img src="https://via.placeholder.com/150" />
+            </div>
+            <div className={classes.infoRight}>
+              <Typography className={classes.titleSectionSecondary} variant="h2">
+                Informations sur le site de compostage
+              </Typography>
+              <List className={classes.infoList}>
+                <ListItem className={classes.listItem}>
+                  <ListItemIcon>
+                    <Room className={classes.infoIcone} />
+                  </ListItemIcon>
+                  <ListItemText className={classes.listItem}>
+                    {' '}
+                    <Typography className={classes.infoTxt} paragraph>
+                      {composter.address}{' '}
+                    </Typography>
+                  </ListItemText>
+                </ListItem>
+                <ListItem className={classes.listItem}>
+                  <ListItemIcon>
+                    <RadioButtonChecked className={classes.infoIcone} />
+                  </ListItemIcon>
+                  <ListItemText>
+                    {' '}
+                    <Typography className={classes.infoTxt} paragraph>
+                      {' '}
+                      Quartier
+                    </Typography>
+                  </ListItemText>
+                </ListItem>
+                <ListItem className={classes.listItem}>
+                  <ListItemIcon>
+                    <Person className={classes.infoIcone} />
+                  </ListItemIcon>
+                  <ListItemText>
+                    {' '}
+                    <Typography className={classes.infoTxt}> Accepte de nouveau adhérents </Typography>
+                  </ListItemText>
+                </ListItem>
+                <ListItem className={classes.listItem}>
+                  <ListItemIcon>
+                    <Lock className={classes.infoIcone} />
+                  </ListItemIcon>
+                  <ListItemText>
+                    {' '}
+                    <Typography className={classes.infoTxt}> En service </Typography>
+                  </ListItemText>
+                </ListItem>
+                <ListItem className={classes.listItem}>
+                  <ListItemIcon>
+                    <WatchLater className={classes.infoIcone} />
+                  </ListItemIcon>
+                  <ListItemText>
+                    {' '}
+                    <Typography className={classes.infoTxt}> Permanences : mercredi de 18h30 à 19h00 et samedi de 11h30 à 12h00 </Typography>
+                  </ListItemText>
+                </ListItem>
+              </List>
+            </div>
+          </Paper>
+
+          <Paper elevation={1} className={classes.contactezNous}>
+            <Typography className={classes.titleSectionSecondary} variant="h2">
+              Contactez-nous pour toutes vos questions
+            </Typography>
+            <form className={classes.container} noValidate autoComplete="off">
+              <FormControl fullWidth className={classes.inputGlobal}>
+                <InputLabel className={classes.label}>VOTRE E-MAIL</InputLabel>
+                <InputBase fullWidth className={classes.input} defaultValue="Entrez votre adresse e-mail" inputProps={{ 'aria-label': 'naked' }} />
+              </FormControl>
+              <FormControl fullWidth className={classes.inputGlobal}>
+                <InputLabel className={classes.label}>VOTRE MESSAGE</InputLabel>
+                <InputBase fullWidth className={classes.input} defaultValue="Entrez votre message" inputProps={{ 'aria-label': 'naked' }} />
+              </FormControl>
+              <Button type="submit" variant="contained" color="primary" className={classes.submit}>
+                Envoyer
+              </Button>
+            </form>
+          </Paper>
+        </div>
+        <Paper className={classes.map}>
+          <img src="https://via.placeholder.com/460" />
+        </Paper>
+      </div>
     </>
   )
 }
