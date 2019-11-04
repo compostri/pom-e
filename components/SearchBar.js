@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { TextField, List, ListItem, Popper, makeStyles } from '@material-ui/core'
+import { TextField, List, ListItem, Popper, makeStyles, IconButton } from '@material-ui/core'
 import api from '../utils/api'
 import Link from 'next/link'
 
@@ -7,6 +7,9 @@ const useStyles = makeStyles(theme => ({
   popperContainer: {
     backgroundColor: 'white',
     zIndex: 110
+  },
+  searchBarContainer: {
+    backgroundColor: 'white'
   }
 }))
 
@@ -27,6 +30,7 @@ const SearchBar = () => {
       })
     } else {
       setListComposter([])
+      setOpen(false)
     }
   }, [search])
 
@@ -40,7 +44,17 @@ const SearchBar = () => {
 
   return (
     <>
-      <TextField ref={inputRef} value={search} type="search" variant="outlined" onChange={event => setSearch(event.target.value)} fullWidth />
+      <TextField
+        autoFocus
+        className={classes.searchBarContainer}
+        ref={inputRef}
+        value={search}
+        type="search"
+        variant="outlined"
+        onChange={event => setSearch(event.target.value)}
+        fullWidth
+      ></TextField>
+
       <Popper
         style={{ width: inputRef.current && inputRef.current.offsetWidth }}
         className={classes.popperContainer}
