@@ -7,44 +7,9 @@ import { Button, Popper, List, ListItem, ListItemText, ListItemIcon, Collapse } 
 import { Lens } from '@material-ui/icons'
 
 const useStyles = makeStyles(theme => ({
-  appBar: {
-    backgroundColor: 'white',
-    shadowColor: palette.greyMedium,
-    shadowOffset: { width: 1, height: 0 },
-    shadowRadius: 2
-  },
-  logo: {
-    width: 80,
-    height: 175,
-    backgroundColor: palette.greenPrimary,
-    borderRadius: '0'
-  },
-  logoSvg: {
-    display: 'Block',
-    margin: '0 auto',
-    paddingBottom: theme.spacing(8)
-  },
-  toolbarGlobal: {
-    alignItems: 'flex-end'
-  },
-  toolbarTitle: {
-    display: 'flex'
-  },
-  toolbarLeft: {
-    flexGrow: '1',
-    marginLeft: theme.spacing(2)
-  },
-  chevronLeft: {
-    padding: '0'
-  },
   UserButtonLog: {
     alignSelf: 'center',
     margin: theme.spacing(0, 5, 8, 0)
-  },
-  title: {
-    color: palette.greyDark,
-    fontSize: '28px',
-    fontWeight: '700'
   },
   button: {
     color: palette.greyDark,
@@ -153,7 +118,7 @@ export const UserButton = props => {
     )
   } else {
     return (
-      <Link href="/connexion" as={'/connexion'} passHref>
+      <Link href="/login" as={'/login'} passHref>
         <Button color="secondary" variant="contained" className={classes.userButton}>
           Se connecter
         </Button>
