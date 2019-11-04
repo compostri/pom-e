@@ -9,7 +9,7 @@ class UserProvider extends Component {
       isLoggedIn: false,
       user: {},
       isLoggedIn: () => {
-        return false
+        return !!this.state.user.id
       }
     }
   }

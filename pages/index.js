@@ -84,7 +84,9 @@ const Home = ({ allCommunes, allCategories }) => {
         {...{ allCommunes, allCategories, selectedCommune, setSelectedCommune, selectedCategories, setSelectedCategories, selectedStatus, setSelectedStatus }}
       />
 
-      <UserButton />
+      <div className={classes.userButton}>
+        <UserButton />
+      </div>
 
       <section className={classes.mapContainer}>
         <ReactMapGL
