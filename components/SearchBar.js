@@ -36,7 +36,6 @@ const SearchBar = () => {
     }
   }, [search])
 
-  console.log(apiResult)
   const composterListe = listComposter.map(composter => (
     <Link key={`composter-${composter.id}`} href="/composter/[slug]" as={`/composter/${composter.id}`} passHref>
       <ListItem button component="a">
