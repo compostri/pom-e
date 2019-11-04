@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/styles'
 
 import ReactMapGL, { Popup, Source, Layer } from 'react-map-gl'
 import api from '../utils/api'
+import { UserButton } from '../components/UserButton'
 
 const useStyles = makeStyles(theme => ({
   mapContainer: {
@@ -83,9 +84,9 @@ const Home = ({ allCommunes, allCategories }) => {
         {...{ allCommunes, allCategories, selectedCommune, setSelectedCommune, selectedCategories, setSelectedCategories, selectedStatus, setSelectedStatus }}
       />
 
-      <Button color="secondary" variant="contained" className={classes.userButton}>
-        Se connecter
-      </Button>
+      <div className={classes.userButton}>
+        <UserButton />
+      </div>
 
       <section className={classes.mapContainer}>
         <ReactMapGL

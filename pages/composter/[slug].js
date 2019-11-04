@@ -22,6 +22,7 @@ import {
 import { ExpandMore, ExpandLess, Lens, ChevronLeft, Room, Person, RadioButtonChecked, Lock, WatchLater } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 import palette from '../../variables'
+import { UserButton } from '../../components/UserButton'
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -200,48 +201,9 @@ const Header = ({ title }) => {
           </div>
         </div>
 
-        <Button
-          onClick={handleToggle}
-          color="secondary"
-          ref={anchorRef}
-          variant="contained"
-          className={(classes.userButton, classes.UserButtonLog)}
-          endIcon={open ? <ExpandLess /> : <ExpandMore />}
-        >
-          Mon compte
-        </Button>
-
-        <Popper open={open} anchorEl={anchorRef.current} placement="bottom-end" transition disablePortal>
-          <List component="nav">
-            <ListItem button className={classes.nested}>
-              <ListItemText primary="Mon Profil" />
-            </ListItem>
-
-            <ListItem button className={classes.nested} onClick={handleClick}>
-              <ListItemText primary="Mes composteurs" />
-              <ListItemIcon>{openSubMenu ? <ExpandLess className={classes.arrow} /> : <ExpandMore className={classes.arrow} />}</ListItemIcon>
-            </ListItem>
-            <Collapse in={openSubMenu} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <ListItem button className={[classes.nested, classes.nestedSecondary].join(' ')}>
-                  <ListItemIcon className={classes.listIcon}>
-                    <Lens className={classes.lens} />
-                  </ListItemIcon>
-                  <ListItemText primary="Composteur 1" />
-                </ListItem>
-                <ListItem button className={[classes.nested, classes.nestedSecondary].join(' ')}>
-                  <ListItemIcon className={classes.listIcon}>
-                    <Lens className={classes.lens} />
-                  </ListItemIcon>
-                  <ListItemText primary="Composteur 2" />
-                </ListItem>
-              </List>
-            </Collapse>
-            <ListItem button className={classes.nested}>
-              <ListItemText primary="Se déconnecter" />
-            </ListItem>
-          </List>
-        </Popper>
+        <div className={(classes.userButton, classes.UserButtonLog)}>
+          <UserButton />
+        </div>
       </Toolbar>
     </AppBar>
   )

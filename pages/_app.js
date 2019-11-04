@@ -4,6 +4,7 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 
 import { ThemeProvider } from '@material-ui/styles'
 import theme from '../theme'
+import UserProvider from '../context/UserContext'
 
 class MyApp extends App {
   componentDidMount() {
@@ -18,8 +19,10 @@ class MyApp extends App {
     const { Component, pageProps } = this.props
     return (
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Component {...pageProps} />
+        <UserProvider>
+          <CssBaseline />
+          <Component {...pageProps} />
+        </UserProvider>
       </ThemeProvider>
     )
   }
