@@ -19,13 +19,15 @@ const SearchBar = () => {
   const inputRef = React.useRef(null)
   const [open, setOpen] = useState(false)
   const classes = useStyles()
+  const [apiNoResult, setApiNoResult] = useState(false)
 
   useEffect(() => {
     if (search.length >= 3) {
       api.getComposters({ name: search }).then(response => {
-        if (response.status == 200) {
+        if (response.status === 200) {
           setListComposter(response.data['hydra:member'])
           setOpen(true)
+          setApiNoResult(response.data['hydra:member'].length === 0)
         }
       })
     } else {
@@ -34,6 +36,7 @@ const SearchBar = () => {
     }
   }, [search])
 
+  console.log(apiResult)
   const composterListe = listComposter.map(composter => (
     <Link key={`composter-${composter.id}`} href="/composter/[slug]" as={`/composter/${composter.id}`} passHref>
       <ListItem button component="a">
@@ -63,7 +66,7 @@ const SearchBar = () => {
         placement="bottom-start"
         disablePortal
       >
-        <List>{composterListe}</List>
+        <List>{apiNoResult ? 'aucun résultat ne correspond à votre recherche' : composterListe}</List>
       </Popper>
     </>
   )
