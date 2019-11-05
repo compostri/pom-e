@@ -23,6 +23,7 @@ import { ExpandMore, ExpandLess, Lens, ChevronLeft, Room, Person, RadioButtonChe
 import { makeStyles } from '@material-ui/styles'
 import palette from '../../variables'
 import { UserButton } from '../../components/UserButton'
+import MapField from '../../components/MapField'
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -299,9 +300,11 @@ const Content = ({ composter }) => {
             </form>
           </Paper>
         </div>
-        <Paper className={classes.map}>
-          <img src="https://via.placeholder.com/460" />
-        </Paper>
+        {composter.lat && composter.lng && (
+          <Paper className={classes.map}>
+            <MapField record={composter} />
+          </Paper>
+        )}
       </div>
     </>
   )
