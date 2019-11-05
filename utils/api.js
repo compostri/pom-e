@@ -1,8 +1,24 @@
 import axios from 'axios'
+import cookie from 'js-cookie'
 
 const api = axios.create({
   baseURL: process.env.NEXT_STATIC_API_URL
 })
+
+api.interceptors.request.use(
+  _config => {
+    //Add token in headers
+    const _token = cookie.get('token')
+    if (_token) {
+      _config.headers['Authorization'] = 'Bearer ' + _token
+    }
+
+    return _config
+  },
+  error => {
+    return Promise.reject(error)
+  }
+)
 
 class MNApi {
   constructor() {
