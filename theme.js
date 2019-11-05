@@ -36,7 +36,13 @@ const theme = createMuiTheme({
         borderRadius: 2
       }
     },
-
+    MuiIconButton: {
+      root: {
+        '&:hover': {
+          backgroundColor: 'none'
+        }
+      }
+    },
     MuiPaper: {
       elevation1: {
         boxShadow: '0px 1px 3px 0px rgb(229, 229, 229), 0px 1px 1px 0px rgb(229, 229, 229), 0px 2px 1px -1px rgb(229, 229, 229)'
