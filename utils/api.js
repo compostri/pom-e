@@ -1,8 +1,47 @@
 import axios from 'axios'
+import cookie from 'js-cookie'
+import { isValid } from './auth'
 
 const api = axios.create({
   baseURL: process.env.NEXT_STATIC_API_URL
 })
+
+api.interceptors.request.use(
+  async _config => {
+    //Add token in headers
+    const _token = cookie.get('token')
+    const refresh_token = cookie.get('refresh_token')
+
+    if (_token) {
+      if (isValid(_token)) {
+        _config.headers['Authorization'] = 'Bearer ' + _token
+      } else {
+        const res = await axios({
+          baseURL: process.env.NEXT_STATIC_API_URL,
+          headers: {
+            'Cache-Control': 'no-cache'
+          },
+          url: 'api/token/refresh',
+          timeout: 10000,
+          method: 'post',
+          data: {
+            refresh_token: refresh_token
+          }
+        })
+        if (res.data && res.data.token) {
+          cookie.set('token', res.data.token, { expires: 1 })
+          cookie.set('refresh_token', res.data.refresh_token, { expires: 1 })
+          _config.headers['Authorization'] = 'Bearer ' + res.data.token
+        }
+      }
+    }
+
+    return _config
+  },
+  error => {
+    return Promise.reject(error)
+  }
+)
 
 class MNApi {
   constructor() {

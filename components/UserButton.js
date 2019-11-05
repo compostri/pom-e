@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/styles'
 import palette from '../variables'
 import Link from 'next/link'
 import { Button, Popper, List, ListItem, ListItemText, ListItemIcon, Collapse } from '@material-ui/core'
-import { Lens } from '@material-ui/icons'
+import { Lens, ExpandMore, ExpandLess } from '@material-ui/icons'
 
 const useStyles = makeStyles(theme => ({
   UserButtonLog: {
@@ -72,7 +72,7 @@ export const UserButton = props => {
         <Popper open={open} anchorEl={anchorRef.current} placement="bottom-end" transition disablePortal>
           <List component="nav">
             <ListItem button className={classes.nested}>
-              <ListItemTexts primary="Mon Profil" />
+              <ListItemText primary="Mon Profil" />
             </ListItem>
 
             <ListItem button className={classes.nested} onClick={handleClick}>
