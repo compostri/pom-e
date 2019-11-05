@@ -31,14 +31,29 @@ class UserProvider extends Component {
     }
   }
 
-  populateUser(token) {
+  populateUser = token => {
     const user = getUserInfosFromToken(token)
     this.setState({ user, token })
   }
 
-  componentDidMount() {
+  cookiechange = () => {
+    const token = cookie.get('token')
+    this.setState({ token, user: getUserInfosFromToken(token) })
+  }
+
+  componentDidMount = () => {
     this.populateUser(this.state.token)
     isValid(this.state.token)
+    // listen to changes on cookie
+    if (typeof browser !== 'undefined') {
+      this.cookieListener = browser.cookies.onChanged.addListener(this.cookiechange)
+    }
+  }
+
+  componentWillUnmount() {
+    if (typeof browser !== 'undefined') {
+      browser.cookies.onChanged.removeListener(this.cookieListener)
+    }
   }
 
   render = () => <UserContext.Provider value={{ userContext: this.state }}>{this.props.children}</UserContext.Provider>
