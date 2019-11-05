@@ -11,20 +11,6 @@ const useStyles = makeStyles(theme => ({
     alignSelf: 'center',
     margin: theme.spacing(0, 5, 8, 0)
   },
-  button: {
-    color: palette.greyDark,
-    fontSize: '16px',
-    fontWeight: '400',
-    borderBottomStyle: 'solid',
-    borderBottomWidth: 3,
-    borderBottomColor: 'transparent',
-    padding: theme.spacing(6, 0, 3, 0),
-    marginRight: theme.spacing(4),
-    '&:hover': {
-      borderBottomColor: palette.greenPrimary,
-      backgroundColor: 'white'
-    }
-  },
   nested: {
     paddingLeft: theme.spacing(1),
     backgroundColor: palette.orangePrimary,
@@ -77,7 +63,7 @@ export const UserButton = props => {
           color="secondary"
           ref={anchorRef}
           variant="contained"
-          className={(classes.userButton, classes.UserButtonLog)}
+          className={[classes.userButton, classes.UserButtonLog].join(' ')}
           endIcon={open ? <ExpandLess /> : <ExpandMore />}
         >
           Mon compte
@@ -119,7 +105,7 @@ export const UserButton = props => {
   } else {
     return (
       <Link href="/login" as={'/login'} passHref>
-        <Button color="secondary" variant="contained" className={classes.userButton}>
+        <Button color="secondary" variant="contained" className={[classes.userButton, classes.UserButtonLog].join(' ')}>
           Se connecter
         </Button>
       </Link>
