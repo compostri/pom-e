@@ -1,7 +1,7 @@
 import React, { createContext, Component } from 'react'
 import api from '../utils/api'
 import cookie from 'js-cookie'
-import jwt_decode from 'jwt-decode'
+import { getUserInfosFromToken, isValid } from '../utils/auth'
 
 export const UserContext = createContext({})
 
@@ -11,17 +11,19 @@ class UserProvider extends Component {
     this.state = {
       isLoggedIn: false,
       token: props.token || null,
-      user: {},
+      user: getUserInfosFromToken(props.token) || null,
       login: async values => {
         const res = await api.login(values)
-        // On set le cookie
+        // On set les cookies
         if (res.data && res.data.token) {
           cookie.set('token', res.data.token, { expires: 1 })
+          cookie.set('refresh_token', res.data.refresh_token, { expires: 1 })
           this.populateUser()
         }
       },
       logout: () => {
         cookie.remove('token')
+        cookie.remove('refresh_token')
       },
       isLoggedIn: () => {
         return !!this.state.token
@@ -29,22 +31,14 @@ class UserProvider extends Component {
     }
   }
 
-  getUserInfosFromToken(tk) {
-    const token = tk || cookie.get('token')
-    if (token) {
-      const { iat, exp, ...rest } = jwt_decode(token)
-      return rest
-    }
-    return null
-  }
-
   populateUser(token) {
-    const user = this.getUserInfosFromToken(token)
+    const user = getUserInfosFromToken(token)
     this.setState({ user, token })
   }
 
   componentDidMount() {
     this.populateUser(this.state.token)
+    isValid(this.state.token)
   }
 
   render = () => <UserContext.Provider value={{ userContext: this.state }}>{this.props.children}</UserContext.Provider>
