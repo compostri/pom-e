@@ -28,9 +28,11 @@ api.interceptors.request.use(
             refresh_token: refresh_token
           }
         })
-        console.log('TCL: res', res)
-
-        // if (res.data && res.data.access_token) {
+        if (res.data && res.data.token) {
+          cookie.set('token', res.data.token, { expires: 1 })
+          cookie.set('refresh_token', res.data.refresh_token, { expires: 1 })
+          _config.headers['Authorization'] = 'Bearer ' + res.data.token
+        }
       }
     }
 
