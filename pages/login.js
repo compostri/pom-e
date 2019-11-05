@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Container, TextField, Paper, Typography, Button, Snackbar, SnackbarContent } from '@material-ui/core'
 import Link from 'next/link'
 import Router from 'next/router'
@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import api from '../utils/api'
 import { Formik, Form, Field } from 'formik'
 import * as Yup from 'yup'
+import { UserContext } from '../context/UserContext'
 
 const LogInSchema = Yup.object().shape({
   email: Yup.string()
@@ -38,6 +39,7 @@ const useStyles = makeStyles(theme => ({
 
 const LogIn = () => {
   const classes = useStyles()
+  const { userContext } = useContext(UserContext)
 
   const [snackBarMessage, setSnackBarMessage] = useState(false)
 
@@ -51,18 +53,17 @@ const LogIn = () => {
           initialValues={{ email: '', password: '' }}
           validationSchema={LogInSchema}
           onSubmit={async values => {
-            try {
-              const response = await api.login(values)
+            userContext.login(values)
+            // try {
 
-              if (response.status === 200 && response.data.token) {
-                window.localStorage.setItem('token', response.data.token)
-                Router.replace('/')
-              } else {
-                setSnackBarMessage('Une erreur est survenue')
-              }
-            } catch (e) {
-              setSnackBarMessage('Combinaison d‘email et mot de passe incorrect')
-            }
+            //   if (response.status === 200 && response.data.token) {
+            //     Router.replace('/')
+            //   } else {
+            //     setSnackBarMessage('Une erreur est survenue')
+            //   }
+            // } catch (e) {
+            //   setSnackBarMessage('Combinaison d‘email et mot de passe incorrect')
+            // }
           }}
         >
           {({ values, errors, touched, handleChange }) => (
@@ -101,7 +102,7 @@ const LogIn = () => {
                 helperText={errors.password && touched.password ? errors.password : undefined}
               />
               <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
-                Connection
+                Connexion
               </Button>
             </Form>
           )}
