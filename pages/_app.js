@@ -3,8 +3,8 @@ import App from 'next/app'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import nextCookie from 'next-cookies'
 import { ThemeProvider } from '@material-ui/styles'
-import theme from '../theme'
-import UserProvider from '../context/UserContext'
+import theme from '~/theme'
+import UserProvider from '~/context/UserContext'
 
 class MyApp extends App {
   componentDidMount() {
