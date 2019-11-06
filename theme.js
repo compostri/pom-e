@@ -9,9 +9,12 @@ const theme = createMuiTheme({
   overrides: {
     MuiSelect: {
       select: {
-        backgroundColor: palette.greyExtraLight,
-        minWidth: '360px',
-        minHeight: '40px'
+        backgroundColor: palette.greyExtraLight
+      }
+    },
+    MuiBackdrop: {
+      root: {
+        backgroundColor: palette.orangePrimary
       }
     },
     MuiInput: {

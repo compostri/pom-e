@@ -1,14 +1,16 @@
 import React from 'react'
+import { Typography, IconButton } from '@material-ui/core'
+import { makeStyles } from '@material-ui/styles'
+import Link from 'next/link'
+import { ChevronLeft, ChevronRight } from '@material-ui/icons'
+import dayjs from 'dayjs'
+import 'dayjs/locale/fr'
+
 import api from '../../../utils/api'
 import Header from '../../../components/ComposterHeader'
 import PermanenceCard from '../../../components/PermanenceCard'
-import { Typography, Link, IconButton } from '@material-ui/core'
-import { makeStyles } from '@material-ui/styles'
-import { ChevronLeft, ChevronRight } from '@material-ui/icons'
-import useMediaQuery from '@material-ui/core/useMediaQuery'
 import palette from '../../../variables'
-import dayjs from 'dayjs'
-import 'dayjs/locale/fr'
+
 dayjs.locale('fr')
 
 const useStyles = makeStyles(theme => ({
@@ -63,10 +65,10 @@ const permanences = [
   }
 ]
 
-const perm = permanences.map(p => <PermanenceCard permanence={p} />)
-
-const Content = () => {
+const Content = ({ users, composter }) => {
   const classes = useStyles()
+  const perm = permanences.map((p, index) => <PermanenceCard permanence={p} users={users} key={`perm-${index}-${p.date}`} />)
+
   return (
     <>
       <div className={classes.sectionPermanences}>
@@ -101,20 +103,22 @@ const Content = () => {
   )
 }
 
-const ComposterPermanences = ({ composter }) => {
+const ComposterPermanences = ({ composter, users }) => {
   return (
     <>
       <Header title={composter.name} />
-      <Content composter={composter} />
+      <Content composter={composter} users={users} />
     </>
   )
 }
 
 ComposterPermanences.getInitialProps = async ({ query }) => {
   const composter = await api.getComposter(query.slug)
+  const users = await api.getComposters()
 
   return {
-    composter: composter.data
+    composter: composter.data,
+    users: users.data
   }
 }
 
