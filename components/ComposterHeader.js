@@ -4,7 +4,7 @@ import { Typography, AppBar, Button, Toolbar, IconButton } from '@material-ui/co
 import { ChevronLeft } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 import palette from '~/variables'
-import { UserButton } from './UserButton'
+import UserButton from './UserButton'
 
 const useStyles = makeStyles(theme => ({
   appBar: {

@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export const UserButton = props => {
+const UserButton = props => {
   const classes = useStyles()
   const { userContext } = useContext(UserContext)
   const [open, setOpen] = useState(false)
@@ -125,3 +125,5 @@ export const UserButton = props => {
 
   return
 }
+
+export default UserButton
