@@ -3,6 +3,7 @@ import { UserContext } from '../context/UserContext'
 import { makeStyles } from '@material-ui/styles'
 import palette from '../variables'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { Button, Popper, List, ListItem, ListItemText, ListItemIcon, Collapse } from '@material-ui/core'
 import { Lens, ExpandMore, ExpandLess } from '@material-ui/icons'
 
@@ -47,6 +48,7 @@ export const UserButton = props => {
   const [open, setOpen] = useState(false)
   const [openSubMenu, setOpenSubMenu] = useState(true)
   const anchorRef = useRef(null)
+  const router = useRouter()
 
   const handleToggle = () => {
     setOpen(open => !open)
@@ -95,7 +97,13 @@ export const UserButton = props => {
                 </ListItem>
               </List>
             </Collapse>
-            <ListItem button className={classes.nested}>
+            <ListItem
+              button
+              className={classes.nested}
+              onClick={() => {
+                userContext.logout()
+              }}
+            >
               <ListItemText primary="Se déconnecter" />
             </ListItem>
           </List>
@@ -104,7 +112,7 @@ export const UserButton = props => {
     )
   } else {
     return (
-      <Link href="/login" as={'/login'} passHref>
+      <Link href={{ pathname: '/login', query: { ref: router.asPath } }} passHref>
         <Button color="secondary" variant="contained" className={[classes.userButton, classes.UserButtonLog].join(' ')}>
           Se connecter
         </Button>

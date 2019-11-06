@@ -42,6 +42,7 @@ const LogIn = () => {
   const { userContext } = useContext(UserContext)
 
   const [snackBarMessage, setSnackBarMessage] = useState(false)
+  console.log('TCL: LogIn -> Router', Router)
 
   return (
     <Container component="main" maxWidth="sm" className={classes.container}>
@@ -53,17 +54,17 @@ const LogIn = () => {
           initialValues={{ email: '', password: '' }}
           validationSchema={LogInSchema}
           onSubmit={async values => {
-            userContext.login(values)
-            // try {
-
-            //   if (response.status === 200 && response.data.token) {
-            //     Router.replace('/')
-            //   } else {
-            //     setSnackBarMessage('Une erreur est survenue')
-            //   }
-            // } catch (e) {
-            //   setSnackBarMessage('Combinaison d‘email et mot de passe incorrect')
-            // }
+            try {
+              const response = await userContext.login(values)
+              if (response.status === 200 && response.data.token) {
+                const route = Router.query.ref || '/'
+                Router.replace(route)
+              } else {
+                setSnackBarMessage('Une erreur est survenue')
+              }
+            } catch (e) {
+              setSnackBarMessage('Combinaison d‘email et mot de passe incorrect')
+            }
           }}
         >
           {({ values, errors, touched, handleChange }) => (

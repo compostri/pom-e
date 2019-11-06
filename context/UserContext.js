@@ -20,8 +20,10 @@ class UserProvider extends Component {
           cookie.set('refresh_token', res.data.refresh_token, { expires: 1 })
           this.populateUser()
         }
+        return res
       },
       logout: () => {
+        this.setState({ token: null, user: {} })
         cookie.remove('token')
         cookie.remove('refresh_token')
       },
