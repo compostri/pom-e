@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from 'react'
 import { makeStyles } from '@material-ui/styles'
-import palette from '../variables'
+import palette from '~/variables'
 import { Paper, Typography, IconButton, Modal, FormControl, Select, MenuItem, InputLabel, Button } from '@material-ui/core'
 import { Add, Clear, TrendingUp } from '@material-ui/icons'
 import dayjs from 'dayjs'

@@ -1,5 +1,5 @@
 import React, { createContext, Component } from 'react'
-import api from '../utils/api'
+import api from '~/utils/api'
 import cookie from 'js-cookie'
 import { getUserInfosFromToken, isValid } from '../utils/auth'
 

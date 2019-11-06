@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { TextField, List, ListItem, Popper, makeStyles, IconButton } from '@material-ui/core'
-import api from '../utils/api'
+import api from '~/utils/api'
 import Link from 'next/link'
 
 const useStyles = makeStyles(theme => ({
