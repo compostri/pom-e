@@ -1,10 +1,10 @@
 import React from 'react'
-import api from '../../../utils/api'
-import Header from '../../../components/ComposterHeader'
+import api from '~/utils/api'
+import Header from '~/components/ComposterHeader'
 import { Line } from 'react-chartjs-2'
 import { makeStyles, Typography } from '@material-ui/core'
 import { Paper } from '@material-ui/core'
-import palette from '../../../variables'
+import palette from '~/variables'
 
 const useStyles = makeStyles(theme => ({
   statContainer: {
@@ -22,14 +22,14 @@ const data = {
     {
       label: "Nombre d'utilisateurs",
       fill: false,
-      lineTension: 0.1, 
-      backgroundColor: 'rgb(245,245,245)', 
-      borderColor: palette.greenPrimary, 
+      lineTension: 0.1,
+      backgroundColor: 'rgb(245,245,245)',
+      borderColor: palette.greenPrimary,
       borderCapStyle: 'butt',
       borderDash: [],
       borderDashOffset: 0.0,
       borderJoinStyle: 'miter',
-      pointBorderColor: palette.greenPrimary, 
+      pointBorderColor: palette.greenPrimary,
       pointBackgroundColor: '#fff',
       pointBorderWidth: 4,
       pointHoverRadius: 5,
@@ -43,16 +43,16 @@ const data = {
     {
       label: 'Nombre de sceaux',
       fill: false,
-      lineTension: 0.1, 
-      backgroundColor: 'rgb(245,222,245)', 
-      borderColor: palette.orangePrimary, 
+      lineTension: 0.1,
+      backgroundColor: 'rgb(245,222,245)',
+      borderColor: palette.orangePrimary,
       borderCapStyle: 'butt',
       borderDash: [],
       borderDashOffset: 0.0,
       borderJoinStyle: 'miter',
-      pointBorderColor: palette.orangePrimary, 
+      pointBorderColor: palette.orangePrimary,
       pointBackgroundColor: '#fff',
-      pointBorderWidth: 4, 
+      pointBorderWidth: 4,
       pointHoverRadius: 5,
       pointHoverBackgroundColor: 'rgba(75,192,192,1)',
       pointHoverBorderColor: 'rgba(220,220,220,1)',

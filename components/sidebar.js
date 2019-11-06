@@ -21,7 +21,7 @@ import {
 import { makeStyles } from '@material-ui/styles'
 import { MenuOpen, Eco, Search } from '@material-ui/icons'
 
-import palette from '../variables'
+import palette from '~/variables'
 
 const useStyles = makeStyles(theme => ({
   sidebarContainer: {

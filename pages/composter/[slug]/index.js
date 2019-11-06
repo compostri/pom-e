@@ -1,11 +1,11 @@
 import React from 'react'
-import api from '../../../utils/api'
+import api from '~/utils/api'
 import { Paper, Typography, Button, List, ListItem, ListItemText, ListItemIcon, InputBase, InputLabel, FormControl } from '@material-ui/core'
 import { Room, Person, RadioButtonChecked, Lock, WatchLater } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
-import palette from '../../../variables'
-import Header from '../../../components/ComposterHeader'
-import MapField from '../../../components/MapField'
+import palette from '~/variables'
+import Header from '~/components/ComposterHeader'
+import MapField from '~/components/MapField'
 
 const useStyles = makeStyles(theme => ({
   sectionDetail: {

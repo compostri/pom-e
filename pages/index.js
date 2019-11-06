@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
-import Sidebar from '../components/sidebar'
+import Sidebar from '~/components/sidebar'
 
 import { Button, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 
 import ReactMapGL, { Popup, Source, Layer } from 'react-map-gl'
-import api from '../utils/api'
-import { UserButton } from '../components/UserButton'
+import api from '~/utils/api'
+import { UserButton } from '~/components/UserButton'
 
 const useStyles = makeStyles(theme => ({
   mapContainer: {

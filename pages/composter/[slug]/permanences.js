@@ -6,10 +6,10 @@ import { ChevronLeft, ChevronRight } from '@material-ui/icons'
 import dayjs from 'dayjs'
 import 'dayjs/locale/fr'
 
-import api from '../../../utils/api'
-import Header from '../../../components/ComposterHeader'
-import PermanenceCard from '../../../components/PermanenceCard'
-import palette from '../../../variables'
+import api from '~/utils/api'
+import Header from '~/components/ComposterHeader'
+import PermanenceCard from '~/components/PermanenceCard'
+import palette from '~/variables'
 
 dayjs.locale('fr')
 

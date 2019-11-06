@@ -3,10 +3,9 @@ import { Container, TextField, Paper, Typography, Button, Snackbar, SnackbarCont
 import Link from 'next/link'
 import Router from 'next/router'
 import { makeStyles } from '@material-ui/core/styles'
-import api from '../utils/api'
 import { Formik, Form, Field } from 'formik'
 import * as Yup from 'yup'
-import { UserContext } from '../context/UserContext'
+import { UserContext } from '~/context/UserContext'
 
 const LogInSchema = Yup.object().shape({
   email: Yup.string()

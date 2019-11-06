@@ -12,6 +12,7 @@
     "@material-ui/icons": "^4.5.1",
     "@material-ui/styles": "^4.5.0",
     "axios": "^0.19.0",
+    "babel-plugin-root-import": "^6.4.1",
     "chart.js": "^2.9.2",
     "dayjs": "^1.8.16",
     "dotenv-load": "^2.0.0",
