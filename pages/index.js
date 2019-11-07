@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const PopupContent = ({ composter }) => (
-  <Link href="/composter/[slug]" as={`/composter/${composter.id}`} passHref>
+  <Link href="/composter/[slug]" as={`/composter/${composter.slug}`} passHref>
     <Button>
       <Typography paragraph>{composter.name}</Typography>
     </Button>

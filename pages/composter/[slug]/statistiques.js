@@ -68,7 +68,7 @@ const ComposterStatistiques = ({ composter }) => {
   const classes = useStyles()
   return (
     <>
-      <Header title={composter.name} />
+      <Header composter={composter} />
       <Paper className={classes.statContainer}>
         {/*<Typography variant="p">Nombre d'utilisateurs et de sceaux par date</Typography>*/}
         <Line data={data} width={50} height={300} options={{ maintainAspectRatio: false }} />

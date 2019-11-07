@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
     bottom: 0,
     left: 0,
     width: '100%',
-    overflow: 'scroll'
+    overflow: 'auto'
   },
   sidebarHeader: {
     textAlign: 'center',

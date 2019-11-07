@@ -59,7 +59,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const Header = ({ title }) => {
+const Header = ({ composter }) => {
   const classes = useStyles()
 
   return (
@@ -78,15 +78,19 @@ const Header = ({ title }) => {
               </IconButton>
             </Link>
             <Typography variant="h1" className={classes.title}>
-              {title}
+              {composter.name}
             </Typography>
           </div>
           <div className={classes.toolbarLink}>
-            <Button className={classes.button}>Informations</Button>
-            <Link href="/composter/[slug]/permanences" as={`/composter/63/permanences`} passHref>
+            <Link href="/composter/[slug]" as={`/composter/${composter.slug}`} passHref>
+              <Button className={classes.button}>Informations</Button>
+            </Link>
+            <Link href="/composter/[slug]/permanences" as={`/composter/${composter.slug}/permanences`} passHref>
               <Button className={classes.button}>Permanences</Button>
             </Link>
-            <Button className={classes.button}>Stastiques</Button>
+            <Link href="/composter/[slug]/statistiques" as={`/composter/${composter.slug}/statistiques`} passHref>
+              <Button className={classes.button}>Stastiques</Button>
+            </Link>
             <Button className={classes.button}>Listes d'ouvreurs</Button>
             <Button className={classes.button}>Newsletter</Button>
           </div>

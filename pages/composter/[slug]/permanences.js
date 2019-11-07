@@ -106,7 +106,7 @@ const Content = ({ users, composter }) => {
 const ComposterPermanences = ({ composter, users }) => {
   return (
     <>
-      <Header title={composter.name} />
+      <Header composter={composter} />
       <Content composter={composter} users={users} />
     </>
   )

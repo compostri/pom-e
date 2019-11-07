@@ -167,7 +167,7 @@ const Content = ({ composter }) => {
 const ComposterDetail = ({ composter }) => {
   return (
     <>
-      <Header title={composter.name} />
+      <Header composter={composter} />
       <Content composter={composter} />
     </>
   )
