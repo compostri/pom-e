@@ -1,20 +1,21 @@
 import React from 'react'
-import { Paper, Typography, FormControl, InputLabel, InputBase, Button, Radio, FormControlLabel, TextField, Switch } from '@material-ui/core'
+import { Paper, Typography, Button, FormControlLabel, TextField, Switch } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
+import classNames from 'classnames'
 
 const useStyle = makeStyles(theme => ({
   sectionProfil: {
-    display: 'flex',
-    width: '800px',
-    height: '400px',
-    padding: (80, 50),
+    width: 800,
+    padding: theme.spacing(5),
     marginLeft: 370,
-    marginTop: 180
+    marginTop: 180,
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between'
   },
   buttonSubmit: {
-    right: 60,
-    top: 60,
-    width: '270px',
+    display: 'block',
+    margin: '20px auto 0',
     color: 'white'
   },
   newsletter: {
@@ -26,22 +27,23 @@ const useStyle = makeStyles(theme => ({
     left: 15,
     marginBottom: 15
   },
-  container: {
-    margin: theme.spacing(50)
+  info: {
+    flexDirection: 'row',
+    display: 'flex',
+    justifyContent: 'space-between'
   },
-  infoLeft: {
-    float: 'left',
-    width: '48%'
+
+  second: {
+    marginLeft: '2%',
+    marginRight: 'auto'
   },
-  infoRight: {
-    float: 'right',
-    width: '48%'
+  form: {
+    width: '100%'
   },
-  nom: {
-    marginBottom: 10
-  },
-  email: {
-    marginBottom: 10
+  input: {
+    width: '48%',
+    marginBottom: theme.spacing(2),
+    marginRight: '2%'
   }
 }))
 
@@ -51,17 +53,24 @@ const Profil = () => {
   return (
     <>
       <Paper className={classes.sectionProfil}>
-        <form>
+        <form className={classes.form}>
           <Typography className={classes.title}>Informations personnelles</Typography>
-          <div className={classes.infoLeft}>
-            <TextField className={classes.nom} fullWidth id="nom" label="NOM" defaultValue="Entrez votre nom ici" />
-            <TextField fullWidth id="prenom" label="PRÉNOM" defaultValue="Entrez votre prénom ici" />
+          <div className={classes.info}>
+            <TextField fullWidth className={classes.input} id="nom" label="NOM" defaultValue="Entrez votre nom ici" />
+            <TextField className={classNames(classes.input, classes.second)} fullWidth id="prenom" label="PRÉNOM" defaultValue="Entrez votre prénom ici" />
           </div>
 
-          <div className={classes.infoRight}>
-            <TextField className={classes.email} fullWidth id="email" label="E-MAIL" defaultValue="Entrez votre e-mail ici" />
+          <div className={classes.info}>
+            <TextField fullWidth className={classes.input} id="email" label="E-MAIL" defaultValue="Entrez votre e-mail ici" />
 
-            <TextField fullWidth id="mdp" label="MOT DE PASSE" type="password" defaultValue="Entrez votre mot de passe ici" />
+            <TextField
+              className={classNames(classes.input, classes.second)}
+              fullWidth
+              id="mdp"
+              label="MOT DE PASSE"
+              type="password"
+              defaultValue="Entrez votre mot de passe ici"
+            />
           </div>
           <FormControlLabel
             className={classes.newsletter}
