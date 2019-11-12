@@ -1,10 +1,12 @@
 import React from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { Typography, AppBar, Button, Toolbar, IconButton } from '@material-ui/core'
 import { ChevronLeft } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 import palette from '~/variables'
 import UserButton from './UserButton'
+import classnames from 'classnames'
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -56,11 +58,16 @@ const useStyles = makeStyles(theme => ({
       borderBottomColor: palette.greenPrimary,
       backgroundColor: 'white'
     }
+  },
+  activeButton: {
+    borderBottomColor: palette.greenPrimary,
+    backgroundColor: 'white'
   }
 }))
 
 const Header = ({ composter }) => {
   const classes = useStyles()
+  const router = useRouter()
 
   return (
     <AppBar className={classes.appBar} position="static" elevation={1}>
@@ -83,13 +90,17 @@ const Header = ({ composter }) => {
           </div>
           <div className={classes.toolbarLink}>
             <Link href="/composter/[slug]" as={`/composter/${composter.slug}`} passHref>
-              <Button className={classes.button}>Informations</Button>
+              <Button className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]' })}>Informations</Button>
             </Link>
             <Link href="/composter/[slug]/permanences" as={`/composter/${composter.slug}/permanences`} passHref>
-              <Button className={classes.button}>Permanences</Button>
+              <Button className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/permanences' })}>
+                Permanences
+              </Button>
             </Link>
             <Link href="/composter/[slug]/statistiques" as={`/composter/${composter.slug}/statistiques`} passHref>
-              <Button className={classes.button}>Stastiques</Button>
+              <Button className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/statistiques' })}>
+                Stastiques
+              </Button>
             </Link>
             <Button className={classes.button}>Listes d'ouvreurs</Button>
             <Button className={classes.button}>Newsletter</Button>
