@@ -4,15 +4,14 @@ import { Paper, Typography, Button, List, ListItem, ListItemText, ListItemIcon, 
 import { Room, Person, RadioButtonChecked, Lock, WatchLater } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 import palette from '~/variables'
-import Header from '~/components/ComposterHeader'
+import ComposterContainer from '~/components/ComposterContainer'
 import MapField from '~/components/MapField'
 
 const useStyles = makeStyles(theme => ({
   sectionDetail: {
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    padding: theme.spacing(2, 5, 2, 10)
+    justifyContent: 'space-between'
   },
   info: {
     display: 'flex',
@@ -47,8 +46,7 @@ const useStyles = makeStyles(theme => ({
     margin: '0'
   },
   contactezNous: {
-    padding: theme.spacing(2, 2, 2, 2),
-    marginBottom: theme.spacing(2)
+    padding: theme.spacing(2, 2, 2, 2)
   },
   submit: {
     color: 'white',
@@ -61,6 +59,11 @@ const useStyles = makeStyles(theme => ({
   },
   input: {
     marginTop: theme.spacing(2)
+  },
+  map: {
+    marginLeft: theme.spacing(2),
+    flexGrow: 1,
+    overflow: 'hidden'
   }
 }))
 
@@ -166,10 +169,9 @@ const Content = ({ composter }) => {
 
 const ComposterDetail = ({ composter }) => {
   return (
-    <>
-      <Header composter={composter} />
+    <ComposterContainer composter={composter}>
       <Content composter={composter} />
-    </>
+    </ComposterContainer>
   )
 }
 

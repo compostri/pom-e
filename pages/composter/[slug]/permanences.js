@@ -7,16 +7,13 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/fr'
 
 import api from '~/utils/api'
-import Header from '~/components/ComposterHeader'
+import ComposterContainer from '~/components/ComposterContainer'
 import PermanenceCard from '~/components/PermanenceCard'
 import palette from '~/variables'
 
 dayjs.locale('fr')
 
 const useStyles = makeStyles(theme => ({
-  sectionPermanences: {
-    padding: theme.spacing(2, 5, 2, 10)
-  },
   mois: {
     color: palette.greyDark,
     fontSize: 20,
@@ -65,12 +62,12 @@ const permanences = [
   }
 ]
 
-const Content = ({ users, composter }) => {
+const ComposterPermanences = ({ composter, users }) => {
   const classes = useStyles()
   const perm = permanences.map((p, index) => <PermanenceCard permanence={p} users={users} key={`perm-${index}-${p.date}`} />)
 
   return (
-    <>
+    <ComposterContainer composter={composter}>
       <div className={classes.sectionPermanences}>
         <Typography variant="h1">
           <p className={classes.mois}>{dayjs().format('MMMM YYYY')}</p>
@@ -99,16 +96,7 @@ const Content = ({ users, composter }) => {
           </Link>
         </div>
       </div>
-    </>
-  )
-}
-
-const ComposterPermanences = ({ composter, users }) => {
-  return (
-    <>
-      <Header composter={composter} />
-      <Content composter={composter} users={users} />
-    </>
+    </ComposterContainer>
   )
 }
 
