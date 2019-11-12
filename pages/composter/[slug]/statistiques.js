@@ -1,21 +1,17 @@
 import React from 'react'
-import api from '~/utils/api'
-import Header from '~/components/ComposterHeader'
 import { Line } from 'react-chartjs-2'
-import { makeStyles, Typography } from '@material-ui/core'
-import { Paper } from '@material-ui/core'
+import { makeStyles } from '@material-ui/styles'
+import { Paper, Typography } from '@material-ui/core'
+
+import api from '~/utils/api'
 import palette from '~/variables'
+import ComposterContainer from '~/components/ComposterContainer'
 
 const useStyles = makeStyles(theme => ({
-  statContainer: {
-    position: 'relative',
-    top: 100,
-    marginLeft: '40px',
-    marginRight: '40px',
-    padding: theme.spacing(10, 7, 2, 7)
+  graphContainer: {
+    padding: theme.spacing(2)
   }
 }))
-
 const data = {
   labels: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
   datasets: [
@@ -66,14 +62,14 @@ const data = {
 
 const ComposterStatistiques = ({ composter }) => {
   const classes = useStyles()
+
   return (
-    <>
-      <Header composter={composter} />
-      <Paper className={classes.statContainer}>
-        {/*<Typography variant="p">Nombre d'utilisateurs et de sceaux par date</Typography>*/}
+    <ComposterContainer composter={composter}>
+      <Paper className={classes.graphContainer}>
+        <Typography paragraph>Nombre d'utilisateurs et de sceaux par date</Typography>
         <Line data={data} width={50} height={300} options={{ maintainAspectRatio: false }} />
       </Paper>
-    </>
+    </ComposterContainer>
   )
 }
 
