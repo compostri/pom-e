@@ -17,17 +17,8 @@ const useStyles = makeStyles(theme => ({
     flexWrap: 'wrap'
   },
   btnAdd: {
-    padding: theme.spacing(1, 3, 1, 3),
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '700',
-    letterSpacing: 1,
-    backgroundColor: palette.orangePrimary,
     margin: '0 auto',
-    display: 'block',
-    '&:hover': {
-      backgroundColor: palette.orangeOpacity
-    }
+    display: 'block'
   },
   btnNew: {
     marginTop: theme.spacing(4)
@@ -148,7 +139,7 @@ const Content = ({ users, composter }) => {
   return (
     <>
       <div className={classes.listingOuvreurs}>{ouvr}</div>
-      <Button className={classes.btnAdd} onClick={handleOpen}>
+      <Button variant="contained" color="secondary" className={classes.btnAdd} onClick={handleOpen}>
         Ajouter un nouvel ouvreur
       </Button>
       <Modal BackdropProps={{ style: { background: '#faf9f8' } }} className={classes.modal} open={openModal} onClose={handleClose}>
@@ -192,7 +183,7 @@ const Content = ({ users, composter }) => {
               <TextField fullWidth id="pseudo" label="Pseudo" placeholder="Entrez le pseudo ici" />
               <TextField className={classes.second} fullWidth id="mail" label="E-mail" placeholder="Entrez l'e-mail ici" />
             </div>
-            <Button onClick={handleSubmit} className={[classes.btnAdd, classes.btnNew].join(' ')}>
+            <Button variant="contained" onClick={handleSubmit} color="secondary" className={[classes.btnAdd, classes.btnNew].join(' ')}>
               Créer un compte pour ce composteur
             </Button>
             <Typography className={classes.smallTxt}>Attention ! L’ouvreur devra accepté l’invitation via mail avant d’être actif.</Typography>
@@ -215,7 +206,7 @@ const Content = ({ users, composter }) => {
               <Typography>arnaudban@matierenoire.io</Typography>
             </div>
 
-            <Button onClick={handleSubmit} className={[classes.btnAdd, classes.btnNew].join(' ')}>
+            <Button variant="contained" color="secondary" onClick={handleSubmit} className={[classes.btnAdd, classes.btnNew].join(' ')}>
               Associer ce compte à ce composteur
             </Button>
             <Typography className={classes.smallTxt}>Attention ! L’ouvreur devra accepté l’invitation via mail avant d’être actif.</Typography>
