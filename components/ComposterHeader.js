@@ -102,7 +102,12 @@ const Header = ({ composter }) => {
                 Stastiques
               </Button>
             </Link>
-            <Button className={classes.button}>Listes d'ouvreurs</Button>
+            <Link href="/composter/[slug]/ouvreurs" as={`/composter/${composter.slug}/ouvreurs`} passHref>
+              <Button className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/ouvreurs' })}>
+                Listes d'ouvreurs
+              </Button>
+            </Link>
+
             <Button className={classes.button}>Newsletter</Button>
           </div>
         </div>

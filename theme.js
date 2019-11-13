@@ -1,6 +1,8 @@
 import { createMuiTheme } from '@material-ui/core/styles'
 import palette from './variables'
 
+const defaultTheme = createMuiTheme({})
+
 const theme = createMuiTheme({
   palette: {
     primary: { main: palette.greenPrimary },
@@ -15,6 +17,13 @@ const theme = createMuiTheme({
     MuiBackdrop: {
       root: {
         backgroundColor: palette.orangePrimary
+      }
+    },
+    MuiTab: {
+      root: {
+        textTransform: 'none',
+        color: palette.greyMedium,
+        fontWeight: '700'
       }
     },
     MuiInput: {
@@ -64,11 +73,23 @@ const theme = createMuiTheme({
         }
       }
     },
+
     MuiInputLabel: {
       animated: {
         color: palette.greyLight,
         fontWeight: '700',
-        letterSpacing: 1
+        letterSpacing: 1,
+        textTransform: 'uppercase'
+      },
+      shrink: {
+        left: 0,
+        fontSize: 14,
+        color: palette.greyMedium
+      },
+      formControl: {
+        zIndex: 2,
+        left: 10,
+        fontSize: 12
       }
     },
     MuiButton: {
@@ -80,6 +101,10 @@ const theme = createMuiTheme({
         boxShadow: 'none',
         backgroundColor: palette.greyExtraLight,
         color: palette.greyMedium,
+        padding: defaultTheme.spacing(1, 3),
+        fontSize: '1rem',
+        fontWeight: '700',
+        letterSpacing: 1,
         '&:hover': {
           boxShadow: 'none',
           backgroundColor: palette.greenOpacity
