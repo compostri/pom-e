@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
   modalPaper: {
     padding: theme.spacing(6, 6, 6, 6),
     outline: 'none',
-    width: 840
+    maxWidth: 840
   },
   modalHeader: {
     display: 'flex',
