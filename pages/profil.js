@@ -41,7 +41,8 @@ const useStyle = makeStyles(theme => ({
   input: {
     width: '48%',
     marginBottom: theme.spacing(2),
-    marginRight: '2%'
+    marginRight: '2%',
+    fontSize: '1.1em'
   },
   appBar: {
     alignItems: 'baseline',
@@ -96,14 +97,49 @@ const Profil = () => {
         <TabPanel value={value} index={0}>
           <form className={classes.form}>
             <div className={classes.info}>
-              <TextField fullWidth className={classes.input} id="nom" label="NOM" defaultValue="Entrez votre nom ici" />
-              <TextField className={classNames(classes.input, classes.second)} fullWidth id="prenom" label="PRÉNOM" defaultValue="Entrez votre prénom ici" />
+              <TextField
+                InputLabelProps={{
+                  shrink: true
+                }}
+                fullWidth
+                className={classes.input}
+                id="nom"
+                label="Nom"
+                placeholder="Entrez votre nom ici"
+              />
+              <TextField
+                InputLabelProps={{
+                  shrink: true
+                }}
+                className={classNames(classes.input, classes.second)}
+                fullWidth
+                id="prenom"
+                label="Prénom"
+                placeholder="Entrez votre prénom ici"
+              />
             </div>
 
             <div className={classes.info}>
-              <TextField className={classes.input} id="email" label="E-MAIL" defaultValue="Entrez votre e-mail ici" />
+              <TextField
+                InputLabelProps={{
+                  shrink: true
+                }}
+                className={classes.input}
+                id="email"
+                label="E-mail"
+                placeholder="Entrez votre e-mail ici"
+              />
 
-              <TextField fullWidth className={classNames(classes.input, classes.second)} id="username" label="PSEUDO" defaultValue="Entrez votre pseudo ici" />
+              <TextField
+                InputLabelProps={{
+                  shrink: true
+                }}
+                fullWidth
+                className={classNames(classes.input, classes.second)}
+                id="username"
+                label="Pseudo"
+                placeholder="Entrez votre pseudo ici"
+              />
             </div>
             <FormControlLabel
               className={classes.newsletter}
@@ -137,7 +173,7 @@ const Profil = () => {
                 className={classNames(classes.input, classes.inputAncienMdp)}
                 id="lastMdp"
                 type="password"
-                label="ANCIEN MOT DE PASSE"
+                label="Ancien mot de passe"
                 placeholder="Entrez votre ancien mot de passe"
               />
             </div>
@@ -149,7 +185,7 @@ const Profil = () => {
                 className={classes.input}
                 id="newMdp"
                 type="password"
-                label="NOUVEAU MOT DE PASSE"
+                label="Nouveau mot de passe"
                 placeholder="Entrez votre nouveau mot de passe"
               />
               <TextField
@@ -161,7 +197,7 @@ const Profil = () => {
                 className={classNames(classes.inputConfirmMdp, classes.second, classes.input)}
                 id="confirmNewMdp"
                 type="password"
-                label="CONFIRMER MON MOT DE PASSE"
+                label="Confirmer mon mot de passe"
               />
             </div>
             <Button className={classes.buttonSubmit} type="submit" variant="contained" color="primary">
