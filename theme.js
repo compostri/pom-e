@@ -17,6 +17,13 @@ const theme = createMuiTheme({
         backgroundColor: palette.orangePrimary
       }
     },
+    MuiTab: {
+      root: {
+        textTransform: 'none',
+        color: palette.greyMedium,
+        fontWeight: '700'
+      }
+    },
     MuiInput: {
       underline: {
         borderBottomColor: palette.greyExtraLight,
@@ -64,11 +71,23 @@ const theme = createMuiTheme({
         }
       }
     },
+
     MuiInputLabel: {
       animated: {
         color: palette.greyLight,
         fontWeight: '700',
-        letterSpacing: 1
+        letterSpacing: 1,
+        textTransform: 'uppercase'
+      },
+      shrink: {
+        left: 0,
+        fontSize: 14,
+        color: palette.greyMedium
+      },
+      formControl: {
+        zIndex: 2,
+        left: 10,
+        fontSize: 12
       }
     },
     MuiButton: {
