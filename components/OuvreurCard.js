@@ -78,7 +78,7 @@ const useStyles = makeStyles(theme => ({
   },
   modalPaper: {
     height: 290,
-    width: 546,
+    minWidth: 546,
     padding: theme.spacing(6, 6, 6, 6),
     outline: 'none'
   },
