@@ -18,7 +18,7 @@ import {
   Fab
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import { MenuOpen, Eco, Search } from '@material-ui/icons'
+import { MenuOpen, Eco, Search, Brightness1 } from '@material-ui/icons'
 import classNames from 'classnames'
 import palette from '~/variables'
 
@@ -59,6 +59,7 @@ const useStyles = makeStyles(theme => ({
   formControl: {
     display: 'block'
   },
+
   formControlLabel: {
     display: 'block'
   },
