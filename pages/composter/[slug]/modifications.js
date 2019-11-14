@@ -1,7 +1,9 @@
 import React from 'react'
 import { Paper, InputLabel, FormControl, Select, MenuItem, Tabs, Tab, Button, IconButton, Box, Typography } from '@material-ui/core'
-import { Add, Remove } from '@material-ui/icons'
+import { Add, Remove, Delete, Clear } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
+import palette from '~/variables'
+import Link from 'next/link'
 import { DatePicker, TimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 import DaysJSUtils from '@date-io/dayjs'
 import { Formik, Form, Field, FieldArray } from 'formik'
@@ -14,16 +16,64 @@ import ComposterContainer from '~/components/ComposterContainer'
 
 dayjs.locale('fr')
 
-const useStyles = makeStyles(theme => ({}))
+const useStyles = makeStyles(theme => ({
+  tab: {
+    fontSize: 16,
+    padding: 0,
+    marginRight: theme.spacing(3),
+    minWidth: 'auto'
+  },
+  header: {
+    display: 'flex',
+    padding: 24
+  },
+  tabs: {
+    flexGrow: '1'
+  },
+  permForm: {
+    margin: theme.spacing(0, 2, 2, 0)
+  },
+  permDay: {
+    minWidth: 130
+  },
+  valider: {
+    display: 'block',
+    margin: '0 auto'
+  },
+  permBtnCreate: {
+    borderStyle: 'solid',
+    borderWidth: 2,
+    borderColor: palette.greenPrimary,
+    color: palette.greenPrimary,
+    weight: '700',
+    fontSize: 16,
+    padding: theme.spacing(1, 2, 1, 1),
+    margin: theme.spacing(1, 0, 2, 0),
+    '&:hover': {
+      backgroundColor: palette.greenOpacity
+    }
+  },
+  permBtnCreateIcon: {
+    marginRight: theme.spacing(1)
+  },
+  permBtnSuppr: {
+    color: palette.greenPrimary,
+    padding: theme.spacing(2.75, 0, 2.75, 0),
+    '&:hover': {
+      backgroundColor: palette.greenOpacity
+    }
+  }
+}))
 
 const RuleForm = ({ index }) => {
+  const classes = useStyles()
   return (
     <MuiPickersUtilsProvider utils={DaysJSUtils}>
-      <FormControl>
-        <InputLabel id="week-day-label">Jour de la semaine</InputLabel>
+      <FormControl className={classes.permForm}>
+        <InputLabel id="week-day-label">Jour </InputLabel>
         <Field name={`rules.${index}.day`}>
           {({ field, form, meta }) => (
-            <Select ampm={false} labelId="week-day-label" id="week-day" {...field}>
+            <Select className={classes.permDay} ampm={false} labelId="week-day-label" id="week-day" {...field}>
               <MenuItem value={RRule.MO}>Lundi</MenuItem>
               <MenuItem value={RRule.TU}>Mardi</MenuItem>
               <MenuItem value={RRule.WE}>Mercredi</MenuItem>
@@ -35,24 +85,44 @@ const RuleForm = ({ index }) => {
           )}
         </Field>
       </FormControl>
-      <FormControl>
+      <FormControl className={classes.permForm}>
         <Field name={`rules.${index}.timeStart`}>
           {({ field, form }) => (
             <TimePicker ampm={false} label="Heure d‘ouverture" variant="inline" autoOk {...field} onChange={value => form.setFieldValue(field.name, value)} />
           )}
         </Field>
       </FormControl>
-      <FormControl>
+      <FormControl className={classes.permForm}>
         <Field name={`rules.${index}.startDate`}>
           {({ field, form }) => (
-            <DatePicker ampm={false} label="Date de début" autoOk {...field} onChange={value => form.setFieldValue(field.name, value)} clearable />
+            <DatePicker
+              InputLabelProps={{
+                shrink: true
+              }}
+              ampm={false}
+              label="Date de début"
+              variant="inline"
+              autoOk
+              {...field}
+              onChange={value => form.setFieldValue(field.name, value)}
+            />
           )}
         </Field>
       </FormControl>
-      <FormControl>
+      <FormControl className={classes.permForm}>
         <Field name={`rules.${index}.endDate`}>
           {({ field, form }) => (
-            <DatePicker ampm={false} label="Date de fin" autoOk {...field} onChange={value => form.setFieldValue(field.name, value)} clearable />
+            <DatePicker
+              InputLabelProps={{
+                shrink: true
+              }}
+              ampm={false}
+              label="Date de fin"
+              variant="inline"
+              autoOk
+              {...field}
+              onChange={value => form.setFieldValue(field.name, value)}
+            />
           )}
         </Field>
       </FormControl>
@@ -78,8 +148,9 @@ const getRrulesFromObject = rObject => {
 }
 
 const getRulesFormFromString = RRuleSetString => {
-  const RRuleSet = rrulestr(RRuleSetString)
-  return RRuleSet.rrules().map(rrule => {
+  const rruleSet = rrulestr(RRuleSetString, { forceset: true })
+
+  return rruleSet.rrules().map(rrule => {
     return {
       day: rrule.origOptions.byweekday[0],
       timeStart: dayjs()
@@ -101,6 +172,7 @@ const defaultRule = {
 const PermanencesRules = props => {
   const { composter, ...otherProps } = props
   const initialRules = composter.permanencesRule ? getRulesFormFromString(composter.permanencesRule) : [defaultRule]
+  const classes = useStyles()
   return (
     <Box {...otherProps}>
       <Formik
@@ -118,18 +190,20 @@ const PermanencesRules = props => {
                 <div>
                   {values.rules &&
                     values.rules.map((rule, index) => (
-                      <div>
+                      <div key={`rule-${index}`}>
                         <RuleForm key={index} index={index} {...rule} />
-                        <Button type="button" onClick={() => remove(index)} startIcon={<Remove />}>
-                          Retirer la régle
+
+                        <Button type="button" onClick={() => remove(index)} className={classes.permBtnSuppr}>
+                          <Delete />
                         </Button>
                       </div>
                     ))}
-                  <Button type="button" onClick={() => push(defaultRule)} startIcon={<Add />}>
-                    Ajouter une régle
+                  <Button type="button" onClick={() => push(defaultRule)} className={classes.permBtnCreate}>
+                    <Add className={classes.permBtnCreateIcon} />
+                    Nouveau créneau
                   </Button>
-                  <Button type="submit" color="secondary" variant="contained">
-                    Submit
+                  <Button className={classes.valider} type="submit" color="secondary" variant="contained">
+                    Valider
                   </Button>
                 </div>
               )}
@@ -143,20 +217,43 @@ const PermanencesRules = props => {
 
 const ComposterEdit = ({ composter }) => {
   const [activeTab, setActiveTab] = React.useState('perm-composteur')
+  const classes = useStyles()
 
   return (
     <ComposterContainer composter={composter} maxWidth="md">
       <Paper>
-        <Tabs value={activeTab} onChange={event => setActiveTab(event.currentTarget.id)} aria-label="Gestion du composteur" variant="fullWidth">
-          <Tab
-            label="Informations sur le site de compost"
-            id="informations-composteur"
-            value="informations-composteur"
-            aria-controls="informations-composteur-content"
-          />
-          <Tab label="Formulaires de contact" id="contact-composteur" value="contact-composteur" aria-controls="contact-composteur-content" />
-          <Tab label="Permanences" id="perm-composteur" value="perm-composteur" aria-controls="perm-composteur-content" />
-        </Tabs>
+        <div className={classes.header}>
+          <Tabs
+            className={classes.tabs}
+            value={activeTab}
+            onChange={event => setActiveTab(event.currentTarget.id)}
+            aria-label="Gestion du composteur"
+            indicatorColor="primary"
+            textColor="primary"
+          >
+            <Tab
+              className={classes.tab}
+              label="Informations "
+              id="informations-composteur"
+              value="informations-composteur"
+              aria-controls="informations-composteur-content"
+            />
+            <Tab
+              className={classes.tab}
+              label="Formulaires de contact"
+              id="contact-composteur"
+              value="contact-composteur"
+              aria-controls="contact-composteur-content"
+            />
+            <Tab className={classes.tab} label="Permanences" id="perm-composteur" value="perm-composteur" aria-controls="perm-composteur-content" />
+          </Tabs>
+          <Link href="/composter/[slug]" as={`/composter/${composter.slug}`} passHref>
+            <IconButton>
+              <Clear />
+            </IconButton>
+          </Link>
+        </div>
+
         <Box
           p={3}
           role="tabpanel"
