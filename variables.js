@@ -10,7 +10,8 @@ const palette = {
   blue: '#7bced1',
   orange: '#e75c2e',
   brown: '#86594c',
-  grey: '#666666'
+  grey: '#666666',
+  brown: '#6c3727'
 }
 
 export default palette

@@ -18,7 +18,7 @@ import {
   Fab
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import { MenuOpen, Eco, Search, Brightness1 } from '@material-ui/icons'
+import { MenuOpen, Eco, Search } from '@material-ui/icons'
 import classNames from 'classnames'
 import palette from '~/variables'
 
@@ -61,7 +61,12 @@ const useStyles = makeStyles(theme => ({
   },
 
   formControlLabel: {
-    display: 'block'
+    display: 'block',
+    padding: 4,
+    marginBottom: 2,
+    color: palette.greyMedium,
+    fontSize: 14,
+    fontWeight: '700'
   },
   formSectionTitle: {
     textTransform: 'uppercase',
@@ -81,6 +86,35 @@ const useStyles = makeStyles(theme => ({
   iconButton: {
     left: 15,
     top: 20
+  },
+  categorie: {
+    display: 'flex'
+  },
+  categorieCheckbox: {
+    flexGrow: 1
+  },
+
+  markerCategorie: {
+    width: 20,
+    height: 20,
+    border: 'solid',
+    borderColor: 'white',
+    borderRadius: 50,
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(4),
+    boxShadow: '1px 2px 1px #e5E5E5'
+  },
+  markerBlue: {
+    backgroundColor: palette.blue
+  },
+  markerOrange: {
+    backgroundColor: palette.orangePrimary
+  },
+  markerBrown: {
+    backgroundColor: palette.brown
+  },
+  markerGreen: {
+    backgroundColor: palette.greenPrimary
   }
 }))
 
@@ -160,19 +194,29 @@ const Sidebar = ({
               <Typography paragraph className={classes.formSectionTitle}>
                 Catégorie
               </Typography>
-              {allCategories &&
-                allCategories.map(c => (
-                  <FormControlLabel
-                    control={
-                      <>
-                        <Checkbox checked={selectedCategories.includes(c.id)} onChange={() => toggleCategories(c.id)} value={c.id} />
-                      </>
-                    }
-                    label={c.name}
-                    className={classes.formControlLabel}
-                    key={`checkbox-cat-${c.id}`}
-                  />
-                ))}
+              <div className={classes.categorie}>
+                <div className={classes.categorieCheckbox}>
+                  {allCategories &&
+                    allCategories.map(c => (
+                      <FormControlLabel
+                        control={
+                          <>
+                            <Checkbox color="primary" checked={selectedCategories.includes(c.id)} onChange={() => toggleCategories(c.id)} value={c.id} />
+                          </>
+                        }
+                        label={c.name}
+                        className={classes.formControlLabel}
+                        key={`checkbox-cat-${c.id}`}
+                      />
+                    ))}
+                </div>
+                <div>
+                  <Typography className={classNames(classes.markerCategorie, classes.markerBlue)}> </Typography>
+                  <Typography className={classNames(classes.markerCategorie, classes.markerOrange)}> </Typography>
+                  <Typography className={classNames(classes.markerCategorie, classes.markerBrown)}> </Typography>
+                  <Typography className={classNames(classes.markerCategorie, classes.markerGreen)}> </Typography>
+                </div>
+              </div>
             </FormGroup>
           )}
           {open && (
