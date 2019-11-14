@@ -42,6 +42,7 @@ const Home = ({ allCommunes, allCategories }) => {
     bearing: 0,
     pitch: 0
   })
+
   const [selectedCommune, setSelectedCommune] = useState(allCommunes[0].id)
   const [selectedCategories, setSelectedCategories] = useState(allCategories.map(cat => cat.id))
   const [selectedStatus, setSelectedStatus] = useState(['Active'])
@@ -103,8 +104,10 @@ const Home = ({ allCommunes, allCategories }) => {
                   id: 'data',
                   type: 'circle',
                   paint: {
-                    'circle-radius': 8,
-                    'circle-color': 'rgba(55,148,179,1)'
+                    'circle-stroke-width': 3,
+                    'circle-radius': 7,
+                    'circle-color': ['match', ['get', 'categorie'], 1, '#7bced1', 2, '#e86034', 3, '#6c3727', 4, '#a3c538', '#7b7d75'],
+                    'circle-stroke-color': 'white'
                   },
                   filter: ['all', ['==', 'commune', selectedCommune], ['in', 'categorie', ...selectedCategories], ['in', 'status', ...selectedStatus]]
                 }}
