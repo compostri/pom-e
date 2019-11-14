@@ -1,8 +1,8 @@
 import React from 'react'
 import Link from 'next/link'
 import api from '~/utils/api'
-import { Paper, Typography, Button, List, ListItem, ListItemText, ListItemIcon, InputBase, InputLabel, FormControl } from '@material-ui/core'
-import { Room, Person, RadioButtonChecked, Lock, WatchLater } from '@material-ui/icons'
+import { Paper, Typography, Button, List, ListItem, ListItemText, ListItemIcon, InputBase, InputLabel, FormControl, Fab } from '@material-ui/core'
+import { Room, Person, RadioButtonChecked, Lock, WatchLater, Edit } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
@@ -19,6 +19,14 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2, 2, 2, 2),
     marginBottom: theme.spacing(2)
   },
+  infoTitle: {
+    display: 'flex',
+    justifyContent: 'space-between'
+  },
+  edit: {
+    marginBottom: theme.spacing(1)
+  },
+  editIcon: { width: 15 },
   infoRight: {
     marginLeft: theme.spacing(2)
   },
@@ -81,12 +89,16 @@ const Content = ({ composter }) => {
               <img src="https://via.placeholder.com/150" />
             </div>
             <div className={classes.infoRight}>
-              <Typography className={classes.titleSectionSecondary} variant="h2">
-                Informations sur le site de compostage
-              </Typography>
-              <Link href="/composter/[slug]/modifications" as={`/composter/${composter.slug}/modifications`} passHref>
-                <Button>Modifications</Button>
-              </Link>
+              <div className={classes.infoTitle}>
+                <Typography className={classes.titleSectionSecondary} variant="h2">
+                  Informations sur le site de compostage
+                </Typography>
+                <Link href="/composter/[slug]/modifications" as={`/composter/${composter.slug}/modifications`} passHref>
+                  <Fab size="small" color="secondary" aria-label="edit" className={classes.edit}>
+                    <Edit className={classes.editIcon} />
+                  </Fab>
+                </Link>
+              </div>
               <List className={classes.infoList}>
                 <ListItem className={classes.listItem}>
                   <ListItemIcon>

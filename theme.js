@@ -26,7 +26,55 @@ const theme = createMuiTheme({
         fontWeight: '700'
       }
     },
-
+    MuiPickersCalendarHeader: {
+      switchHeader: {
+        color: palette.greyMedium,
+        fontWeight: '700'
+      }
+    },
+    MuiPickersDay: {
+      day: {
+        color: palette.greyMedium
+      },
+      daySelected: {
+        color: 'white'
+      }
+    },
+    MuiPickersClock: {
+      clock: {
+        backgroundColor: palette.greyExtraLight
+      }
+    },
+    MuiPickersClockNumber: {
+      clockNumber: {
+        color: palette.greyMedium
+      },
+      clockNumberSelected: {
+        color: 'white'
+      }
+    },
+    MuiPickersToolbarText: {
+      toolbarTxt: {
+        color: 'white'
+      },
+      toolbarBtnSelected: {
+        color: 'white'
+      }
+    },
+    MuiFab: {
+      root: {
+        boxShadow: 'none'
+      },
+      sizeSmall: {
+        width: 35,
+        height: 25
+      },
+      secondary: {
+        '&:hover': {
+          backgroundColor: palette.orangeOpacity
+        }
+      }
+    },
     MuiInput: {
       underline: {
         borderBottomColor: palette.greyExtraLight,
