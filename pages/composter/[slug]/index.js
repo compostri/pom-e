@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import api from '~/utils/api'
 import { Paper, Typography, Button, List, ListItem, ListItemText, ListItemIcon, InputBase, InputLabel, FormControl } from '@material-ui/core'
 import { Room, Person, RadioButtonChecked, Lock, WatchLater } from '@material-ui/icons'
@@ -83,6 +84,9 @@ const Content = ({ composter }) => {
               <Typography className={classes.titleSectionSecondary} variant="h2">
                 Informations sur le site de compostage
               </Typography>
+              <Link href="/composter/[slug]/modifications" as={`/composter/${composter.slug}/modifications`} passHref>
+                <Button>Modifications</Button>
+              </Link>
               <List className={classes.infoList}>
                 <ListItem className={classes.listItem}>
                   <ListItemIcon>

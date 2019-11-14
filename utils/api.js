@@ -62,10 +62,12 @@ class MNApi {
   }
 
   // composters
-  getComposter = slug => this.get(`/composters/${slug}`)
-  getComposterGeojson = () => this.get('/composters.geojson')
-  getCommunes = () => this.get('/communes')
   getComposters = args => this.get('/composters', { params: args })
+  getComposter = slug => this.get(`/composters/${slug}`)
+  updateComposter = (slug, args) => this.put(`/composters/${slug}`, args)
+  getComposterGeojson = () => this.get('/composters.geojson')
+
+  getCommunes = () => this.get('/communes')
   getCategories = () => this.get('/categories')
 
   // User
