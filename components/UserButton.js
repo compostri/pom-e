@@ -76,9 +76,11 @@ const UserButton = props => {
 
         <Popper open={open} anchorEl={anchorRef.current} placement="bottom-end" transition disablePortal>
           <List component="nav">
-            <ListItem button className={classes.nested}>
-              <ListItemText primary="Mon Profil" />
-            </ListItem>
+            <Link href="/profil" passHref>
+              <ListItem button className={classes.nested}>
+                <ListItemText primary="Mon Profil" />
+              </ListItem>
+            </Link>
 
             <ListItem button className={classes.nested} onClick={handleClick}>
               <ListItemText primary="Mes composteurs" />
