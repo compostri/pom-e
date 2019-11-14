@@ -26,6 +26,7 @@ const theme = createMuiTheme({
         fontWeight: '700'
       }
     },
+
     MuiInput: {
       underline: {
         borderBottomColor: palette.greyExtraLight,
