@@ -1,10 +1,30 @@
 import React from 'react'
-import { Paper, InputLabel, FormControl, Select, MenuItem, Tabs, Tab, Button, IconButton, Box, Typography } from '@material-ui/core'
+import {
+  Paper,
+  InputLabel,
+  FormControl,
+  FormGroup,
+  Select,
+  MenuItem,
+  Tabs,
+  Tab,
+  Button,
+  IconButton,
+  Box,
+  Typography,
+  TextField,
+  Switch,
+  FormControlLabel,
+  Snackbar,
+  SnackbarContent
+} from '@material-ui/core'
 import { Add, Remove, Delete, Clear } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
+import Router from 'next/router'
 import palette from '~/variables'
 import Link from 'next/link'
 import { DatePicker, TimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
+import * as Yup from 'yup'
 import DaysJSUtils from '@date-io/dayjs'
 import { Formik, Form, Field, FieldArray } from 'formik'
 import dayjs from 'dayjs'
@@ -38,7 +58,10 @@ const useStyles = makeStyles(theme => ({
   },
   valider: {
     display: 'block',
-    margin: '0 auto'
+    margin: '0 auto',
+    '&:hover': {
+      backgroundColor: palette.orangeOpacity
+    }
   },
   permBtnCreate: {
     borderStyle: 'solid',
@@ -62,6 +85,11 @@ const useStyles = makeStyles(theme => ({
     '&:hover': {
       backgroundColor: palette.greenOpacity
     }
+  },
+  switchLabel: {
+    color: palette.greyMedium,
+    fontSize: 16,
+    margin: theme.spacing(1, 0, 2, 0)
   }
 }))
 
@@ -170,7 +198,7 @@ const defaultRule = {
 }
 
 const PermanencesRules = props => {
-  const { composter, ...otherProps } = props
+  const { composter, setSnackBarMessage, ...otherProps } = props
   const initialRules = composter.permanencesRule ? getRulesFormFromString(composter.permanencesRule) : [defaultRule]
   const classes = useStyles()
   return (
@@ -181,6 +209,11 @@ const PermanencesRules = props => {
           const rrulesSring = getRrulesFromObject(values.rules)
           const response = await api.updateComposter(composter.slug, { permanencesRule: rrulesSring })
           console.log(response)
+          if (response.status === 200) {
+            setSnackBarMessage('Votre modification a bien été prise en compte')
+          } else {
+            setSnackBarMessage('Une erreur est survenue')
+          }
         }}
       >
         {({ values }) => (
@@ -214,9 +247,70 @@ const PermanencesRules = props => {
     </Box>
   )
 }
+const LogInSchema = Yup.object().shape({
+  openingProcedures: Yup.string(),
+  acceptNewMembers: Yup.boolean()
+})
+
+const InformationsForm = props => {
+  const { composter, setSnackBarMessage, ...otherProps } = props
+  const classes = useStyles()
+
+  return (
+    <Box {...otherProps}>
+      <Formik
+        initialValues={{ openingProcedures: composter.openingProcedures, acceptNewMembers: composter.acceptNewMembers }}
+        validationSchema={LogInSchema}
+        onSubmit={async values => {
+          const response = await api.updateComposter(composter.slug, values)
+          if (response.status === 200) {
+            setSnackBarMessage('Votre modification a bien été prise en compte')
+          } else {
+            setSnackBarMessage('Une erreur est survenue')
+          }
+        }}
+      >
+        {({ values, handleChange, field }) => (
+          <Form className={classes.form}>
+            <Field
+              component={TextField}
+              margin="normal"
+              fullWidth
+              id="openingProcedures"
+              label="procédure d'ouverture"
+              name="openingProcedures"
+              value={values.openingProcedures}
+              onChange={handleChange}
+              type="openingProcedures"
+              autoComplete="openingProcedures"
+              autoFocus
+              autoOk
+              {...field}
+            />
+            <FormGroup>
+              <FormControlLabel
+                control={<Switch value={values.acceptNewMembers} onChange={handleChange} />}
+                label="Accepte de nouveaux adhérents"
+                id="acceptNewMembers"
+                name="acceptNewMembers"
+                type="acceptNewMembers"
+                className={classes.switchLabel}
+              />
+            </FormGroup>
+
+            <Button className={classes.valider} type="submit" variant="contained" color="secondary">
+              Enregistrer les modifications
+            </Button>
+          </Form>
+        )}
+      </Formik>
+    </Box>
+  )
+}
 
 const ComposterEdit = ({ composter }) => {
   const [activeTab, setActiveTab] = React.useState('perm-composteur')
+  const [snackBarMessage, setSnackBarMessage] = React.useState(false)
   const classes = useStyles()
 
   return (
@@ -254,15 +348,16 @@ const ComposterEdit = ({ composter }) => {
           </Link>
         </div>
 
-        <Box
+        <InformationsForm
           p={3}
           role="tabpanel"
           hidden={activeTab !== 'informations-composteur'}
           id="informations-composteur-content"
           aria-labelledby="informations-composteur"
-        >
-          <Typography paragraph>Informations du composteur</Typography>
-        </Box>
+          composter={composter}
+          setSnackBarMessage={setSnackBarMessage}
+        />
+
         <Box p={3} role="tabpanel" hidden={activeTab !== 'contact-composteur'} id="contact-composteur-content" aria-labelledby="contact-composteur">
           <Typography paragraph>Formulaire de contact</Typography>
         </Box>
@@ -273,7 +368,11 @@ const ComposterEdit = ({ composter }) => {
           id="perm-composteur-content"
           aria-labelledby="perm-composteur"
           composter={composter}
+          setSnackBarMessage={setSnackBarMessage}
         />
+        <Snackbar open={snackBarMessage} onClose={() => setSnackBarMessage(false)}>
+          <SnackbarContent variant="error" message={snackBarMessage} />
+        </Snackbar>
       </Paper>
     </ComposterContainer>
   )
