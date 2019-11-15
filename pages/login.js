@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Formik, Form, Field } from 'formik'
 import * as Yup from 'yup'
 import { UserContext } from '~/context/UserContext'
+import palette from '../variables'
 
 const LogInSchema = Yup.object().shape({
   email: Yup.string()
@@ -27,12 +28,24 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     padding: theme.spacing(4, 8)
   },
+  h1: {
+    color: palette.greyDark,
+    fontSize: 20,
+    fontWeight: '700'
+  },
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(2)
   },
   submit: {
-    margin: theme.spacing(3, 0, 1)
+    margin: theme.spacing(3, 0, 1),
+    fontStyle: 'inherit'
+  },
+  forgotMdp: {
+    color: palette.greyMedium,
+    fontSize: 14,
+    fontStyle: 'italic',
+    fontWeight: '400'
   }
 }))
 
@@ -46,7 +59,7 @@ const LogIn = () => {
   return (
     <Container component="main" maxWidth="sm" className={classes.container}>
       <Paper className={classes.paper}>
-        <Typography component="h1" variant="h5">
+        <Typography className={classes.h1} component="h1" variant="h5">
           Se connecter
         </Typography>
         <Formik
@@ -70,7 +83,6 @@ const LogIn = () => {
             <Form className={classes.form}>
               <Field
                 component={TextField}
-                variant="outlined"
                 margin="normal"
                 required
                 fullWidth
@@ -87,7 +99,6 @@ const LogIn = () => {
               />
               <Field
                 component={TextField}
-                variant="outlined"
                 margin="normal"
                 required
                 fullWidth
@@ -101,14 +112,14 @@ const LogIn = () => {
                 error={errors.password && touched.password}
                 helperText={errors.password && touched.password ? errors.password : undefined}
               />
-              <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+              <Button type="submit" fullWidth variant="contained" color="secondary" className={classes.submit}>
                 Connexion
               </Button>
             </Form>
           )}
         </Formik>
         <Link href="/" passHref>
-          <Button>Forgot password?</Button>
+          <Button className={classes.forgotMdp}>Mot de passe oublié ?</Button>
         </Link>
 
         <Snackbar open={snackBarMessage} onClose={() => setSnackBarMessage(false)}>
