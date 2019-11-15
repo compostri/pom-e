@@ -163,6 +163,11 @@ const theme = createMuiTheme({
           backgroundColor: palette.greenOpacity
         }
       },
+      containedSecondary: {
+        '&:hover': {
+          backgroundColor: palette.orangeOpacity
+        }
+      },
       containedPrimary: {
         backgroundColor: palette.orangePrimary
       }
