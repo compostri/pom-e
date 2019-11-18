@@ -7,7 +7,7 @@ const api = axios.create({
 })
 
 api.interceptors.request.use(
-  async _config => {
+  async (_config) => {
     //Add token in headers
     const _token = cookie.get('token')
     const refresh_token = cookie.get('refresh_token')
@@ -38,7 +38,7 @@ api.interceptors.request.use(
 
     return _config
   },
-  error => {
+  (error) => {
     return Promise.reject(error)
   }
 )
@@ -73,6 +73,7 @@ class MNApi {
   // User
   login = args => this.post('/login_check', args)
   getUsers = args => this.get('/users', { params: args })
+  updateUser = (id, args) => this.put(`/users/${id}`, args)
 }
 
 export default new MNApi()
