@@ -15,6 +15,9 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: palette.orangeOpacity
     }
   },
+  btnOpen: {
+    zIndex: '100'
+  },
   nested: {
     paddingLeft: theme.spacing(1),
     backgroundColor: palette.orangePrimary,
@@ -74,7 +77,7 @@ const UserButton = props => {
           Mon compte
         </Button>
 
-        <Popper open={open} anchorEl={anchorRef.current} placement="bottom-end" transition disablePortal>
+        <Popper className={classes.btnOpen} open={open} anchorEl={anchorRef.current} placement="bottom-end" transition disablePortal>
           <List component="nav">
             <Link href="/profil" passHref>
               <ListItem button className={classes.nested}>
@@ -88,18 +91,16 @@ const UserButton = props => {
             </ListItem>
             <Collapse in={openSubMenu} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
-                <ListItem button className={[classes.nested, classes.nestedSecondary].join(' ')}>
-                  <ListItemIcon className={classes.listIcon}>
-                    <Lens className={classes.lens} />
-                  </ListItemIcon>
-                  <ListItemText primary="Composteur 1" />
-                </ListItem>
-                <ListItem button className={[classes.nested, classes.nestedSecondary].join(' ')}>
-                  <ListItemIcon className={classes.listIcon}>
-                    <Lens className={classes.lens} />
-                  </ListItemIcon>
-                  <ListItemText primary="Composteur 2" />
-                </ListItem>
+                {userContext.user.composters.map(c => (
+                  <Link key={c.slug} href="/composter/[slug]" as={`/composter/${c.slug}`} passHref>
+                    <ListItem button className={[classes.nested, classes.nestedSecondary].join(' ')}>
+                      <ListItemIcon className={classes.listIcon}>
+                        <Lens className={classes.lens} />
+                      </ListItemIcon>
+                      <ListItemText value={c.name} primary={c.name} />
+                    </ListItem>
+                  </Link>
+                ))}
               </List>
             </Collapse>
             <ListItem
