@@ -66,7 +66,7 @@ const ComposterStatistiques = ({ composter }) => {
   return (
     <ComposterContainer composter={composter}>
       <Paper className={classes.graphContainer}>
-        <Typography paragraph>Nombre d'utilisateurs et de sceaux par date</Typography>
+        <Typography variant="h2">Nombre d'utilisateurs et de sceaux par date</Typography>
         <Line data={data} width={50} height={300} options={{ maintainAspectRatio: false }} />
       </Paper>
     </ComposterContainer>

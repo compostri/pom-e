@@ -9,6 +9,13 @@ const theme = createMuiTheme({
     secondary: { main: palette.orangePrimary }
   },
   overrides: {
+    MuiTypography: {
+      h2: {
+        color: palette.greyDark,
+        fontSize: 16,
+        fontWeight: '700'
+      }
+    },
     MuiSelect: {
       select: {
         backgroundColor: palette.greyExtraLight

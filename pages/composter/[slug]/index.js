@@ -31,9 +31,6 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(2)
   },
   titleSectionSecondary: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: palette.greyDark,
     paddingBottom: theme.spacing(2)
   },
   listItem: {
@@ -90,7 +87,7 @@ const Content = ({ composter }) => {
             </div>
             <div className={classes.infoRight}>
               <div className={classes.infoTitle}>
-                <Typography className={classes.titleSectionSecondary} variant="h2">
+                <Typography variant="h2" className={classes.titleSectionSecondary}>
                   Informations sur le site de compostage
                 </Typography>
                 <Link href="/composter/[slug]/modifications" as={`/composter/${composter.slug}/modifications`} passHref>
