@@ -63,8 +63,6 @@ const UserButton = props => {
     setOpenSubMenu(!openSubMenu)
   }
 
-  console.log(userContext.user.composters)
-
   if (userContext.isLoggedIn()) {
     return (
       <>
@@ -94,12 +92,12 @@ const UserButton = props => {
             <Collapse in={openSubMenu} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 {userContext.user.composters.map(c => (
-                  <Link href="/composter/[slug]" as={`/composter/${c.slug}`} passHref>
+                  <Link key={c.slug} href="/composter/[slug]" as={`/composter/${c.slug}`} passHref>
                     <ListItem button className={[classes.nested, classes.nestedSecondary].join(' ')}>
                       <ListItemIcon className={classes.listIcon}>
                         <Lens className={classes.lens} />
                       </ListItemIcon>
-                      <ListItemText key={c.name} value={c.name} primary={c.name} />
+                      <ListItemText value={c.name} primary={c.name} />
                     </ListItem>
                   </Link>
                 ))}
