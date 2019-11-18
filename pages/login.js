@@ -15,7 +15,7 @@ const LogInSchema = Yup.object().shape({
   password: Yup.string().required('Mot de passe requis')
 })
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -54,7 +54,6 @@ const LogIn = () => {
   const { userContext } = useContext(UserContext)
 
   const [snackBarMessage, setSnackBarMessage] = useState(false)
-  console.log('TCL: LogIn -> Router', Router)
 
   return (
     <Container component="main" maxWidth="sm" className={classes.container}>
@@ -65,7 +64,7 @@ const LogIn = () => {
         <Formik
           initialValues={{ email: '', password: '' }}
           validationSchema={LogInSchema}
-          onSubmit={async values => {
+          onSubmit={async (values) => {
             try {
               const response = await userContext.login(values)
               if (response.status === 200 && response.data.token) {
@@ -77,8 +76,7 @@ const LogIn = () => {
             } catch (e) {
               setSnackBarMessage('Combinaison d‘email et mot de passe incorrect')
             }
-          }}
-        >
+          }}>
           {({ values, errors, touched, handleChange }) => (
             <Form className={classes.form}>
               <Field
