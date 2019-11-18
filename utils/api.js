@@ -72,6 +72,7 @@ class MNApi {
 
   // User
   login = args => this.post('/login_check', args)
+  getUsers = args => this.get('/users', { params: args })
 }
 
 export default new MNApi()
