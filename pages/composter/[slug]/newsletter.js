@@ -70,11 +70,15 @@ const NewsletterSchema = Yup.object().shape({
 const ComposterNewsletter = ({ composter }) => {
   const classes = useStyles()
   const [users, setUsers] = useState([])
+  const [search, setSearch] = useState('')
 
-  useEffect(async () => {
-    const response = await api.getUsers()
-    setUsers(response.data['hydra:member'])
-  }, [])
+  useEffect(() => {
+    async function fetchData() {
+      const response = await api.getUsers({ email: search })
+      setUsers(response.data['hydra:member'])
+    }
+    fetchData()
+  }, [search])
 
   return (
     <ComposterContainer composter={composter}>
@@ -84,14 +88,20 @@ const ComposterNewsletter = ({ composter }) => {
             Liste des destinataires
           </Typography>
           <div className={classes.search}>
-            <InputBase className={classes.searchInput} placeholder="Rechercher un utilisateur" />
+            <InputBase
+              type="search"
+              className={classes.searchInput}
+              placeholder="Rechercher un utilisateur"
+              value={search}
+              onChange={event => setSearch(event.target.value)}
+            />
             <IconButton className={classes.searchBtn} type="submit" aria-label="search">
               <Search />
             </IconButton>
           </div>
           <div>
             {users.map(user => (
-              <Typography key={user.id} value={user.id} className={classes.searchResult}>
+              <Typography key={user['@id']} value={user['@id']} className={classes.searchResult}>
                 {user.email}
               </Typography>
             ))}
