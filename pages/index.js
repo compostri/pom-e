@@ -2,15 +2,19 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
 import Sidebar from '~/components/Sidebar'
+import DefaultImage from '~/components/DefaultImage'
+import { getComposterColor } from '~/utils/utils'
 
-import { Button, Typography } from '@material-ui/core'
+import { Button, Typography, Paper, List, ListItem, ListItemText, ListItemIcon, Box } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
+import { Room, Person, RadioButtonChecked } from '@material-ui/icons'
 
 import ReactMapGL, { Popup, Source, Layer } from 'react-map-gl'
 import api from '~/utils/api'
 import UserButton from '~/components/UserButton'
+import palette from '~/variables'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   mapContainer: {
     marginLeft: '0'
   },
@@ -19,16 +23,116 @@ const useStyles = makeStyles(theme => ({
     top: '40px',
     right: '40px',
     zIndex: 150
+  },
+  listItem: {
+    padding: 0
+  },
+  infoIcone: {
+    padding: 0,
+    margin: 0,
+    minWidth: 10
+  },
+  containerInfo: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 0,
+    backgroundColor: palette.greyExtraLight,
+    display: 'flex',
+    justifyContent: 'space-around',
+    marginLeft: '2%',
+    minWidth: 'max-content'
+  },
+  infosText: {
+    padding: 0,
+    margin: 0,
+    color: palette.greyDark
+  },
+  titre: {
+    fontSize: '1.3em',
+    color: 'grey',
+    fontWeight: 700,
+    justifySelf: 'center'
+  },
+  buttonTitre: {
+    alignSelf: 'center'
+  },
+  InfoImg: {
+    display: 'flex'
   }
 }))
 
-const PopupContent = ({ composter }) => (
-  <Link href="/composter/[slug]" as={`/composter/${composter.slug}`} passHref>
-    <Button>
-      <Typography paragraph>{composter.name}</Typography>
-    </Button>
-  </Link>
-)
+const PopupContent = ({ composter }) => {
+  const classes = useStyles()
+  const composterColor = getComposterColor(composter)
+
+  return (
+    <>
+      <Link href="/composter/[slug]" as={`/composter/${composter.slug}`} passHref>
+        <Button className={classes.buttonTitre}>
+          <Typography paragraph className={classes.titre}>
+            {composter.name}
+          </Typography>
+        </Button>
+      </Link>
+      <div className={classes.InfoImg}>
+        {composter.image ? (
+          <Box>
+            <img src={composter.image} alt="Composteur" id="imgComposter" />
+          </Box>
+        ) : (
+          <DefaultImage composter={composter} />
+        )}
+        <Paper className={classes.containerInfo}>
+          <List>
+            <div>
+              <ListItem className={classes.listItem}>
+                <ListItemIcon className={classes.infoIcone}>
+                  <Room style={{ color: composterColor }} />
+                </ListItemIcon>
+                <ListItemText>
+                  {' '}
+                  <Typography paragraph className={classes.infosText}>
+                    {composter.communeName}
+                  </Typography>
+                </ListItemText>
+              </ListItem>
+            </div>
+            <div>
+              <ListItem className={classes.listItem}>
+                <ListItemIcon className={classes.infoIcone}>
+                  <RadioButtonChecked style={{ color: composterColor }} />
+                </ListItemIcon>
+                <ListItemText>
+                  {' '}
+                  <Typography paragraph className={classes.infosText}>
+                    {composter.categorieName}
+                  </Typography>
+                </ListItemText>
+              </ListItem>
+            </div>
+            <div className={classes.InfoImg}>
+              <ListItem className={classes.listItem}>
+                <ListItemIcon className={classes.infoIcone}>
+                  <Person style={{ color: composterColor }} />
+                </ListItemIcon>
+                {composter.acceptNewMembers ? (
+                  <ListItemText className={classes.infosText}>
+                    {' '}
+                    <Typography> Accepte de nouveaux adhérents </Typography>
+                  </ListItemText>
+                ) : (
+                  <ListItemText className={classes.infosText}>
+                    <Typography> N'accepte pas de nouveaux adhérents </Typography>
+                  </ListItemText>
+                )}
+              </ListItem>
+            </div>
+          </List>
+        </Paper>
+      </div>
+    </>
+  )
+}
 
 const Home = ({ allCommunes, allCategories }) => {
   const classes = useStyles()
@@ -44,7 +148,7 @@ const Home = ({ allCommunes, allCategories }) => {
   })
 
   const [selectedCommune, setSelectedCommune] = useState(allCommunes[0].id)
-  const [selectedCategories, setSelectedCategories] = useState(allCategories.map(cat => cat.id))
+  const [selectedCategories, setSelectedCategories] = useState(allCategories.map((cat) => cat.id))
   const [selectedStatus, setSelectedStatus] = useState(['Active'])
   const [mapPopup, setMapPopup] = useState(false)
 
@@ -59,9 +163,9 @@ const Home = ({ allCommunes, allCategories }) => {
     }
   }
 
-  const onMapClick = event => {
+  const onMapClick = (event) => {
     const { features } = event
-    const composterCircleClicked = features && features.find(f => f.layer.id === 'data')
+    const composterCircleClicked = features && features.find((f) => f.layer.id === 'data')
 
     if (composterCircleClicked) {
       setMapPopup({
@@ -94,9 +198,8 @@ const Home = ({ allCommunes, allCategories }) => {
           {...mapViewport}
           mapStyle={process.env.NEXT_STATIC_MAP_BOX_STYLE}
           mapboxApiAccessToken={process.env.NEXT_STATIC_MAP_BOX_TOKEN}
-          onViewportChange={viewport => setMapViewport(viewport)}
-          onClick={onMapClick}
-        >
+          onViewportChange={(viewport) => setMapViewport(viewport)}
+          onClick={onMapClick}>
           {composters && (
             <Source type="geojson" data={composters}>
               <Layer
@@ -121,8 +224,7 @@ const Home = ({ allCommunes, allCategories }) => {
               closeButton={() => setMapPopup(false)}
               closeOnClick={false}
               onClose={() => setMapPopup(false)}
-              offsetTop={-8}
-            >
+              offsetTop={-8}>
               <PopupContent composter={mapPopup} />
             </Popup>
           )}
