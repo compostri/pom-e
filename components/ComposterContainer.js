@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/styles'
 import { Container } from '@material-ui/core'
 import classesname from 'classnames'
 import Header from '~/components/ComposterHeader'
+import AbilityProvider from '~/context/AbilityContext'
 
 const useStyles = makeStyles(theme => ({
   wrapper: {
@@ -28,10 +29,12 @@ const ComposterContainer = ({ composter, maxWidth = false, children }) => {
 
   return (
     <div className={classesname({ [classes.wrapper]: maxWidth })}>
-      <Header composter={composter} />
-      <Container maxWidth={maxWidth} className={classesname(classes.container, { [classes.containerCenter]: maxWidth })}>
-        {children}
-      </Container>
+      <AbilityProvider composterSlug={composter['@id']}>
+        <Header composter={composter} />
+        <Container maxWidth={maxWidth} className={classesname(classes.container, { [classes.containerCenter]: maxWidth })}>
+          {children}
+        </Container>
+      </AbilityProvider>
     </div>
   )
 }
