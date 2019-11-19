@@ -18,18 +18,18 @@ import {
   Snackbar,
   SnackbarContent
 } from '@material-ui/core'
-import { Add, Remove, Delete, Clear } from '@material-ui/icons'
+import { Add, Delete, Clear } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
-import Router from 'next/router'
 import palette from '~/variables'
 import Link from 'next/link'
 import { DatePicker, TimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
-import * as Yup from 'yup'
 import DaysJSUtils from '@date-io/dayjs'
 import { Formik, Form, Field, FieldArray } from 'formik'
 import dayjs from 'dayjs'
 import { RRule, RRuleSet, rrulestr } from 'rrule'
 import 'dayjs/locale/fr'
+import InformationsForm from '~/components/forms/composter/InformationsForm'
+import PermanencesRulesForm from '~/components/forms/composter/PermanencesRulesForm'
 
 import api from '~/utils/api'
 import ComposterContainer from '~/components/ComposterContainer'
@@ -93,223 +93,8 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const RuleForm = ({ index }) => {
-  const classes = useStyles()
-  return (
-    <MuiPickersUtilsProvider utils={DaysJSUtils}>
-      <FormControl className={classes.permForm}>
-        <InputLabel id="week-day-label">Jour </InputLabel>
-        <Field name={`rules.${index}.day`}>
-          {({ field, form, meta }) => (
-            <Select className={classes.permDay} ampm={false} labelId="week-day-label" id="week-day" {...field}>
-              <MenuItem value={RRule.MO}>Lundi</MenuItem>
-              <MenuItem value={RRule.TU}>Mardi</MenuItem>
-              <MenuItem value={RRule.WE}>Mercredi</MenuItem>
-              <MenuItem value={RRule.TH}>Jeudi</MenuItem>
-              <MenuItem value={RRule.FR}>Vendredi</MenuItem>
-              <MenuItem value={RRule.SA}>Samedi</MenuItem>
-              <MenuItem value={RRule.SU}>Dimanche</MenuItem>
-            </Select>
-          )}
-        </Field>
-      </FormControl>
-      <FormControl className={classes.permForm}>
-        <Field name={`rules.${index}.timeStart`}>
-          {({ field, form }) => (
-            <TimePicker ampm={false} label="Heure d‘ouverture" variant="inline" autoOk {...field} onChange={value => form.setFieldValue(field.name, value)} />
-          )}
-        </Field>
-      </FormControl>
-      <FormControl className={classes.permForm}>
-        <Field name={`rules.${index}.startDate`}>
-          {({ field, form }) => (
-            <DatePicker
-              InputLabelProps={{
-                shrink: true
-              }}
-              ampm={false}
-              label="Date de début"
-              variant="inline"
-              autoOk
-              {...field}
-              onChange={value => form.setFieldValue(field.name, value)}
-            />
-          )}
-        </Field>
-      </FormControl>
-      <FormControl className={classes.permForm}>
-        <Field name={`rules.${index}.endDate`}>
-          {({ field, form }) => (
-            <DatePicker
-              InputLabelProps={{
-                shrink: true
-              }}
-              ampm={false}
-              label="Date de fin"
-              variant="inline"
-              autoOk
-              {...field}
-              onChange={value => form.setFieldValue(field.name, value)}
-            />
-          )}
-        </Field>
-      </FormControl>
-    </MuiPickersUtilsProvider>
-  )
-}
-
-const getRrulesFromObject = rObject => {
-  const rruleSet = new RRuleSet()
-  rObject.map(rule =>
-    rruleSet.rrule(
-      new RRule({
-        freq: RRule.WEEKLY,
-        byweekday: rule.day,
-        byhour: rule.timeStart.hour(),
-        byminute: rule.timeStart.minute(),
-        dtstart: rule.startDate ? rule.startDate.toDate() : undefined,
-        until: rule.endDate ? rule.endDate.toDate() : undefined
-      })
-    )
-  )
-  return rruleSet.toString()
-}
-
-const getRulesFormFromString = RRuleSetString => {
-  const rruleSet = rrulestr(RRuleSetString, { forceset: true })
-
-  return rruleSet.rrules().map(rrule => {
-    return {
-      day: rrule.origOptions.byweekday[0],
-      timeStart: dayjs()
-        .hour(rrule.origOptions.byhour)
-        .minute(rrule.origOptions.byminute),
-      startDate: rrule.origOptions.dtstart ? dayjs(rrule.origOptions.dtstart) : null,
-      endDate: rrule.origOptions.until ? dayjs(rrule.origOptions.until) : null
-    }
-  })
-}
-
-const defaultRule = {
-  day: RRule.MO,
-  timeStart: dayjs(),
-  startDate: null,
-  endDate: null
-}
-
-const PermanencesRules = props => {
-  const { composter, setSnackBarMessage, ...otherProps } = props
-  const initialRules = composter.permanencesRule ? getRulesFormFromString(composter.permanencesRule) : [defaultRule]
-  const classes = useStyles()
-  return (
-    <Box {...otherProps}>
-      <Formik
-        initialValues={{ rules: initialRules }}
-        onSubmit={async values => {
-          const rrulesSring = getRrulesFromObject(values.rules)
-          const response = await api.updateComposter(composter.slug, { permanencesRule: rrulesSring })
-          console.log(response)
-          if (response.status === 200) {
-            setSnackBarMessage('Votre modification a bien été prise en compte')
-          } else {
-            setSnackBarMessage('Une erreur est survenue')
-          }
-        }}
-      >
-        {({ values }) => (
-          <Form>
-            <FieldArray name="rules">
-              {({ push, remove }) => (
-                <div>
-                  {values.rules &&
-                    values.rules.map((rule, index) => (
-                      <div key={`rule-${index}`}>
-                        <RuleForm key={index} index={index} {...rule} />
-
-                        <Button type="button" onClick={() => remove(index)} className={classes.permBtnSuppr}>
-                          <Delete />
-                        </Button>
-                      </div>
-                    ))}
-                  <Button type="button" onClick={() => push(defaultRule)} className={classes.permBtnCreate}>
-                    <Add className={classes.permBtnCreateIcon} />
-                    Nouveau créneau
-                  </Button>
-                  <Button className={classes.valider} type="submit" color="secondary" variant="contained">
-                    Valider
-                  </Button>
-                </div>
-              )}
-            </FieldArray>
-          </Form>
-        )}
-      </Formik>
-    </Box>
-  )
-}
-const LogInSchema = Yup.object().shape({
-  openingProcedures: Yup.string(),
-  acceptNewMembers: Yup.boolean()
-})
-
-const InformationsForm = props => {
-  const { composter, setSnackBarMessage, ...otherProps } = props
-  const classes = useStyles()
-
-  return (
-    <Box {...otherProps}>
-      <Formik
-        initialValues={{ openingProcedures: composter.openingProcedures, acceptNewMembers: composter.acceptNewMembers }}
-        validationSchema={LogInSchema}
-        onSubmit={async values => {
-          const response = await api.updateComposter(composter.slug, values)
-          if (response.status === 200) {
-            setSnackBarMessage('Votre modification a bien été prise en compte')
-          } else {
-            setSnackBarMessage('Une erreur est survenue')
-          }
-        }}
-      >
-        {({ values, handleChange, field }) => (
-          <Form className={classes.form}>
-            <Field
-              component={TextField}
-              margin="normal"
-              fullWidth
-              id="openingProcedures"
-              label="procédure d'ouverture"
-              name="openingProcedures"
-              value={values.openingProcedures}
-              onChange={handleChange}
-              type="openingProcedures"
-              autoComplete="openingProcedures"
-              autoFocus
-              autoOk
-              {...field}
-            />
-            <FormGroup>
-              <FormControlLabel
-                control={<Switch value={values.acceptNewMembers} onChange={handleChange} />}
-                label="Accepte de nouveaux adhérents"
-                id="acceptNewMembers"
-                name="acceptNewMembers"
-                type="acceptNewMembers"
-                className={classes.switchLabel}
-              />
-            </FormGroup>
-
-            <Button className={classes.valider} type="submit" variant="contained" color="secondary">
-              Enregistrer les modifications
-            </Button>
-          </Form>
-        )}
-      </Formik>
-    </Box>
-  )
-}
-
 const ComposterEdit = ({ composter }) => {
-  const [activeTab, setActiveTab] = React.useState('perm-composteur')
+  const [activeTab, setActiveTab] = React.useState('informations-composteur')
   const [snackBarMessage, setSnackBarMessage] = React.useState(false)
   const classes = useStyles()
 
@@ -361,7 +146,7 @@ const ComposterEdit = ({ composter }) => {
         <Box p={3} role="tabpanel" hidden={activeTab !== 'contact-composteur'} id="contact-composteur-content" aria-labelledby="contact-composteur">
           <Typography paragraph>Formulaire de contact</Typography>
         </Box>
-        <PermanencesRules
+        <PermanencesRulesForm
           p={3}
           role="tabpanel"
           hidden={activeTab !== 'perm-composteur'}
