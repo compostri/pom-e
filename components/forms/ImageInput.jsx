@@ -6,18 +6,6 @@ import { Add, Close } from '@material-ui/icons'
 import PropTypes from 'prop-types'
 import api from '~utils/api'
 
-ImageInput.propTypes = {
-  value: PropTypes.object,
-  name: PropTypes.string.isRequired,
-  multiple: PropTypes.bool,
-  label: PropTypes.string,
-  onUpdate: PropTypes.func.isRequired
-}
-
-ImageInput.defaultProps = {
-  label: 'Image'
-}
-
 const useStyles = makeStyles(theme => ({
   icon: {
     width: 15,
@@ -47,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function ImageInput({ value, name, multiple, label, onUpdate }) {
+export default function ImageInput({ value, name, label, onUpdate }) {
   const classes = useStyles()
   const [isLoading, setLoading] = useState()
 
@@ -76,9 +64,9 @@ export default function ImageInput({ value, name, multiple, label, onUpdate }) {
       value && (
         <Box>
           <Box boxShadow={1} className={classes.imgContainer}>
-            <img src={`${process.env.NEXT_STATIC_API_URL}/${value.contentUrl}`} className={classes.img} />
+            <img src={`${process.env.NEXT_STATIC_API_URL}/${value.contentUrl}`} alt="Composteur" className={classes.img} />
             <IconButton size="small" className={classes.imgClose} onClick={() => remove(value.id)}>
-              <Close></Close>
+              <Close />
             </IconButton>
           </Box>
         </Box>
@@ -111,8 +99,23 @@ export default function ImageInput({ value, name, multiple, label, onUpdate }) {
 
       <div>
         <input id={name} type="file" multiple={multiple} accept="image/*" style={{ display: 'none' }} onChange={upload} />
-        <label htmlFor={name}>{multiple ? displayUploadBtn() : !value || value.length === 0 ? displayUploadBtn() : null}</label>
+        <label htmlFor={name}>{!value && displayUploadBtn()}</label>
       </div>
     </>
   )
+}
+
+ImageInput.propTypes = {
+  value: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    contentUrl: PropTypes.string.isRequired
+  }),
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  onUpdate: PropTypes.func.isRequired
+}
+
+ImageInput.defaultProps = {
+  label: 'Image',
+  value: null
 }
