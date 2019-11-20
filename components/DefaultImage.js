@@ -2,9 +2,9 @@ import React from 'react'
 import { makeStyles } from '@material-ui/styles'
 import { Box } from '@material-ui/core'
 import theme from '../theme'
-import { getComposterColor } from '~/utils/utils'
+import getComposterColor from '~/utils/utils'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   imgDefaut: {
     display: 'flex',
     height: 110,

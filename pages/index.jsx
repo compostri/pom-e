@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
-import Sidebar from '~/components/Sidebar'
-import DefaultImage from '~/components/DefaultImage'
-import { getComposterColor } from '~/utils/utils'
-
 import { Button, Typography, Paper, List, ListItem, ListItemText, ListItemIcon, Box } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import { Room, Person, RadioButtonChecked } from '@material-ui/icons'
-
+import PropTypes from 'prop-types'
 import ReactMapGL, { Popup, Source, Layer } from 'react-map-gl'
+
+import composterType from '~/types'
+import Sidebar from '~/components/Sidebar'
+import DefaultImage from '~/components/DefaultImage'
+import getComposterColor from '~/utils/utils'
+
 import api from '~/utils/api'
 import UserButton from '~/components/UserButton'
 import palette from '~/variables'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   mapContainer: {
     marginLeft: '0'
   },
@@ -33,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 10
   },
   containerInfo: {
-    justifyContent: 'center',
     alignItems: 'center',
     padding: 0,
     backgroundColor: palette.greyExtraLight,
@@ -60,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex'
   }
 }))
-
+const propTypes = { composter: composterType.isRequired }
 const PopupContent = ({ composter }) => {
   const classes = useStyles()
   const composterColor = getComposterColor(composter)
@@ -134,6 +135,8 @@ const PopupContent = ({ composter }) => {
   )
 }
 
+PopupContent.propTypes = propTypes
+
 const Home = ({ allCommunes, allCategories }) => {
   const classes = useStyles()
   const [composters, setComposters] = useState(null)
@@ -148,7 +151,7 @@ const Home = ({ allCommunes, allCategories }) => {
   })
 
   const [selectedCommune, setSelectedCommune] = useState(allCommunes[0].id)
-  const [selectedCategories, setSelectedCategories] = useState(allCategories.map((cat) => cat.id))
+  const [selectedCategories, setSelectedCategories] = useState(allCategories.map(cat => cat.id))
   const [selectedStatus, setSelectedStatus] = useState(['Active'])
   const [mapPopup, setMapPopup] = useState(false)
 
@@ -163,9 +166,9 @@ const Home = ({ allCommunes, allCategories }) => {
     }
   }
 
-  const onMapClick = (event) => {
+  const onMapClick = event => {
     const { features } = event
-    const composterCircleClicked = features && features.find((f) => f.layer.id === 'data')
+    const composterCircleClicked = features && features.find(f => f.layer.id === 'data')
 
     if (composterCircleClicked) {
       setMapPopup({
@@ -198,8 +201,9 @@ const Home = ({ allCommunes, allCategories }) => {
           {...mapViewport}
           mapStyle={process.env.NEXT_STATIC_MAP_BOX_STYLE}
           mapboxApiAccessToken={process.env.NEXT_STATIC_MAP_BOX_TOKEN}
-          onViewportChange={(viewport) => setMapViewport(viewport)}
-          onClick={onMapClick}>
+          onViewportChange={viewport => setMapViewport(viewport)}
+          onClick={onMapClick}
+        >
           {composters && (
             <Source type="geojson" data={composters}>
               <Layer
@@ -224,7 +228,8 @@ const Home = ({ allCommunes, allCategories }) => {
               closeButton={() => setMapPopup(false)}
               closeOnClick={false}
               onClose={() => setMapPopup(false)}
-              offsetTop={-8}>
+              offsetTop={-8}
+            >
               <PopupContent composter={mapPopup} />
             </Popup>
           )}
