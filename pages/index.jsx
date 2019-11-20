@@ -43,11 +43,7 @@ const useStyles = makeStyles(() => ({
     marginLeft: '2%',
     minWidth: 'max-content'
   },
-  infosText: {
-    padding: 0,
-    margin: 0,
-    color: palette.greyDark
-  },
+
   titre: {
     fontSize: '1.3em',
     color: 'grey',
@@ -90,12 +86,7 @@ const PopupContent = ({ composter }) => {
                 <ListItemIcon className={classes.infoIcone}>
                   <Room style={{ color: composterColor }} />
                 </ListItemIcon>
-                <ListItemText>
-                  {' '}
-                  <Typography paragraph className={classes.infosText}>
-                    {composter.communeName}
-                  </Typography>
-                </ListItemText>
+                <ListItemText>{composter.communeName}</ListItemText>
               </ListItem>
             </div>
             <div>
@@ -103,12 +94,7 @@ const PopupContent = ({ composter }) => {
                 <ListItemIcon className={classes.infoIcone}>
                   <RadioButtonChecked style={{ color: composterColor }} />
                 </ListItemIcon>
-                <ListItemText>
-                  {' '}
-                  <Typography paragraph className={classes.infosText}>
-                    {composter.categorieName}
-                  </Typography>
-                </ListItemText>
+                <ListItemText>{composter.categorieName}</ListItemText>
               </ListItem>
             </div>
             <div className={classes.InfoImg}>
@@ -117,10 +103,7 @@ const PopupContent = ({ composter }) => {
                   <Person style={{ color: composterColor }} />
                 </ListItemIcon>
                 {composter.acceptNewMembers ? (
-                  <ListItemText className={classes.infosText}>
-                    {' '}
-                    <Typography> Accepte de nouveaux adhérents </Typography>
-                  </ListItemText>
+                  <ListItemText className={classes.infosText}>Accepte de nouveaux adhérents</ListItemText>
                 ) : (
                   <ListItemText className={classes.infosText}>
                     <Typography> N'accepte pas de nouveaux adhérents </Typography>
