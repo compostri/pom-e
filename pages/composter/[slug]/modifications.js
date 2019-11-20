@@ -33,6 +33,7 @@ import PermanencesRulesForm from '~/components/forms/composter/PermanencesRulesF
 
 import api from '~/utils/api'
 import ComposterContainer from '~/components/ComposterContainer'
+import ContactForm from '~/components/forms/composter/ContactForm'
 
 dayjs.locale('fr')
 
@@ -143,9 +144,16 @@ const ComposterEdit = ({ composter }) => {
           setSnackBarMessage={setSnackBarMessage}
         />
 
-        <Box p={3} role="tabpanel" hidden={activeTab !== 'contact-composteur'} id="contact-composteur-content" aria-labelledby="contact-composteur">
-          <Typography paragraph>Formulaire de contact</Typography>
-        </Box>
+        <ContactForm
+          p={3}
+          role="tabpanel"
+          hidden={activeTab !== 'contact-composteur'}
+          id="contact-composteur-content"
+          aria-labelledby="contact-composteur"
+          composter={composter}
+          setSnackBarMessage={setSnackBarMessage}
+        ></ContactForm>
+
         <PermanencesRulesForm
           p={3}
           role="tabpanel"

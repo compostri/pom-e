@@ -7,7 +7,7 @@ const api = axios.create({
 })
 
 api.interceptors.request.use(
-  async (_config) => {
+  async _config => {
     //Add token in headers
     const _token = cookie.get('token')
     const refresh_token = cookie.get('refresh_token')
@@ -38,7 +38,7 @@ api.interceptors.request.use(
 
     return _config
   },
-  (error) => {
+  error => {
     return Promise.reject(error)
   }
 )
@@ -69,6 +69,10 @@ class MNApi {
 
   getCommunes = () => this.get('/communes')
   getCategories = () => this.get('/categories')
+
+  // Media
+  uploadMedia = formData => this.post('/media_objects', formData)
+  removeMedia = id => this.delete(`/media_objects/${id}`)
 
   // User
   login = args => this.post('/login_check', args)
