@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
-import Sidebar from '~/components/Sidebar'
-
-import { Button, Typography } from '@material-ui/core'
+import { Button, Typography, Paper, List, ListItem, ListItemText, ListItemIcon, Box } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-
+import { Room, Person, RadioButtonChecked } from '@material-ui/icons'
+import PropTypes from 'prop-types'
 import ReactMapGL, { Popup, Source, Layer } from 'react-map-gl'
+
+import composterType from '~/types'
+import Sidebar from '~/components/Sidebar'
+import DefaultImage from '~/components/DefaultImage'
+import getComposterColor from '~/utils/utils'
+
 import api from '~/utils/api'
 import UserButton from '~/components/UserButton'
+import palette from '~/variables'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   mapContainer: {
     marginLeft: '0'
   },
@@ -19,16 +25,100 @@ const useStyles = makeStyles(theme => ({
     top: '40px',
     right: '40px',
     zIndex: 150
+  },
+  listItem: {
+    padding: 0
+  },
+  infoIcone: {
+    padding: 0,
+    margin: 0,
+    minWidth: 10
+  },
+  containerInfo: {
+    alignItems: 'center',
+    padding: 0,
+    backgroundColor: palette.greyExtraLight,
+    display: 'flex',
+    justifyContent: 'space-around',
+    marginLeft: '2%',
+    minWidth: 'max-content'
+  },
+
+  titre: {
+    fontSize: '1.3em',
+    color: 'grey',
+    fontWeight: 700,
+    justifySelf: 'center'
+  },
+  buttonTitre: {
+    alignSelf: 'center'
+  },
+  InfoImg: {
+    display: 'flex'
   }
 }))
+const propTypes = { composter: composterType.isRequired }
+const PopupContent = ({ composter }) => {
+  const classes = useStyles()
+  const composterColor = getComposterColor(composter)
 
-const PopupContent = ({ composter }) => (
-  <Link href="/composter/[slug]" as={`/composter/${composter.slug}`} passHref>
-    <Button>
-      <Typography paragraph>{composter.name}</Typography>
-    </Button>
-  </Link>
-)
+  return (
+    <>
+      <Link href="/composter/[slug]" as={`/composter/${composter.slug}`} passHref>
+        <Button className={classes.buttonTitre}>
+          <Typography paragraph className={classes.titre}>
+            {composter.name}
+          </Typography>
+        </Button>
+      </Link>
+      <div className={classes.InfoImg}>
+        {composter.image ? (
+          <Box>
+            <img src={composter.image} alt="Composteur" id="imgComposter" />
+          </Box>
+        ) : (
+          <DefaultImage composter={composter} />
+        )}
+        <Paper className={classes.containerInfo}>
+          <List>
+            <div>
+              <ListItem className={classes.listItem}>
+                <ListItemIcon className={classes.infoIcone}>
+                  <Room style={{ color: composterColor }} />
+                </ListItemIcon>
+                <ListItemText>{composter.communeName}</ListItemText>
+              </ListItem>
+            </div>
+            <div>
+              <ListItem className={classes.listItem}>
+                <ListItemIcon className={classes.infoIcone}>
+                  <RadioButtonChecked style={{ color: composterColor }} />
+                </ListItemIcon>
+                <ListItemText>{composter.categorieName}</ListItemText>
+              </ListItem>
+            </div>
+            <div className={classes.InfoImg}>
+              <ListItem className={classes.listItem}>
+                <ListItemIcon className={classes.infoIcone}>
+                  <Person style={{ color: composterColor }} />
+                </ListItemIcon>
+                {composter.acceptNewMembers ? (
+                  <ListItemText className={classes.infosText}>Accepte de nouveaux adhérents</ListItemText>
+                ) : (
+                  <ListItemText className={classes.infosText}>
+                    <Typography> N'accepte pas de nouveaux adhérents </Typography>
+                  </ListItemText>
+                )}
+              </ListItem>
+            </div>
+          </List>
+        </Paper>
+      </div>
+    </>
+  )
+}
+
+PopupContent.propTypes = propTypes
 
 const Home = ({ allCommunes, allCategories }) => {
   const classes = useStyles()
