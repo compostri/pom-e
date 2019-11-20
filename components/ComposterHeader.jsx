@@ -74,49 +74,49 @@ const Header = ({ composter: { slug, name, permanencesRule } }) => {
   const { COMPOSTER_PERMANENCES, COMPOSTER_LISTES_OUVREURS, COMPOSTER_NEWLETTERS } = Subject
 
   return (
-    <AppBar className={classes.appBar} position='static' elevation={1}>
+    <AppBar className={classes.appBar} position="static" elevation={1}>
       <Toolbar className={classes.toolbarGlobal} disableGutters>
-        <Link href='/' passHref>
+        <Link href="/" passHref>
           <IconButton className={classes.logo}>
-            <img className={classes.logoSvg} src='/static/logo2.svg' />
+            <img className={classes.logoSvg} src="/static/logo2.svg" alt="Logo compostri" />
           </IconButton>
         </Link>
         <div className={classes.toolbarLeft}>
           <div className={classes.toolbarTitle}>
-            <Link href='/' passHref>
+            <Link href="/" passHref>
               <IconButton className={classes.chevronLeft}>
                 <ChevronLeft />
               </IconButton>
             </Link>
-            <Typography variant='h1' className={classes.title}>
+            <Typography variant="h1" className={classes.title}>
               {name}
             </Typography>
           </div>
           <div className={classes.toolbarLink}>
-            <Link href='/composter/[slug]' as={`/composter/${slug}`} passHref>
+            <Link href="/composter/[slug]" as={`/composter/${slug}`} passHref>
               <Button className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]' })}>Informations</Button>
             </Link>
             <Can I={READ} this={{ $type: COMPOSTER_PERMANENCES, permanencesRule }}>
-              <Link href='/composter/[slug]/permanences' as={`/composter/${slug}/permanences`} passHref>
+              <Link href="/composter/[slug]/permanences" as={`/composter/${slug}/permanences`} passHref>
                 <Button className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/permanences' })}>
                   Permanences
                 </Button>
               </Link>
             </Can>
-            <Link href='/composter/[slug]/statistiques' as={`/composter/${slug}/statistiques`} passHref>
+            <Link href="/composter/[slug]/statistiques" as={`/composter/${slug}/statistiques`} passHref>
               <Button className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/statistiques' })}>
                 Stastiques
               </Button>
             </Link>
             <Can I={READ} this={COMPOSTER_LISTES_OUVREURS}>
-              <Link href='/composter/[slug]/ouvreurs' as={`/composter/${slug}/ouvreurs`} passHref>
+              <Link href="/composter/[slug]/ouvreurs" as={`/composter/${slug}/ouvreurs`} passHref>
                 <Button className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/ouvreurs' })}>
                   Listes d'ouvreurs
                 </Button>
               </Link>
             </Can>
             <Can I={READ} this={COMPOSTER_NEWLETTERS}>
-              <Link href='/composter/[slug]/newsletter' as={`/composter/${slug}/newsletter`} passHref>
+              <Link href="/composter/[slug]/newsletter" as={`/composter/${slug}/newsletter`} passHref>
                 <Button className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/newsletter' })}>
                   Newsletter
                 </Button>

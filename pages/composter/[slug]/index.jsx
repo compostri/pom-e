@@ -1,12 +1,20 @@
 import React from 'react'
 import Link from 'next/link'
-import api from '~/utils/api'
 import { Paper, Typography, Button, List, ListItem, ListItemText, ListItemIcon, InputBase, InputLabel, FormControl, Fab } from '@material-ui/core'
 import { Room, Person, RadioButtonChecked, Lock, WatchLater, Edit } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
+
+import composterType from '~/types'
+
+import { Can, Action, Subject } from '~/context/AbilityContext'
+
+import api from '~/utils/api'
 import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
 import MapField from '~/components/MapField'
+
+const { EDIT } = Action
+const { COMPOSTER_INFORMATION } = Subject
 
 const useStyles = makeStyles(theme => ({
   sectionDetail: {
@@ -83,18 +91,20 @@ const Content = ({ composter }) => {
           <Paper className={classes.info}>
             <div>
               {' '}
-              <img src="https://via.placeholder.com/150" />
+              <img src="https://via.placeholder.com/150" alt={composter.name} />
             </div>
             <div className={classes.infoRight}>
               <div className={classes.infoTitle}>
                 <Typography variant="h2" className={classes.titleSectionSecondary}>
                   Informations sur le site de compostage
                 </Typography>
-                <Link href="/composter/[slug]/modifications" as={`/composter/${composter.slug}/modifications`} passHref>
-                  <Fab size="small" color="secondary" aria-label="edit" className={classes.edit}>
-                    <Edit className={classes.editIcon} />
-                  </Fab>
-                </Link>
+                <Can I={EDIT} this={COMPOSTER_INFORMATION}>
+                  <Link href="/composter/[slug]/modifications" as={`/composter/${composter.slug}/modifications`} passHref>
+                    <Fab size="small" color="secondary" aria-label="edit" className={classes.edit}>
+                      <Edit className={classes.editIcon} />
+                    </Fab>
+                  </Link>
+                </Can>
               </div>
               <List className={classes.infoList}>
                 <ListItem className={classes.listItem}>
@@ -187,6 +197,11 @@ const ComposterDetail = ({ composter }) => {
     </ComposterContainer>
   )
 }
+
+const propTypes = { composter: composterType.isRequired }
+
+ComposterDetail.propTypes = propTypes
+Content.propTypes = propTypes
 
 ComposterDetail.getInitialProps = async ({ query }) => {
   const composter = await api.getComposter(query.slug)
