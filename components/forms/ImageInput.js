@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import api from '~utils/api'
 
 ImageInput.propTypes = {
-  value: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  value: PropTypes.object,
   name: PropTypes.string.isRequired,
   multiple: PropTypes.bool,
   label: PropTypes.string,
@@ -47,10 +47,6 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-/**
- * @todo Change value to accept both object or array
- */
-
 export default function ImageInput({ value, name, multiple, label, onUpdate }) {
   const classes = useStyles()
   const [isLoading, setLoading] = useState()
@@ -58,38 +54,36 @@ export default function ImageInput({ value, name, multiple, label, onUpdate }) {
   const upload = async e => {
     setLoading(true)
     let formData = new FormData()
-    formData.append('file', e.target.files[e.target.files.length - 1])
+    formData.append('file', e.target.files[0])
     const res = await api.uploadMedia(formData)
     if (res.status === 201) {
-      onUpdate([res.data])
+      onUpdate(res.data)
     }
     setLoading(false)
   }
 
-  const remove = async (id, index) => {
+  const remove = async id => {
     setLoading(true)
     const res = await api.removeMedia(id)
     if (res.status === 204) {
-      const newValues = [...value]
-      newValues.splice(index)
-      onUpdate(newValues)
+      onUpdate(null)
     }
     setLoading(false)
   }
 
   const renderPreview = () => {
-    if (value && value.length > 0) {
-      return value.map((img, index) => (
-        <Box key={`image-${index}`}>
-          <Box boxShadow={1} className={classes.imgContainer} key={`image-${index}`}>
-            <img src={`${process.env.NEXT_STATIC_API_URL}/${img.contentUrl}`} className={classes.img} />
-            <IconButton size="small" className={classes.imgClose} onClick={() => remove(img.id, index)}>
+    return (
+      value && (
+        <Box>
+          <Box boxShadow={1} className={classes.imgContainer}>
+            <img src={`${process.env.NEXT_STATIC_API_URL}/${value.contentUrl}`} className={classes.img} />
+            <IconButton size="small" className={classes.imgClose} onClick={() => remove(value.id)}>
               <Close></Close>
             </IconButton>
           </Box>
         </Box>
-      ))
-    }
+      )
+    )
   }
 
   const displayUploadBtn = () => {

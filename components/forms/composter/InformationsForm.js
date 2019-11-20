@@ -19,8 +19,8 @@ const InformationsForm = props => {
 
   const submit = async (values, { resetForm, setSubmitting }) => {
     const newValues = { ...values }
-    if (values.image && values.image.length > 0) {
-      newValues.image = values.image[0]['@id']
+    if (values.image) {
+      newValues.image = values.image['@id']
     } else {
       delete newValues.image
     }
@@ -41,7 +41,7 @@ const InformationsForm = props => {
         initialValues={{
           openingProcedures: composter.openingProcedures,
           acceptNewMembers: !!composter.acceptNewMembers,
-          image: composter.image ? [composter.image] : null
+          image: composter.image
         }}
         validationSchema={LogInSchema}
         onSubmit={submit}
