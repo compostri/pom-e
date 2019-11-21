@@ -5,6 +5,7 @@ import nextCookie from 'next-cookies'
 import { ThemeProvider } from '@material-ui/styles'
 import theme from '~/theme'
 import UserProvider from '~/context/UserContext'
+import ComposterProvider from '~/context/ComposterContext'
 
 class MyApp extends App {
   componentDidMount() {
@@ -20,8 +21,10 @@ class MyApp extends App {
     return (
       <ThemeProvider theme={theme}>
         <UserProvider token={token}>
-          <CssBaseline />
-          <Component {...pageProps} />
+          <ComposterProvider composter={pageProps.composter}>
+            <CssBaseline />
+            <Component {...pageProps} />
+          </ComposterProvider>
         </UserProvider>
       </ThemeProvider>
     )
