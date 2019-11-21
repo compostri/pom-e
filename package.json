@@ -32,6 +32,7 @@
     "react": "16.10.2",
     "react-chartjs-2": "^2.8.0",
     "react-dom": "16.10.2",
+    "react-images-upload": "^1.2.7",
     "react-map-gl": "^5.0.12",
     "rrule": "^2.6.2",
     "yup": "^0.27.0"
