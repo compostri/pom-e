@@ -9,15 +9,7 @@ import palette from '~/variables'
 const [Mon, Tus, Wed, Thu, Fry, Sat, Sun] = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
 const weekDaysNames = [Mon, Tus, Wed, Thu, Fry, Sat, Sun]
 
-const ordedDayInWeek = new Map([
-  [Mon, 1],
-  [Tus, 2],
-  [Wed, 3],
-  [Thu, 4],
-  [Fry, 5],
-  [Sat, 6],
-  [Sun, 7]
-])
+const sunDayInWeek = 7
 
 const useStyles = makeStyles(theme => ({
   calendar: {
@@ -61,13 +53,14 @@ const Calendar = memo(({ date }) => {
 
   const calendar = [...padding, ...daysInMonth].reduce(
     (calendarOfMonth, dayOfMonth) => {
-      const dayInWeek = ordedDayInWeek.size
+      const dayInWeek = weekDaysNames.length
       const currentWeekOfMonth = calendarOfMonth.length // week 1 | 2 | 3 | 4
       const row = currentWeekOfMonth - 1
 
       if (calendarOfMonth[row] && calendarOfMonth[row].length < dayInWeek) {
-        calendarOfMonth[row] = [...calendarOfMonth[row], dayOfMonth]
-        return calendarOfMonth
+        const calendarOfMonthref = calendarOfMonth
+        calendarOfMonthref[row] = [...calendarOfMonth[row], dayOfMonth]
+        return calendarOfMonthref
       }
       return [...calendarOfMonth, [dayOfMonth]]
     },
