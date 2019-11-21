@@ -41,7 +41,7 @@ export default function ImageInput({ value, name, label, onUpdate }) {
 
   const upload = async e => {
     setLoading(true)
-    let formData = new FormData()
+    const formData = new FormData()
     formData.append('file', e.target.files[0])
     const res = await api.uploadMedia(formData)
     if (res.status === 201) {
@@ -76,16 +76,10 @@ export default function ImageInput({ value, name, label, onUpdate }) {
 
   const displayUploadBtn = () => {
     return (
-      <Box mt={1}>
-        {isLoading ? (
-          <CircularProgress />
-        ) : (
-          <Button variant="outlined" color="primary" size="small" component="span">
-            <Add className={classes.icon} />
-            Ajouter un fichier
-          </Button>
-        )}
-      </Box>
+      <Button variant="outlined" color="primary" size="small" component="span">
+        <Add className={classes.icon} />
+        Ajouter un fichier
+      </Button>
     )
   }
 
@@ -95,11 +89,16 @@ export default function ImageInput({ value, name, label, onUpdate }) {
         {label}
       </InputLabel>
 
-      {renderPreview()}
+      {!isLoading && renderPreview()}
 
       <div>
         <input id={name} type="file" accept="image/*" style={{ display: 'none' }} onChange={upload} />
-        <label htmlFor={name}>{!value && displayUploadBtn()}</label>
+        <label htmlFor={name}>
+          <Box mt={1}>
+            {isLoading && <CircularProgress />}
+            {!value && !isLoading && displayUploadBtn()}
+          </Box>
+        </label>
       </div>
     </>
   )
