@@ -98,7 +98,7 @@ export default function ImageInput({ value, name, label, onUpdate }) {
       {renderPreview()}
 
       <div>
-        <input id={name} type="file" multiple={multiple} accept="image/*" style={{ display: 'none' }} onChange={upload} />
+        <input id={name} type="file" accept="image/*" style={{ display: 'none' }} onChange={upload} />
         <label htmlFor={name}>{!value && displayUploadBtn()}</label>
       </div>
     </>
