@@ -194,14 +194,8 @@ const Content = () => {
 }
 
 const ComposterDetail = ({ composter }) => {
-  const { composterContext } = useContext(ComposterContext)
-
-  useEffect(() => {
-    composterContext.setComposter(composter)
-  }, [])
-
   return (
-    <ComposterContainer>
+    <ComposterContainer composter={composter}>
       <Content />
     </ComposterContainer>
   )

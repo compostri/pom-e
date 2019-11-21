@@ -1,10 +1,10 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { makeStyles } from '@material-ui/styles'
 import { Container } from '@material-ui/core'
 import classesname from 'classnames'
 import Header from '~/components/ComposterHeader'
 import AbilityProvider from '~/context/AbilityContext'
-import { ComposterContext } from '~/context/ComposterContext'
+import ComposterProvider from '~/context/ComposterContext'
 
 const useStyles = makeStyles(theme => ({
   wrapper: {
@@ -25,23 +25,20 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const ComposterContainer = ({ maxWidth = false, children }) => {
+const ComposterContainer = ({ composter, maxWidth = false, children }) => {
   const classes = useStyles()
-  const {
-    composterContext: { composter }
-  } = useContext(ComposterContext)
-
-  if (!composter) return null
 
   return (
-    <div className={classesname({ [classes.wrapper]: maxWidth })}>
-      <AbilityProvider composterSlug={composter.slug}>
-        <Header />
-        <Container maxWidth={maxWidth} className={classesname(classes.container, { [classes.containerCenter]: maxWidth })}>
-          {children}
-        </Container>
-      </AbilityProvider>
-    </div>
+    <ComposterProvider composter={composter}>
+      <div className={classesname({ [classes.wrapper]: maxWidth })}>
+        <AbilityProvider composterSlug={composter.slug}>
+          <Header />
+          <Container maxWidth={maxWidth} className={classesname(classes.container, { [classes.containerCenter]: maxWidth })}>
+            {children}
+          </Container>
+        </AbilityProvider>
+      </div>
+    </ComposterProvider>
   )
 }
 

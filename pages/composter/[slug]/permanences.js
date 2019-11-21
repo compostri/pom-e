@@ -1,16 +1,13 @@
-import React, { useState, useRef, useContext, useEffect } from 'react'
-import { Typography, IconButton, Paper, TableRow, Table, TableCell, TableBody, TableHead, Button } from '@material-ui/core'
+import React, { useState } from 'react'
+import { Typography, Paper, TableRow, Table, TableCell, TableBody, TableHead, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import Link from 'next/link'
 import { ChevronLeft, ChevronRight } from '@material-ui/icons'
 import dayjs from 'dayjs'
 import 'dayjs/locale/fr'
 
 import api from '~/utils/api'
 import ComposterContainer from '~/components/ComposterContainer'
-import PermanenceCard from '~/components/PermanenceCard'
 import palette from '~/variables'
-import { ComposterContext } from '~/context/ComposterContext'
 
 dayjs.locale('fr')
 
@@ -86,11 +83,6 @@ const permanences = [
 
 const ComposterPermanences = ({ composter, users }) => {
   const classes = useStyles()
-  const { composterContext } = useContext(ComposterContext)
-
-  useEffect(() => {
-    composterContext.setComposter(composter)
-  }, [])
 
   const weekDaysNames = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
   const listWeekDaysNames = weekDaysNames.map(weekDayName => (

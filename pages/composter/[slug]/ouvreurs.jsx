@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState } from 'react'
 import { Typography, IconButton, Button, Modal, Tabs, Tab, Paper, TextField, Box, InputBase } from '@material-ui/core'
 import { Clear, Search } from '@material-ui/icons'
 
@@ -8,7 +8,6 @@ import api from '~/utils/api'
 import ComposterContainer from '~/components/ComposterContainer'
 import OuvreurCard from '~/components/OuvreurCard'
 import palette from '~/variables'
-import { ComposterContext } from '~/context/ComposterContext'
 
 const useStyles = makeStyles(theme => ({
   listingOuvreurs: {
@@ -119,13 +118,7 @@ const Content = ({ users, composter }) => {
   const ouvr = ouvreurs.map((o, index) => <OuvreurCard ouvreur={o} users={users} key={`ouvr-${index}-${o.name}-${o.mail}`} />)
   const [openModal, setOpenModal] = useState(false)
   const [activeTab, setActiveTab] = useState('creation-compte')
-  const { composterContext } = useContext(ComposterContext)
-
   const [value, setValue] = React.useState(0)
-
-  useEffect(() => {
-    composterContext.setComposter(composter)
-  }, [])
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
@@ -224,7 +217,7 @@ const Content = ({ users, composter }) => {
 
 const ComposterOuvreurs = ({ composter, users }) => {
   return (
-    <ComposterContainer>
+    <ComposterContainer composter={composter}>
       <Content users={users} />
     </ComposterContainer>
   )

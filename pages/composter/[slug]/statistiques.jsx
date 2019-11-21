@@ -63,14 +63,9 @@ const data = {
 
 const ComposterStatistiques = ({ composter }) => {
   const classes = useStyles()
-  const { composterContext } = useContext(ComposterContext)
-
-  useEffect(() => {
-    composterContext.setComposter(composter)
-  }, [])
 
   return (
-    <ComposterContainer>
+    <ComposterContainer composter={composter}>
       <Paper className={classes.graphContainer}>
         <Typography variant="h2">Nombre d'utilisateurs et de sceaux par date</Typography>
         <Line data={data} width={50} height={300} options={{ maintainAspectRatio: false }} />
