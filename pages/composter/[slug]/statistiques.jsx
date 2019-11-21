@@ -69,8 +69,6 @@ const ComposterStatistiques = ({ composter }) => {
     composterContext.setComposter(composter)
   }, [])
 
-  if (!composter) return null
-
   return (
     <ComposterContainer>
       <Paper className={classes.graphContainer}>

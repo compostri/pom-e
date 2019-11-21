@@ -108,13 +108,12 @@ const NewsletterSchema = Yup.object().shape({
   messageNewsletter: Yup.string()
 })
 
-const ComposterNewsletter = () => {
+const ComposterNewsletter = ({ composter }) => {
   const classes = useStyles()
   const [users, setUsers] = useState([])
   const [search, setSearch] = useState('')
   const [openModal, setOpenModal] = useState(false)
   const { composterContext } = useContext(ComposterContext)
-  const { composter } = composterContext
 
   useEffect(() => {
     composterContext.setComposter(composter)

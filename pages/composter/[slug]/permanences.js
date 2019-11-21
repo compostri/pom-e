@@ -84,18 +84,13 @@ const permanences = [
   }
 ]
 
-const ComposterPermanences = ({ users }) => {
+const ComposterPermanences = ({ composter, users }) => {
   const classes = useStyles()
   const { composterContext } = useContext(ComposterContext)
-  const { composter } = composterContext
-
-  const [value, setValue] = React.useState(0)
 
   useEffect(() => {
     composterContext.setComposter(composter)
   }, [])
-
-  if (!composter) return null
 
   const weekDaysNames = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
   const listWeekDaysNames = weekDaysNames.map(weekDayName => (

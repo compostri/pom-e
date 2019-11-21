@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import Link from 'next/link'
 import { Paper, Typography, Button, List, ListItem, ListItemText, ListItemIcon, InputBase, InputLabel, FormControl, Fab } from '@material-ui/core'
 import { Room, Person, RadioButtonChecked, Lock, WatchLater, Edit } from '@material-ui/icons'
@@ -194,6 +194,12 @@ const Content = () => {
 }
 
 const ComposterDetail = ({ composter }) => {
+  const { composterContext } = useContext(ComposterContext)
+
+  useEffect(() => {
+    composterContext.setComposter(composter)
+  }, [])
+
   return (
     <ComposterContainer>
       <Content />
@@ -204,7 +210,6 @@ const ComposterDetail = ({ composter }) => {
 const propTypes = { composter: composterType.isRequired }
 
 ComposterDetail.propTypes = propTypes
-Content.propTypes = propTypes
 
 ComposterDetail.getInitialProps = async ({ query }) => {
   const composter = await api.getComposter(query.slug)
