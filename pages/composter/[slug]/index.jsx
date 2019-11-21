@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/styles'
 
 import composterType from '~/types'
 
-import { Can, Action, Subject } from '~/context/AbilityContext'
+import { Can, Action, Subject } from '~context/AbilityContext'
 
 import api from '~/utils/api'
 import palette from '~/variables'

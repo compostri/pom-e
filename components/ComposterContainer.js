@@ -29,7 +29,7 @@ const ComposterContainer = ({ composter, maxWidth = false, children }) => {
 
   return (
     <div className={classesname({ [classes.wrapper]: maxWidth })}>
-      <AbilityProvider composterSlug={composter['@id']}>
+      <AbilityProvider composterSlug={composter.slug}>
         <Header composter={composter} />
         <Container maxWidth={maxWidth} className={classesname(classes.container, { [classes.containerCenter]: maxWidth })}>
           {children}
