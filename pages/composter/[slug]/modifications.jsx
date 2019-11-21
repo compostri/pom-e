@@ -1,37 +1,16 @@
 import React from 'react'
-import {
-  Paper,
-  InputLabel,
-  FormControl,
-  FormGroup,
-  Select,
-  MenuItem,
-  Tabs,
-  Tab,
-  Button,
-  IconButton,
-  Box,
-  Typography,
-  TextField,
-  Switch,
-  FormControlLabel,
-  Snackbar,
-  SnackbarContent
-} from '@material-ui/core'
-import { Add, Delete, Clear } from '@material-ui/icons'
+import { Paper, Tabs, Tab, IconButton, Snackbar, SnackbarContent } from '@material-ui/core'
+import { Clear } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 import palette from '~/variables'
 import Link from 'next/link'
-import { DatePicker, TimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
-import DaysJSUtils from '@date-io/dayjs'
-import { Formik, Form, Field, FieldArray } from 'formik'
 import dayjs from 'dayjs'
-import { RRule, RRuleSet, rrulestr } from 'rrule'
 import 'dayjs/locale/fr'
 import InformationsForm from '~/components/forms/composter/InformationsForm'
 import PermanencesRulesForm from '~/components/forms/composter/PermanencesRulesForm'
 
 import api from '~/utils/api'
+import { withAccessAbility, Subject } from '~/context/AbilityContext'
 import ComposterContainer from '~/components/ComposterContainer'
 import ContactForm from '~/components/forms/composter/ContactForm'
 
@@ -171,12 +150,18 @@ const ComposterEdit = ({ composter }) => {
   )
 }
 
-ComposterEdit.getInitialProps = async ({ query }) => {
-  const composter = await api.getComposter(query.slug)
+const getRedirectUrl = ({ asPath }) => {
+  return asPath.replace('/modifications', '')
+}
+
+const getInitialProps = async ({ query: { slug } }) => {
+  const composter = await api.getComposter(slug)
 
   return {
     composter: composter.data
   }
 }
+
+ComposterEdit.getInitialProps = withAccessAbility(Subject.COMPOSTER_INFORMATION, getRedirectUrl)(getInitialProps)
 
 export default ComposterEdit

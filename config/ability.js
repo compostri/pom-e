@@ -7,13 +7,15 @@ function subjectName(subject) {
 export const Action = {
   READ: 'read',
   DELETE: 'delete',
-  UPDATE: 'update',
+  EDIT: 'edit',
   CREATE: 'create'
 }
+
 export const Subject = {
   COMPOSTER_PERMANENCES: 'COMPOSTER_PERMANENCES',
   COMPOSTER_LISTES_OUVREURS: 'COMPOSTER_LISTES_OUVREURS',
-  COMPOSTER_NEWLETTERS: 'COMPOSTER_NEWLETTERS'
+  COMPOSTER_NEWLETTERS: 'COMPOSTER_NEWLETTERS',
+  COMPOSTER_INFORMATION: 'COMPOSTER_INFORMATION'
 }
 
 export const Default = AbilityBuilder.define({ subjectName }, can => {
@@ -25,11 +27,11 @@ export const Opener = AbilityBuilder.define({ subjectName }, can => {
 })
 
 export const Referent = AbilityBuilder.define({ subjectName }, can => {
+  can([Action.READ, Action.EDIT], [Subject.COMPOSTER_INFORMATION, Subject.COMPOSTER_LISTES_OUVREURS, Subject.COMPOSTER_NEWLETTERS])
   can(Action.READ, Subject.COMPOSTER_PERMANENCES, { permanencesRule: { $ne: null } })
-  can(Action.READ, [Subject.COMPOSTER_LISTES_OUVREURS, Subject.COMPOSTER_NEWLETTERS])
 })
 
-export default {
+export const Ability = {
   Opener,
   Referent,
   Default
