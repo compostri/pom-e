@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useContext } from 'react'
 import { Line } from 'react-chartjs-2'
 import { makeStyles } from '@material-ui/styles'
 import { Paper, Typography } from '@material-ui/core'
@@ -6,6 +6,7 @@ import { Paper, Typography } from '@material-ui/core'
 import api from '~/utils/api'
 import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
+import { ComposterContext } from '~/context/ComposterContext'
 
 const useStyles = makeStyles(theme => ({
   graphContainer: {
@@ -62,9 +63,16 @@ const data = {
 
 const ComposterStatistiques = ({ composter }) => {
   const classes = useStyles()
+  const { composterContext } = useContext(ComposterContext)
+
+  useEffect(() => {
+    composterContext.setComposter(composter)
+  }, [])
+
+  if (!composter) return null
 
   return (
-    <ComposterContainer composter={composter}>
+    <ComposterContainer>
       <Paper className={classes.graphContainer}>
         <Typography variant="h2">Nombre d'utilisateurs et de sceaux par date</Typography>
         <Line data={data} width={50} height={300} options={{ maintainAspectRatio: false }} />

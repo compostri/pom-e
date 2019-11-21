@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Line } from 'react-chartjs-2'
 import { makeStyles } from '@material-ui/styles'
 import { Paper, Typography, InputBase, IconButton, Modal, TextField, Button, Switch, FormControlLabel, FormGroup } from '@material-ui/core'
@@ -9,6 +9,7 @@ import { Formik, Form, Field, FieldArray } from 'formik'
 import api from '~/utils/api'
 import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
+import { ComposterContext } from '~/context/ComposterContext'
 
 const useStyles = makeStyles(theme => ({
   newsletterContainer: {
@@ -107,11 +108,17 @@ const NewsletterSchema = Yup.object().shape({
   messageNewsletter: Yup.string()
 })
 
-const ComposterNewsletter = ({ composter }) => {
+const ComposterNewsletter = () => {
   const classes = useStyles()
   const [users, setUsers] = useState([])
   const [search, setSearch] = useState('')
   const [openModal, setOpenModal] = useState(false)
+  const { composterContext } = useContext(ComposterContext)
+  const { composter } = composterContext
+
+  useEffect(() => {
+    composterContext.setComposter(composter)
+  }, [])
 
   const handleOpen = () => {
     setOpenModal(true)
@@ -131,8 +138,10 @@ const ComposterNewsletter = ({ composter }) => {
     fetchData()
   }, [search])
 
+  if (!composter) return null
+
   return (
-    <ComposterContainer composter={composter}>
+    <ComposterContainer>
       <div className={classes.newsletterContainer}>
         <Paper elevation={1} className={classes.sectionLeft}>
           <Typography variant="h2" className={classes.title}>
@@ -208,7 +217,7 @@ const ComposterNewsletter = ({ composter }) => {
                   autoFocus
                   autoOk
                   {...field}
-                ></Field>
+                />
                 <Field
                   className={classes.field}
                   component={TextField}
@@ -226,7 +235,7 @@ const ComposterNewsletter = ({ composter }) => {
                   autoFocus
                   autoOk
                   {...field}
-                ></Field>
+                />
                 <Button className={classes.submit} type="submit" variant="contained" color="secondary">
                   Envoyer
                 </Button>

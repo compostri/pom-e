@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useContext } from 'react'
 import { Paper, Tabs, Tab, IconButton, Snackbar, SnackbarContent } from '@material-ui/core'
 import { Clear } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
@@ -13,6 +13,7 @@ import api from '~/utils/api'
 import { withAccessAbility, Subject } from '~/context/AbilityContext'
 import ComposterContainer from '~/components/ComposterContainer'
 import ContactForm from '~/components/forms/composter/ContactForm'
+import { ComposterContext } from '~/context/ComposterContext'
 
 dayjs.locale('fr')
 
@@ -77,9 +78,14 @@ const ComposterEdit = ({ composter }) => {
   const [activeTab, setActiveTab] = React.useState('contact-composteur')
   const [snackBarMessage, setSnackBarMessage] = React.useState(false)
   const classes = useStyles()
+  const { composterContext } = useContext(ComposterContext)
+
+  useEffect(() => {
+    composterContext.setComposter(composter)
+  }, [])
 
   return (
-    <ComposterContainer composter={composter} maxWidth="md">
+    <ComposterContainer maxWidth="md">
       <Paper>
         <div className={classes.header}>
           <Tabs
@@ -131,7 +137,7 @@ const ComposterEdit = ({ composter }) => {
           aria-labelledby="contact-composteur"
           composter={composter}
           setSnackBarMessage={setSnackBarMessage}
-        ></ContactForm>
+        />
 
         <PermanencesRulesForm
           p={3}

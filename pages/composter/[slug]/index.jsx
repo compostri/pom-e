@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import Link from 'next/link'
 import { Paper, Typography, Button, List, ListItem, ListItemText, ListItemIcon, InputBase, InputLabel, FormControl, Fab } from '@material-ui/core'
 import { Room, Person, RadioButtonChecked, Lock, WatchLater, Edit } from '@material-ui/icons'
@@ -12,6 +12,7 @@ import api from '~/utils/api'
 import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
 import MapField from '~/components/MapField'
+import { ComposterContext } from '~/context/ComposterContext'
 
 const { EDIT } = Action
 const { COMPOSTER_INFORMATION } = Subject
@@ -191,8 +192,14 @@ const Content = ({ composter }) => {
 }
 
 const ComposterDetail = ({ composter }) => {
+  const { composterContext } = useContext(ComposterContext)
+
+  useEffect(() => {
+    composterContext.setComposter(composter)
+  }, [])
+
   return (
-    <ComposterContainer composter={composter}>
+    <ComposterContainer>
       <Content composter={composter} />
     </ComposterContainer>
   )

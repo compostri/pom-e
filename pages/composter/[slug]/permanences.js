@@ -10,6 +10,7 @@ import api from '~/utils/api'
 import ComposterContainer from '~/components/ComposterContainer'
 import PermanenceCard from '~/components/PermanenceCard'
 import palette from '~/variables'
+import { ComposterContext } from '~/context/ComposterContext'
 
 dayjs.locale('fr')
 
@@ -83,8 +84,18 @@ const permanences = [
   }
 ]
 
-const ComposterPermanences = ({ composter, users }) => {
+const ComposterPermanences = ({ users }) => {
   const classes = useStyles()
+  const { composterContext } = useContext(ComposterContext)
+  const { composter } = composterContext
+
+  const [value, setValue] = React.useState(0)
+
+  useEffect(() => {
+    composterContext.setComposter(composter)
+  }, [])
+
+  if (!composter) return null
 
   const weekDaysNames = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
   const listWeekDaysNames = weekDaysNames.map(weekDayName => (
@@ -129,11 +140,11 @@ const ComposterPermanences = ({ composter, users }) => {
     <ComposterContainer composter={composter}>
       <div className={classes.sectionPermanences}>
         <div className={classes.nav}>
-          <Button startIcon={<ChevronLeft onClick={() => setDate(date.subtract(1, 'month'))} />}></Button>
+          <Button startIcon={<ChevronLeft onClick={() => setDate(date.subtract(1, 'month'))} />} />
           <Typography variant="h1">
             <p className={classes.mois}>{date.format('MMMM YYYY')}</p>
           </Typography>
-          <Button startIcon={<ChevronRight onClick={() => setDate(date.add(1, 'month'))} />}></Button>
+          <Button startIcon={<ChevronRight onClick={() => setDate(date.add(1, 'month'))} />} />
         </div>
         <Paper elevation={1} className={classes.calendar}>
           <Table stickyHeader className={classes.calendarTable}>
