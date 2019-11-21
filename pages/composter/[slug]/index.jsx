@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import Link from 'next/link'
 import { Paper, Typography, Button, List, ListItem, ListItemText, ListItemIcon, InputBase, InputLabel, FormControl, Fab } from '@material-ui/core'
 import { Room, Person, RadioButtonChecked, Lock, WatchLater, Edit } from '@material-ui/icons'
@@ -82,8 +82,10 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const Content = ({ composter }) => {
+const Content = () => {
   const classes = useStyles()
+  const { composterContext } = useContext(ComposterContext)
+  const { composter } = composterContext
 
   return (
     <>
@@ -192,15 +194,9 @@ const Content = ({ composter }) => {
 }
 
 const ComposterDetail = ({ composter }) => {
-  const { composterContext } = useContext(ComposterContext)
-
-  useEffect(() => {
-    composterContext.setComposter(composter)
-  }, [])
-
   return (
     <ComposterContainer>
-      <Content composter={composter} />
+      <Content />
     </ComposterContainer>
   )
 }
