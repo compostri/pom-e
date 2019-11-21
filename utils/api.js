@@ -79,6 +79,11 @@ class MNApi {
 
   getCategories = () => this.get('/categories')
 
+  // Permanences
+
+  getPermanences = ({ composterId: composter, before, after }) =>
+    this.get('/permanences', { params: { composter, 'date[before]': before, 'date[after]': after } })
+
   // Media
   uploadMedia = formData => this.post('/media_objects', formData)
 

@@ -36,20 +36,25 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const propTypes = {
+  eventsDate: PropTypes.arrayOf(PropTypes.number),
   date: PropTypes.shape({
-    endOf: PropTypes.func.isRequired,
-    startOf: PropTypes.func.isRequired
+    startOf: PropTypes.func.isRequired,
+    daysInMonth: PropTypes.func.isRequired
   }).isRequired
 }
 
-const Calendar = memo(({ date }) => {
-  const classes = useStyles()
-  const monthEnd = date.endOf('month').date()
+const defaultProps = {
+  eventsDate: []
+}
 
-  const dayStartInMonth = date.startOf('month').get('day') || ordedDayInWeek.get(Sun)
+const Calendar = memo(({ date, eventsDate }) => {
+  const classes = useStyles()
+  const lastDayOfMonth = date.daysInMonth() // day 28 | 29 | 30 | 31
+
+  const dayStartInMonth = date.startOf('month').get('day') || sunDayInWeek
 
   const padding = [...new Array(dayStartInMonth - 1)]
-  const daysInMonth = [...new Array(monthEnd)].map((_v, i) => i + 1)
+  const daysInMonth = [...new Array(lastDayOfMonth)].map((_v, i) => i + 1)
 
   const calendar = [...padding, ...daysInMonth].reduce(
     (calendarOfMonth, dayOfMonth) => {
@@ -73,13 +78,21 @@ const Calendar = memo(({ date }) => {
     </TableCell>
   ))
 
-  const renderDays = week =>
-    week.map((day, i) => (
-      // eslint-disable-next-line react/no-array-index-key
-      <TableCell key={`${day}-${i}`} align="center" className={classes.calendarDayNumber}>
-        {day}
-      </TableCell>
-    ))
+  const withMayBeSomeEvents = events => fnRenderDay => day => {
+    if (events.includes(day)) {
+      return <>{fnRenderDay(day)} wow</>
+    }
+
+    return fnRenderDay(day)
+  }
+
+  const renderDay = (day, i) => (
+    <TableCell key={`${day}-${i}`} align="center" className={classes.calendarDayNumber}>
+      {day}
+    </TableCell>
+  )
+
+  const renderDays = week => week.map(withMayBeSomeEvents(eventsDate)(renderDay))
 
   const renderWeeks = fnRenderDays => week => <TableRow>{fnRenderDays(week)}</TableRow>
 
@@ -96,5 +109,6 @@ const Calendar = memo(({ date }) => {
 })
 
 Calendar.propTypes = propTypes
+Calendar.defaultProps = defaultProps
 
 export default Calendar
