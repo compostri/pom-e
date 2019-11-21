@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import { Container } from '@material-ui/core'
 import classesname from 'classnames'
 import Header from '~/components/ComposterHeader'
 import AbilityProvider from '~/context/AbilityContext'
+import { ComposterContext } from '~/context/ComposterContext'
 
 const useStyles = makeStyles(theme => ({
   wrapper: {
@@ -24,13 +25,18 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const ComposterContainer = ({ composter, maxWidth = false, children }) => {
+const ComposterContainer = ({ maxWidth = false, children }) => {
   const classes = useStyles()
+  const {
+    composterContext: { composter }
+  } = useContext(ComposterContext)
+
+  if (!composter) return null
 
   return (
     <div className={classesname({ [classes.wrapper]: maxWidth })}>
       <AbilityProvider composterSlug={composter.slug}>
-        <Header composter={composter} />
+        <Header />
         <Container maxWidth={maxWidth} className={classesname(classes.container, { [classes.containerCenter]: maxWidth })}>
           {children}
         </Container>
