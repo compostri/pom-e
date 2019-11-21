@@ -5,6 +5,7 @@ import { Box, FormGroup, FormControlLabel, Switch, Button, Typography, Chip, Ava
 import { makeStyles } from '@material-ui/styles'
 import api from '~/utils/api'
 import { UserContext } from '~context/UserContext'
+import { ComposterContext } from '~/context/ComposterContext'
 
 const ContactSchema = Yup.object().shape({
   receive: Yup.boolean()
@@ -20,8 +21,15 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const ContactForm = props => {
-  const { composter, setSnackBarMessage, ...otherProps } = props
+  const { setSnackBarMessage, ...otherProps } = props
   const [receivers, setReceivers] = useState()
+  const { composterContext } = useContext(ComposterContext)
+  const { composter } = composterContext
+
+  useEffect(() => {
+    composterContext.setComposter(composter)
+  }, [])
+
   const {
     userContext: { user }
   } = useContext(UserContext)

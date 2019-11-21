@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { InputLabel, FormControl, Select, MenuItem, Button, Box } from '@material-ui/core'
 import { Add, Delete, Clear } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
@@ -10,6 +10,7 @@ import dayjs from 'dayjs'
 import { RRule, RRuleSet, rrulestr } from 'rrule'
 import 'dayjs/locale/fr'
 import api from '~/utils/api'
+import { ComposterContext } from '~/context/ComposterContext'
 
 const useStyles = makeStyles(theme => ({
   tab: {
@@ -173,7 +174,11 @@ const defaultRule = {
 }
 
 const PermanencesRulesForm = props => {
-  const { composter, setSnackBarMessage, ...otherProps } = props
+  const { setSnackBarMessage, ...otherProps } = props
+  const { composterContext } = useContext(ComposterContext)
+  const { composter } = composterContext
+
+  if (!composter) return null
   const initialRules = composter.permanencesRule ? getRulesFormFromString(composter.permanencesRule) : [defaultRule]
   const classes = useStyles()
   return (
