@@ -8,11 +8,9 @@ class ComposterProvider extends Component {
     this.state = {
       composter: props.composter || null,
       setComposter: (composter, force = false) => {
-        if ((this.state.composter && this.state.composter['@id'] !== composter['@id']) || force) {
-          this.setState(state => {
-            return { composter: composter }
-          })
-        }
+        this.setState(state => {
+          return { composter: composter }
+        })
       }
     }
   }
