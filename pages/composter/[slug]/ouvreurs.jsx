@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState } from 'react'
 import { Typography, IconButton, Button, Modal, Tabs, Tab, Paper, TextField, Box, InputBase } from '@material-ui/core'
 import { Clear, Search } from '@material-ui/icons'
 
@@ -8,7 +8,6 @@ import api from '~/utils/api'
 import ComposterContainer from '~/components/ComposterContainer'
 import OuvreurCard from '~/components/OuvreurCard'
 import palette from '~/variables'
-import SearchBar from '~/components/SearchBar'
 
 const useStyles = makeStyles(theme => ({
   listingOuvreurs: {
@@ -119,7 +118,6 @@ const Content = ({ users, composter }) => {
   const ouvr = ouvreurs.map((o, index) => <OuvreurCard ouvreur={o} users={users} key={`ouvr-${index}-${o.name}-${o.mail}`} />)
   const [openModal, setOpenModal] = useState(false)
   const [activeTab, setActiveTab] = useState('creation-compte')
-
   const [value, setValue] = React.useState(0)
 
   const handleChange = (event, newValue) => {
@@ -220,7 +218,7 @@ const Content = ({ users, composter }) => {
 const ComposterOuvreurs = ({ composter, users }) => {
   return (
     <ComposterContainer composter={composter}>
-      <Content composter={composter} users={users} />
+      <Content users={users} />
     </ComposterContainer>
   )
 }

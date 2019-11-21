@@ -4,6 +4,7 @@ import { Container } from '@material-ui/core'
 import classesname from 'classnames'
 import Header from '~/components/ComposterHeader'
 import AbilityProvider from '~/context/AbilityContext'
+import ComposterProvider from '~/context/ComposterContext'
 
 const useStyles = makeStyles(theme => ({
   wrapper: {
@@ -28,14 +29,16 @@ const ComposterContainer = ({ composter, maxWidth = false, children }) => {
   const classes = useStyles()
 
   return (
-    <div className={classesname({ [classes.wrapper]: maxWidth })}>
-      <AbilityProvider composterSlug={composter.slug}>
-        <Header composter={composter} />
-        <Container maxWidth={maxWidth} className={classesname(classes.container, { [classes.containerCenter]: maxWidth })}>
-          {children}
-        </Container>
-      </AbilityProvider>
-    </div>
+    <ComposterProvider composter={composter}>
+      <div className={classesname({ [classes.wrapper]: maxWidth })}>
+        <AbilityProvider composterSlug={composter.slug}>
+          <Header />
+          <Container maxWidth={maxWidth} className={classesname(classes.container, { [classes.containerCenter]: maxWidth })}>
+            {children}
+          </Container>
+        </AbilityProvider>
+      </div>
+    </ComposterProvider>
   )
 }
 

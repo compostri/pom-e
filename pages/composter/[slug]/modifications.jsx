@@ -131,7 +131,7 @@ const ComposterEdit = ({ composter }) => {
           aria-labelledby="contact-composteur"
           composter={composter}
           setSnackBarMessage={setSnackBarMessage}
-        ></ContactForm>
+        />
 
         <PermanencesRulesForm
           p={3}

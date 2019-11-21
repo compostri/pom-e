@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import * as Yup from 'yup'
-import { Formik, Form, Field, FieldArray } from 'formik'
+import { Formik, Form, Field } from 'formik'
 import { Box, FormGroup, FormControlLabel, Switch, Button, TextField, Grid, CircularProgress } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import api from '~/utils/api'
 import ImageInput from '~/components/forms/ImageInput'
+import { ComposterContext } from '~/context/ComposterContext'
 
 const useStyles = makeStyles(theme => ({}))
 
@@ -14,8 +15,10 @@ const LogInSchema = Yup.object().shape({
 })
 
 const InformationsForm = props => {
-  const { composter, setSnackBarMessage, ...otherProps } = props
+  const { setSnackBarMessage, ...otherProps } = props
   const classes = useStyles()
+  const { composterContext } = useContext(ComposterContext)
+  const { composter } = composterContext
 
   const submit = async (values, { resetForm, setSubmitting }) => {
     const newValues = { ...values }

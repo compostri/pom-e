@@ -1,14 +1,12 @@
-import React, { useState, useRef, useContext, useEffect } from 'react'
-import { Typography, IconButton, Paper, TableRow, Table, TableCell, TableBody, TableHead, Button } from '@material-ui/core'
+import React, { useState } from 'react'
+import { Typography, Paper, TableRow, Table, TableCell, TableBody, TableHead, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import Link from 'next/link'
 import { ChevronLeft, ChevronRight } from '@material-ui/icons'
 import dayjs from 'dayjs'
 import 'dayjs/locale/fr'
 
 import api from '~/utils/api'
 import ComposterContainer from '~/components/ComposterContainer'
-import PermanenceCard from '~/components/PermanenceCard'
 import palette from '~/variables'
 
 dayjs.locale('fr')
@@ -129,11 +127,11 @@ const ComposterPermanences = ({ composter, users }) => {
     <ComposterContainer composter={composter}>
       <div className={classes.sectionPermanences}>
         <div className={classes.nav}>
-          <Button startIcon={<ChevronLeft onClick={() => setDate(date.subtract(1, 'month'))} />}></Button>
+          <Button startIcon={<ChevronLeft onClick={() => setDate(date.subtract(1, 'month'))} />} />
           <Typography variant="h1">
             <p className={classes.mois}>{date.format('MMMM YYYY')}</p>
           </Typography>
-          <Button startIcon={<ChevronRight onClick={() => setDate(date.add(1, 'month'))} />}></Button>
+          <Button startIcon={<ChevronRight onClick={() => setDate(date.add(1, 'month'))} />} />
         </div>
         <Paper elevation={1} className={classes.calendar}>
           <Table stickyHeader className={classes.calendarTable}>

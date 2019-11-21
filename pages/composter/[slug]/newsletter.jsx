@@ -5,7 +5,7 @@ import { Paper, Typography, InputBase, IconButton, Modal, TextField, Button, Swi
 import { Search, Add, Clear } from '@material-ui/icons'
 
 import * as Yup from 'yup'
-import { Formik, Form, Field, FieldArray } from 'formik'
+import { Formik, Form, Field } from 'formik'
 import api from '~/utils/api'
 import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
@@ -208,7 +208,7 @@ const ComposterNewsletter = ({ composter }) => {
                   autoFocus
                   autoOk
                   {...field}
-                ></Field>
+                />
                 <Field
                   className={classes.field}
                   component={TextField}
@@ -226,7 +226,7 @@ const ComposterNewsletter = ({ composter }) => {
                   autoFocus
                   autoOk
                   {...field}
-                ></Field>
+                />
                 <Button className={classes.submit} type="submit" variant="contained" color="secondary">
                   Envoyer
                 </Button>

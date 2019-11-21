@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Typography, AppBar, Button, Toolbar, IconButton } from '@material-ui/core'
@@ -8,6 +8,7 @@ import classnames from 'classnames'
 import palette from '~/variables'
 import { Can, Action, Subject } from '~/context/AbilityContext'
 import UserButton from './UserButton'
+import { ComposterContext } from '~/context/ComposterContext'
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -66,12 +67,20 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const Header = ({ composter: { slug, name, permanencesRule } }) => {
+const Header = () => {
   const classes = useStyles()
   const router = useRouter()
 
   const { READ } = Action
   const { COMPOSTER_PERMANENCES, COMPOSTER_LISTES_OUVREURS, COMPOSTER_NEWLETTERS } = Subject
+  const {
+    composterContext: { composter }
+  } = useContext(ComposterContext)
+
+  if (!composter) return null
+
+  const { slug, name, permanencesRule } = composter
+  console.log('TCL: Header -> composter', composter)
 
   return (
     <AppBar className={classes.appBar} position="static" elevation={1}>
