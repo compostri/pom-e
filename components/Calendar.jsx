@@ -1,10 +1,25 @@
-import React, { memo } from 'react'
+import React, { memo, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { Paper, TableRow, Table, TableCell, TableBody, TableHead } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import 'dayjs/locale/fr'
 
 import palette from '~/variables'
+
+const renderWeekNameWithKey = renderFn => name => {
+  return <Fragment key={name}>{renderFn(name)}</Fragment>
+}
+const renderWeekWithKey = renderFn => (data, i) => {
+  const key = `week-${i}`
+  return <Fragment key={key}>{renderFn(data)}</Fragment>
+}
+const renderDayWithKey = renderFn => (day, i) => {
+  const key = `day-${day ||
+    Math.random()
+      .toString(36)
+      .substring(7)}`
+  return <Fragment key={key}>{renderFn(day)}</Fragment>
+}
 
 const [Mon, Tus, Wed, Thu, Fry, Sat, Sun] = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
 const weekDaysNames = [Mon, Tus, Wed, Thu, Fry, Sat, Sun]
@@ -27,27 +42,35 @@ const useStyles = makeStyles(theme => ({
     textTransform: 'uppercase',
     backgroundColor: 'white'
   },
-  calendarDayNumber: {
+  tableCell: {
     color: palette.greyLight,
+    position: 'relative',
     fontSize: 12,
     fontWeight: '400',
-    letterSpacing: 1.71
+    letterSpacing: 1.71,
+    height: '115px'
+  },
+  tableCellContent: {
+    position: 'absolute',
+    top: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '6px'
+  },
+  tableCellContentDay: {
+    alignSelf: 'start'
   }
 }))
 
 const propTypes = {
-  eventsDate: PropTypes.arrayOf(PropTypes.number),
+  renderDay: PropTypes.func.isRequired,
   date: PropTypes.shape({
     startOf: PropTypes.func.isRequired,
     daysInMonth: PropTypes.func.isRequired
   }).isRequired
 }
 
-const defaultProps = {
-  eventsDate: []
-}
-
-const Calendar = memo(({ date, eventsDate }) => {
+const Calendar = memo(({ date, renderDay }) => {
   const classes = useStyles()
   const lastDayOfMonth = date.daysInMonth() // day 28 | 29 | 30 | 31
 
@@ -72,27 +95,22 @@ const Calendar = memo(({ date, eventsDate }) => {
     [[]]
   )
 
-  const listWeekDaysNames = weekDaysNames.map(weekDayName => (
-    <TableCell key={weekDayName} align="center" className={classes.calendarDay}>
+  const renderWeekDayNames = weekDayName => (
+    <TableCell align="center" className={classes.calendarDay}>
       {weekDayName}
-    </TableCell>
-  ))
-
-  const withMayBeSomeEvents = events => fnRenderDay => day => {
-    if (events.includes(day)) {
-      return <>{fnRenderDay(day)} wow</>
-    }
-
-    return fnRenderDay(day)
-  }
-
-  const renderDay = (day, i) => (
-    <TableCell key={`${day}-${i}`} align="center" className={classes.calendarDayNumber}>
-      {day}
     </TableCell>
   )
 
-  const renderDays = week => week.map(withMayBeSomeEvents(eventsDate)(renderDay))
+  const renderWeekDay = day => (
+    <TableCell align="left" className={classes.tableCell}>
+      <div key={day} className={classes.tableCellContent}>
+        <span className={classes.tableCellContentDay}>{day}</span>
+        {renderDay(day)}
+      </div>
+    </TableCell>
+  )
+
+  const renderDays = week => week.map(renderDayWithKey(renderWeekDay))
 
   const renderWeeks = fnRenderDays => week => <TableRow>{fnRenderDays(week)}</TableRow>
 
@@ -100,15 +118,14 @@ const Calendar = memo(({ date, eventsDate }) => {
     <Paper elevation={1} className={classes.calendar}>
       <Table stickyHeader className={classes.calendarTable}>
         <TableHead>
-          <TableRow>{listWeekDaysNames}</TableRow>
+          <TableRow>{weekDaysNames.map(renderWeekNameWithKey(renderWeekDayNames))}</TableRow>
         </TableHead>
-        <TableBody>{calendar.map(renderWeeks(renderDays))}</TableBody>
+        <TableBody>{calendar.map(renderWeekWithKey(renderWeeks(renderDays)))}</TableBody>
       </Table>
     </Paper>
   )
 })
 
 Calendar.propTypes = propTypes
-Calendar.defaultProps = defaultProps
 
 export default Calendar
