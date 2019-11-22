@@ -3,8 +3,10 @@ import App from 'next/app'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import nextCookie from 'next-cookies'
 import { ThemeProvider } from '@material-ui/styles'
+import { ToastProvider } from 'react-toast-notifications'
 import theme from '~/theme'
 import UserProvider from '~/context/UserContext'
+import Snackbar from '../components/Snackbar'
 
 class MyApp extends App {
   componentDidMount() {
@@ -19,10 +21,12 @@ class MyApp extends App {
     const { Component, pageProps, token } = this.props
     return (
       <ThemeProvider theme={theme}>
-        <UserProvider token={token}>
-          <CssBaseline />
-          <Component {...pageProps} />
-        </UserProvider>
+        <ToastProvider autoDismissTimeout={5000} components={{ Toast: Snackbar }}>
+          <UserProvider token={token}>
+            <CssBaseline />
+            <Component {...pageProps} />
+          </UserProvider>
+        </ToastProvider>
       </ThemeProvider>
     )
   }

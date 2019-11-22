@@ -34,6 +34,7 @@
     "react-dom": "16.10.2",
     "react-images-upload": "^1.2.7",
     "react-map-gl": "^5.0.12",
+    "react-toast-notifications": "^2.2.5",
     "rrule": "^2.6.2",
     "yup": "^0.27.0"
   },
