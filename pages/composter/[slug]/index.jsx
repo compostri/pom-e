@@ -12,6 +12,7 @@ import api from '~/utils/api'
 import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
 import MapField from '~/components/MapField'
+import ComposterContactForm from '~/components/forms/composter/ComposterContactForm'
 import { ComposterContext } from '~/context/ComposterContext'
 
 const { EDIT } = Action
@@ -168,19 +169,7 @@ const Content = () => {
             <Typography className={classes.titleSectionSecondary} variant="h2">
               Contactez-nous pour toutes vos questions
             </Typography>
-            <form className={classes.container} noValidate autoComplete="off">
-              <FormControl fullWidth className={classes.inputGlobal}>
-                <InputLabel className={classes.label}>VOTRE E-MAIL</InputLabel>
-                <InputBase fullWidth className={classes.input} defaultValue="Entrez votre adresse e-mail" inputProps={{ 'aria-label': 'naked' }} />
-              </FormControl>
-              <FormControl fullWidth className={classes.inputGlobal}>
-                <InputLabel className={classes.label}>VOTRE MESSAGE</InputLabel>
-                <InputBase fullWidth className={classes.input} defaultValue="Entrez votre message" inputProps={{ 'aria-label': 'naked' }} />
-              </FormControl>
-              <Button type="submit" variant="contained" color="primary" className={classes.submit}>
-                Envoyer
-              </Button>
-            </form>
+            <ComposterContactForm />
           </Paper>
         </div>
         {composter.lat && composter.lng && (

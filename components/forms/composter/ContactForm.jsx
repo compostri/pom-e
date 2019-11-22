@@ -20,6 +20,10 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+/**
+ * Permet de choisir d'être destinataire des formulaires de contact
+ */
+
 const ContactForm = props => {
   const { setSnackBarMessage, ...otherProps } = props
   const [receivers, setReceivers] = useState()

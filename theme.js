@@ -82,6 +82,11 @@ const theme = createMuiTheme({
         }
       }
     },
+    MuiFormControl: {
+      root: {
+        marginBottom: defaultTheme.spacing(2)
+      }
+    },
     MuiInput: {
       underline: {
         borderBottomColor: palette.greyExtraLight,
@@ -97,11 +102,17 @@ const theme = createMuiTheme({
       }
     },
     MuiInputBase: {
-      root: {
+      input: {
         backgroundColor: palette.greyExtraLight,
         color: palette.greyMedium,
-        padding: '10px 14px 10px 14px',
+        padding: '14px',
         borderRadius: 2
+      },
+      multiline: {
+        padding: 'inherit'
+      },
+      inputMultiline: {
+        padding: 14
       }
     },
     MuiIconButton: {
