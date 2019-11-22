@@ -4,6 +4,7 @@ import { Formik, Form } from 'formik'
 import { Box, Button, CircularProgress, TextField, Grid } from '@material-ui/core'
 import api from '~/utils/api'
 import { ComposterContext } from '~context/ComposterContext'
+import { useToasts, TOAST } from '~/components/Snackbar'
 
 const ContactSchema = Yup.object().shape({
   email: Yup.string()
@@ -17,6 +18,7 @@ const ContactSchema = Yup.object().shape({
  */
 
 const ComposterContactForm = () => {
+  const { addToast } = useToasts()
   const {
     composterContext: { composter }
   } = useContext(ComposterContext)
@@ -30,6 +32,9 @@ const ComposterContactForm = () => {
     const res = await api.sendComposterContact({ ...values, composter: composter['@id'] })
     if (res.status === 201) {
       resetForm(initialValues)
+      addToast('Votre demande de contact a bien été enregistrée !', TOAST.SUCCESS)
+    } else {
+      addToast('Une erreur est intervenue. Veuillez rééssayer plus tard.', TOAST.ERROR)
     }
     setSubmitting(false)
   }

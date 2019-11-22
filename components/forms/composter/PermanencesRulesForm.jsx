@@ -11,6 +11,7 @@ import { RRule, RRuleSet, rrulestr } from 'rrule'
 import 'dayjs/locale/fr'
 import api from '~/utils/api'
 import { ComposterContext } from '~/context/ComposterContext'
+import { useToasts, TOAST } from '~/components/Snackbar'
 
 const useStyles = makeStyles(theme => ({
   tab: {
@@ -173,58 +174,55 @@ const defaultRule = {
   endDate: null
 }
 
-const PermanencesRulesForm = props => {
-  const { setSnackBarMessage, ...otherProps } = props
+const PermanencesRulesForm = () => {
   const { composterContext } = useContext(ComposterContext)
   const { composter } = composterContext
+  const { addToast } = useToasts()
 
   if (!composter) return null
   const initialRules = composter.permanencesRule ? getRulesFormFromString(composter.permanencesRule) : [defaultRule]
   const classes = useStyles()
   return (
-    <Box {...otherProps}>
-      <Formik
-        initialValues={{ rules: initialRules }}
-        onSubmit={async values => {
-          const rrulesSring = getRrulesFromObject(values.rules)
-          const response = await api.updateComposter(composter.slug, { permanencesRule: rrulesSring })
-          console.log(response)
-          if (response.status === 200) {
-            setSnackBarMessage('Votre modification a bien été prise en compte')
-          } else {
-            setSnackBarMessage('Une erreur est survenue')
-          }
-        }}
-      >
-        {({ values }) => (
-          <Form>
-            <FieldArray name="rules">
-              {({ push, remove }) => (
-                <div>
-                  {values.rules &&
-                    values.rules.map((rule, index) => (
-                      <div key={`rule-${index}`}>
-                        <RuleForm key={index} index={index} {...rule} />
+    <Formik
+      initialValues={{ rules: initialRules }}
+      onSubmit={async values => {
+        const rrulesSring = getRrulesFromObject(values.rules)
+        const response = await api.updateComposter(composter.slug, { permanencesRule: rrulesSring })
+        if (response.status === 200) {
+          addToast('Votre modification a bien été prise en compte !', TOAST.SUCCESS)
+        } else {
+          addToast('Une erreur est survenue', TOAST.ERROR)
+        }
+      }}
+    >
+      {({ values }) => (
+        <Form>
+          <FieldArray name="rules">
+            {({ push, remove }) => (
+              <div>
+                {values.rules &&
+                  values.rules.map((rule, index) => (
+                    <div key={`rule-${index}`}>
+                      <RuleForm key={index} index={index} {...rule} />
 
-                        <Button type="button" onClick={() => remove(index)} className={classes.permBtnSuppr}>
-                          <Delete />
-                        </Button>
-                      </div>
-                    ))}
-                  <Button type="button" onClick={() => push(defaultRule)} className={classes.permBtnCreate}>
-                    <Add className={classes.permBtnCreateIcon} />
-                    Nouveau créneau
-                  </Button>
-                  <Button className={classes.valider} type="submit" color="secondary" variant="contained">
-                    Valider
-                  </Button>
-                </div>
-              )}
-            </FieldArray>
-          </Form>
-        )}
-      </Formik>
-    </Box>
+                      <Button type="button" onClick={() => remove(index)} className={classes.permBtnSuppr}>
+                        <Delete />
+                      </Button>
+                    </div>
+                  ))}
+                <Button type="button" onClick={() => push(defaultRule)} className={classes.permBtnCreate}>
+                  <Add className={classes.permBtnCreateIcon} />
+                  Nouveau créneau
+                </Button>
+                <Button className={classes.valider} type="submit" color="secondary" variant="contained">
+                  Valider
+                </Button>
+              </div>
+            )}
+          </FieldArray>
+        </Form>
+      )}
+    </Formik>
   )
 }
 
