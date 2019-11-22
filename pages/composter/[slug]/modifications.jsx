@@ -1,5 +1,5 @@
 import React from 'react'
-import { Paper, Tabs, Tab, IconButton, Snackbar, SnackbarContent } from '@material-ui/core'
+import { Paper, Tabs, Tab, IconButton, Box } from '@material-ui/core'
 import { Clear } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 import palette from '~/variables'
@@ -75,7 +75,6 @@ const useStyles = makeStyles(theme => ({
 
 const ComposterEdit = ({ composter }) => {
   const [activeTab, setActiveTab] = React.useState('contact-composteur')
-  const [snackBarMessage, setSnackBarMessage] = React.useState(false)
   const classes = useStyles()
 
   return (
@@ -113,38 +112,37 @@ const ComposterEdit = ({ composter }) => {
           </Link>
         </div>
 
-        <InformationsForm
+        <Box
           p={3}
           role="tabpanel"
           hidden={activeTab !== 'informations-composteur'}
           id="informations-composteur-content"
           aria-labelledby="informations-composteur"
-          composter={composter}
-          setSnackBarMessage={setSnackBarMessage}
-        />
+        >
+          <InformationsForm />
+        </Box>
 
-        <ContactForm
+        <Box
           p={3}
           role="tabpanel"
           hidden={activeTab !== 'contact-composteur'}
           id="contact-composteur-content"
           aria-labelledby="contact-composteur"
           composter={composter}
-          setSnackBarMessage={setSnackBarMessage}
-        />
+        >
+          <ContactForm />
+        </Box>
 
-        <PermanencesRulesForm
+        <Box
           p={3}
           role="tabpanel"
           hidden={activeTab !== 'perm-composteur'}
           id="perm-composteur-content"
           aria-labelledby="perm-composteur"
           composter={composter}
-          setSnackBarMessage={setSnackBarMessage}
-        />
-        <Snackbar open={snackBarMessage} onClose={() => setSnackBarMessage(false)}>
-          <SnackbarContent variant="error" message={snackBarMessage} />
-        </Snackbar>
+        >
+          <PermanencesRulesForm />
+        </Box>
       </Paper>
     </ComposterContainer>
   )

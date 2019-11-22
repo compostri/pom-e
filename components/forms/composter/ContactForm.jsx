@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/styles'
 import api from '~/utils/api'
 import { UserContext } from '~context/UserContext'
 import { ComposterContext } from '~/context/ComposterContext'
+import { useToasts, TOAST } from '~/components/Snackbar'
 
 const ContactSchema = Yup.object().shape({
   receive: Yup.boolean()
@@ -24,11 +25,11 @@ const useStyles = makeStyles(theme => ({
  * Permet de choisir d'être destinataire des formulaires de contact
  */
 
-const ContactForm = props => {
-  const { setSnackBarMessage, ...otherProps } = props
+const ContactForm = () => {
   const [receivers, setReceivers] = useState()
   const { composterContext } = useContext(ComposterContext)
   const { composter } = composterContext
+  const { addToast } = useToasts()
 
   useEffect(() => {
     composterContext.setComposter(composter)
@@ -62,6 +63,9 @@ const ContactForm = props => {
     api.updateUserComposter(uc['@id'], { composterContactReceiver: values.receive }).then(res => {
       if (res.status === 200) {
         getUserComposter()
+        addToast('Votre demande a bien été prise en compte !', TOAST.SUCCESS)
+      } else {
+        addToast('Une erreur a eu lieu', TOAST.ERROR)
       }
       setSubmitting(false)
     })
@@ -69,58 +73,61 @@ const ContactForm = props => {
   const classes = useStyles()
 
   return (
-    <Box {...otherProps}>
-      <Formik
-        initialValues={{
-          receive: isReceiver()
-        }}
-        validationSchema={ContactSchema}
-        enableReinitialize
-        onSubmit={submit}
-      >
-        {({ values, handleChange, isSubmitting }) => (
-          <Form>
-            <Box my={2}>
-              <Typography>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Id nulla eaque doloremque atque nesciunt incidunt ipsam rem perferendis molestiae?
-                Nesciunt aperiam iste quae eaque obcaecati. Corporis nam suscipit dolores doloremque!
-              </Typography>
+    <Formik
+      initialValues={{
+        receive: isReceiver()
+      }}
+      validationSchema={ContactSchema}
+      enableReinitialize
+      onSubmit={submit}
+    >
+      {({ values, setFieldValue, isSubmitting }) => (
+        <Form>
+          <Box my={2}>
+            <Typography>
+              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Id nulla eaque doloremque atque nesciunt incidunt ipsam rem perferendis molestiae?
+              Nesciunt aperiam iste quae eaque obcaecati. Corporis nam suscipit dolores doloremque!
+            </Typography>
+          </Box>
+          <Box my={2}>
+            <Typography variant="h2" className={classes.title}>
+              Liste des personnes recevant les formulaires de contact
+            </Typography>
+            <Box>
+              {receivers &&
+                receivers
+                  .filter(uc => uc.composterContactReceiver === true)
+                  .map(uc => uc.user)
+                  .map((receiver, index) => (
+                    <Chip
+                      key={`rece-${index}`}
+                      className={classes.receiver}
+                      avatar={<Avatar>{receiver.username.substr(0, 1).toUpperCase()}</Avatar>}
+                      label={receiver.username}
+                    />
+                  ))}
             </Box>
-            <Box my={2}>
-              <Typography variant="h2" className={classes.title}>
-                Liste des personnes recevant les formulaires de contact
-              </Typography>
-              <Box>
-                {receivers &&
-                  receivers
-                    .filter(uc => uc.composterContactReceiver === true)
-                    .map(uc => uc.user)
-                    .map(receiver => (
-                      <Chip className={classes.receiver} avatar={<Avatar>{receiver.username.substr(0, 1).toUpperCase()}</Avatar>} label={receiver.username} />
-                    ))}
-              </Box>
-            </Box>
-            <Box my={2}>
-              <FormGroup>
-                <FormControlLabel
-                  control={<Switch value={values.receive} checked={values.receive} onChange={handleChange} />}
-                  label="Je veux recevoir les formulaires de contact"
-                  id="receive"
-                  name="receive"
-                  type="receive"
-                  className={classes.switchLabel}
-                />
-              </FormGroup>
-            </Box>
-            <Box my={2} align="center">
-              <Button type="submit" variant="contained" color="secondary">
-                {isSubmitting ? <CircularProgress /> : 'Enregistrer les modifications'}
-              </Button>
-            </Box>
-          </Form>
-        )}
-      </Formik>
-    </Box>
+          </Box>
+          <Box my={2}>
+            <FormGroup>
+              <FormControlLabel
+                control={<Switch value="receive" checked={values.receive} onChange={() => setFieldValue('receive', !values.receive)} />}
+                label="Je veux recevoir les formulaires de contact"
+                id="receive"
+                name="receive"
+                type="receive"
+                className={classes.switchLabel}
+              />
+            </FormGroup>
+          </Box>
+          <Box my={2} align="center">
+            <Button type="submit" variant="contained" color="secondary">
+              {isSubmitting ? <CircularProgress /> : 'Enregistrer les modifications'}
+            </Button>
+          </Box>
+        </Form>
+      )}
+    </Formik>
   )
 }
 
