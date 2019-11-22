@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 
-const composterType = PropTypes.shape({
+export const composterType = PropTypes.shape({
   name: PropTypes.string,
   slug: PropTypes.string,
   commune: PropTypes.number,
@@ -11,4 +11,20 @@ const composterType = PropTypes.shape({
   })
 })
 
-export default composterType
+export const permanenceType = PropTypes.shape({
+  date: PropTypes.date,
+  canceled: PropTypes.boolean,
+  eventTitle: PropTypes.string,
+  eventMessage: PropTypes.string,
+  nbUsers: PropTypes.number,
+  nbBuckets: PropTypes.number,
+  temperature: PropTypes.number,
+  openers: PropTypes.array
+})
+
+export const userType = PropTypes.shape({
+  id: PropTypes.number,
+  username: PropTypes.string,
+  firstname: PropTypes.string,
+  email: PropTypes.string
+})
