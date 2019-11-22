@@ -4,10 +4,10 @@ import Head from 'next/head'
 import { Button, Typography, Paper, List, ListItem, ListItemText, ListItemIcon, Box } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import { Room, Person, RadioButtonChecked } from '@material-ui/icons'
-import PropTypes from 'prop-types'
+
 import ReactMapGL, { Popup, Source, Layer } from 'react-map-gl'
 
-import composterType from '~/types'
+import { composterType } from '~/types'
 import Sidebar from '~/components/Sidebar'
 import DefaultImage from '~/components/DefaultImage'
 import getComposterColor from '~/utils/utils'
