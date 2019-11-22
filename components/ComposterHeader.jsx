@@ -80,7 +80,6 @@ const Header = () => {
   if (!composter) return null
 
   const { slug, name, permanencesRule } = composter
-  console.log('TCL: Header -> composter', composter)
 
   return (
     <AppBar className={classes.appBar} position="static" elevation={1}>

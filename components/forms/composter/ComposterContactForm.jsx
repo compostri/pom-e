@@ -1,91 +1,79 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useContext } from 'react'
 import * as Yup from 'yup'
-import { Formik, Form, Field, FieldArray } from 'formik'
-import { Box, FormGroup, FormControlLabel, Switch, Button, Typography, Chip, Avatar, CircularProgress, TextField } from '@material-ui/core'
-import { makeStyles } from '@material-ui/styles'
+import { Formik, Form } from 'formik'
+import { Box, Button, CircularProgress, TextField } from '@material-ui/core'
 import api from '~/utils/api'
-import { UserContext } from '~context/UserContext'
 import { ComposterContext } from '~context/ComposterContext'
 
 const ContactSchema = Yup.object().shape({
-  receive: Yup.boolean()
+  email: Yup.string()
+    .email()
+    .required('Le champ email est obligatoire'),
+  message: Yup.string().required('Le champ message est obligatoire')
 })
-
-const useStyles = makeStyles(theme => ({
-  title: {
-    marginBottom: theme.spacing(1)
-  },
-  receiver: {
-    marginRight: theme.spacing(1)
-  }
-}))
 
 /**
  * La fameux formulaire de contact
  */
 
-const ComposterContactForm = props => {
-  const { setSnackBarMessage, ...otherProps } = props
-  const {
-    userContext: { user }
-  } = useContext(UserContext)
+const ComposterContactForm = () => {
   const {
     composterContext: { composter }
   } = useContext(ComposterContext)
 
-  const submit = async (values, { setSubmitting }) => {
-    // On cherche la relation du user en cours et on l'update
+  const initialValues = {
+    email: '',
+    message: ''
+  }
 
+  const submit = async (values, { resetForm, setSubmitting }) => {
+    const res = await api.sendComposterContact({ ...values, composter: composter['@id'] })
+    if (res.status === 201) {
+      resetForm(initialValues)
+    }
     setSubmitting(false)
   }
 
   return (
-    <Box {...otherProps}>
-      <Formik
-        initialValues={{
-          subject: '',
-          message: ''
-        }}
-        validationSchema={ContactSchema}
-        enableReinitialize
-        onSubmit={submit}
-      >
-        {({ values, handleChange, field, isSubmitting }) => (
+    <Box>
+      <Formik initialValues={initialValues} validationSchema={ContactSchema} enableReinitialize onSubmit={submit}>
+        {({ values, handleChange, handleBlur, errors, touched, isSubmitting }) => (
           <Form>
-            <Field
-              component={TextField}
-              margin="normal"
+            <TextField
               fullWidth
-              id="subject"
-              label="Sujet"
-              name="subject"
-              value={values.subject}
+              required
+              InputLabelProps={{
+                shrink: true
+              }}
+              label="Email"
+              name="email"
+              value={values.email}
               onChange={handleChange}
-              type="subject"
-              autoComplete="subject"
-              autoFocus
-              autoOk
-              {...field}
+              onBlur={handleBlur}
+              error={errors.email && touched.email}
+              helperText={errors.email && touched.email ? errors.email : null}
             />
 
-            <Field
-              component={TextField}
-              margin="normal"
+            <TextField
               fullWidth
-              id="message"
+              required
               label="Message"
+              multiline
+              InputLabelProps={{
+                shrink: true
+              }}
+              rows={5}
               name="message"
               value={values.message}
               onChange={handleChange}
-              type="message"
-              autoComplete="message"
-              autoFocus
-              autoOk
-              {...field}
+              onBlur={handleBlur}
+              error={errors.message && touched.message}
+              helperText={errors.message && touched.message ? errors.message : null}
             />
             <Box my={2} align="center">
               <Button type="submit" variant="contained" color="secondary">
                 {isSubmitting ? <CircularProgress /> : 'Envoyer'}
+                {console.log('TCL: isSubmitting', isSubmitting)}
               </Button>
             </Box>
           </Form>

@@ -13,6 +13,7 @@ import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
 import MapField from '~/components/MapField'
 import ComposterContactForm from '~/components/forms/composter/ComposterContactForm'
+import { ComposterContext } from '~/context/ComposterContext'
 
 const { EDIT } = Action
 const { COMPOSTER_INFORMATION } = Subject
