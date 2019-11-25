@@ -4,7 +4,7 @@ import { Paper, Typography, Button, List, ListItem, ListItemText, ListItemIcon, 
 import { Room, Person, RadioButtonChecked, Lock, WatchLater, Edit } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 
-import composterType from '~/types'
+import { composterType } from '~/types'
 
 import { Can, Action, Subject } from '~context/AbilityContext'
 
