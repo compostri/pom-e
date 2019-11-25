@@ -196,6 +196,7 @@ const theme = createMuiTheme({
         }
       },
       containedPrimary: {
+        color: 'white',
         backgroundColor: palette.orangePrimary
       }
     }
