@@ -1,15 +1,22 @@
 const palette = {
+  /* Green */
   greenPrimary: '#a3c538',
   greenOpacity: 'rgba(163, 197, 56, 0.2)',
+  /* Orange */
   orangePrimary: '#e86034',
   orangeOpacity: '#EB734D',
+  orangeExtraLight: '#fadfd6',
+  orange: '#e75c2e',
+  /* Grey */
   greyDark: '#7b7d75',
   greyMedium: '#979797',
   greyLight: '#a8a8a8',
   greyExtraLight: '#faf9f8',
-  blue: '#7bced1',
-  orange: '#e75c2e',
   grey: '#666666',
+  /* Blue */
+  blue: '#7bced1',
+  blueExtraLight: '#e5f5f6',
+  /* Brown */
   brown: '#6c3727'
 }
 
