@@ -15,6 +15,7 @@ const theme = createMuiTheme({
   overrides: {
     MuiTypography: {
       h1: {
+        color: palette.greyDark,
         fontSize: 20,
         fontWeight: '700'
       },

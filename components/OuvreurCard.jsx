@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/styles'
 import { Paper, Typography, IconButton, Modal, Button, CircularProgress } from '@material-ui/core'
 import { Clear } from '@material-ui/icons'
 import palette from '~/variables'
 import api from '~/utils/api'
+import { getInitial } from '~/utils/utils'
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -144,7 +146,7 @@ const OuvreurCard = ({ uc }) => {
 
   return (
     <Paper elevation={1} className={classes.card}>
-      <div className={[classes.ouvreurAvatar, statutClassesAvatar].join(' ')}>{user.username}</div>
+      <div className={[classes.ouvreurAvatar, statutClassesAvatar].join(' ')}>{getInitial(user.username)}</div>
       <Typography className={[classes.ouvreurInfo, classes.ouvreurName].join(' ')}>{user.username}</Typography>
       <Typography className={classes.ouvreurInfo}>{user.email}</Typography>
 
@@ -163,16 +165,26 @@ const OuvreurCard = ({ uc }) => {
           </div>
 
           <div className={classes.modalUser}>
-            <div className={[classes.modalAvatar, statutClassesAvatar].join(' ')}>{user.username}</div>
+            <div className={[classes.modalAvatar, statutClassesAvatar].join(' ')}>{getInitial(user.username)}</div>
             <Typography className={classes.modalUserName}>{user.username}</Typography>
           </div>
 
           <Button onClick={handleSubmit} fullWidth className={classes.btnAdd}>
-            {isDeleting ? <CircularProgress /> : Confirmer}
+            {isDeleting ? <CircularProgress /> : 'Confirmer'}
           </Button>
         </Paper>
       </Modal>
     </Paper>
   )
+}
+
+OuvreurCard.propTypes = {
+  uc: PropTypes.shape({
+    '@id': PropTypes.string.isRequired,
+    user: PropTypes.shape({
+      username: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired
+    }).isRequired
+  }).isRequired
 }
 export default OuvreurCard
