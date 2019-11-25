@@ -113,7 +113,7 @@ const Header = () => {
             </Can>
             <Link href="/composter/[slug]/statistiques" as={`/composter/${slug}/statistiques`} passHref>
               <Button className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/statistiques' })}>
-                Stastiques
+                Statistiques
               </Button>
             </Link>
             <Can I={READ} this={COMPOSTER_LISTES_OUVREURS}>
