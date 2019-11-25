@@ -79,6 +79,8 @@ class MNApi {
 
   getCategories = () => this.get('/categories')
 
+  deleteUserComposter = id => this.delete(id)
+
   // Permanences
 
   getPermanences = ({ composterId: composter, before, after }) =>

@@ -1,20 +1,15 @@
-import React, { useState } from 'react'
-import { Typography, IconButton, Button, Modal, Tabs, Tab, Paper, TextField, Box, InputBase } from '@material-ui/core'
+import React, { useState, useEffect } from 'react'
+import { Typography, IconButton, Button, Modal, Tabs, Tab, Paper, TextField, Box, InputBase, CircularProgress, Grid } from '@material-ui/core'
 import { Clear, Search } from '@material-ui/icons'
-
+import nextCookie from 'next-cookies'
 import { makeStyles } from '@material-ui/styles'
 
 import api from '~/utils/api'
 import ComposterContainer from '~/components/ComposterContainer'
-import OuvreurCard from '~/components/OuvreurCard'
+import OuvreurCard from '../../../components/OuvreurCard'
 import palette from '~/variables'
 
 const useStyles = makeStyles(theme => ({
-  listingOuvreurs: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap'
-  },
   btnAdd: {
     margin: '0 auto',
     display: 'block'
@@ -90,32 +85,8 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const ouvreurs = [
-  {
-    name: ['Guillaume'],
-    mail: 'arnaudban@matierenoire.io'
-  },
-  {
-    name: ['ArnaudBan'],
-    mail: 'arnaudban@matierenoire.io'
-  },
-  {
-    name: ['ArnaudBan'],
-    mail: 'arnaudban@matierenoire.io'
-  },
-  {
-    name: ['ArnaudBan'],
-    mail: 'arnaudban@matierenoire.io'
-  },
-  {
-    name: ['ArnaudBan'],
-    mail: 'arnaudban@matierenoire.io'
-  }
-]
-
-const Content = ({ users, composter }) => {
+const Content = ({ composter, users }) => {
   const classes = useStyles()
-  const ouvr = ouvreurs.map((o, index) => <OuvreurCard ouvreur={o} users={users} key={`ouvr-${index}-${o.name}-${o.mail}`} />)
   const [openModal, setOpenModal] = useState(false)
   const [activeTab, setActiveTab] = useState('creation-compte')
   const [value, setValue] = React.useState(0)
@@ -136,7 +107,30 @@ const Content = ({ users, composter }) => {
   }
   return (
     <>
-      <div className={classes.listingOuvreurs}>{ouvr}</div>
+      <div>
+        <Typography variant="h1">Liste d&apos;ouvreurs pour {composter.name}</Typography>
+        {!users ? (
+          <Box align="center" my={2}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Box my={2}>
+            <Grid container spacing={2}>
+              {users.length > 0 ? (
+                <Grid item md={3} xs={6}>
+                  {users.map((o, index) => (
+                    <OuvreurCard uc={o} key={`ouvr-${index}`} />
+                  ))}
+                </Grid>
+              ) : (
+                <Grid item xs={12}>
+                  <Typography>Aucun ouvreur pour le moment</Typography>
+                </Grid>
+              )}
+            </Grid>
+          </Box>
+        )}
+      </div>
       <Button variant="contained" color="secondary" className={classes.btnAdd} onClick={handleOpen}>
         Ajouter un nouvel ouvreur
       </Button>
@@ -201,7 +195,7 @@ const Content = ({ users, composter }) => {
               </IconButton>
             </div>
             <div className={classes.searchResult}>
-              <Typography>arnaudban@matierenoire.io</Typography>
+              <Typography>{'arnaudban@matierenoire.io'}</Typography>
             </div>
 
             <Button variant="contained" color="secondary" onClick={handleSubmit} className={[classes.btnAdd, classes.btnNew].join(' ')}>
@@ -215,21 +209,32 @@ const Content = ({ users, composter }) => {
   )
 }
 
-const ComposterOuvreurs = ({ composter, users }) => {
+const ComposterOuvreurs = ({ composter }) => {
+  const [users, setUsers] = useState()
+
+  useEffect(() => {
+    const getUsers = async () => {
+      const res = await api.getUserComposter({ composter: composter.rid })
+      if (res.data) {
+        setUsers(res.data['hydra:member'])
+      }
+    }
+    getUsers()
+  }, [])
+
   return (
     <ComposterContainer composter={composter}>
-      <Content users={users} />
+      <Content composter={composter} users={users} />
     </ComposterContainer>
   )
 }
 
-ComposterOuvreurs.getInitialProps = async ({ query }) => {
-  const composter = await api.getComposter(query.slug)
-  const users = await api.getComposters()
+ComposterOuvreurs.getInitialProps = async ctx => {
+  const res = await api.getComposter(ctx.query.slug)
+  const composter = res.data
 
   return {
-    composter: composter.data,
-    users: users.data
+    composter
   }
 }
 
