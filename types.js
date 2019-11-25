@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 
 export const composterType = PropTypes.shape({
+  rid: PropTypes.number,
   name: PropTypes.string,
   slug: PropTypes.string,
   commune: PropTypes.number,

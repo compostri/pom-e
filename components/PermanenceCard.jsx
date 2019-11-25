@@ -9,9 +9,13 @@ import palette from '~/variables'
 
 import { permanenceType } from '~/types'
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(({ typography }) => ({
   card: {
-    backgroundColor: palette.greyExtraLight
+    backgroundColor: palette.greyExtraLight,
+    height: typography.pxToRem(85)
+  },
+  cardRoot: {
+    padding: '6px'
   },
   event: {
     display: 'flex',
@@ -64,16 +68,16 @@ const PermanceCard = ({ permanence }) => {
     const hasTitle = eventTitle
 
     if (isPermDatePassed || isCanceled) {
-      return { permanenceCardContentColor: palette.greyMedium, permanenceCardBackground }
+      return { permanenceCardContentColor: palette.greyMedium, permanenceCardBackground: palette.greyExtraLight }
     }
 
     if (hasAnyOpeners) {
       if (hasTitle) {
-        return { permanenceCardContentColor: palette.blue, permanenceCardBackground: '#e5f5f6' }
+        return { permanenceCardContentColor: palette.blue, permanenceCardBackground: palette.blueExtraLight }
       }
       return { permanenceCardContentColor: palette.greenPrimary, permanenceCardBackground }
     }
-    return { permanenceCardContentColor: palette.orangePrimary, permanenceCardBackground: '#fadfd6' }
+    return { permanenceCardContentColor: palette.orangePrimary, permanenceCardBackground: palette.orangeExtraLight }
   }
 
   const { permanenceCardContentColor, permanenceCardBackground } = getPermanenceCardColor(permanence)
@@ -84,8 +88,38 @@ const PermanceCard = ({ permanence }) => {
     permStatus = 'Permanence passée'
   }
 
+  const renderCardFooter = (openers, backgroundColor) => {
+    return (
+      <div className={classes.avatarLine}>
+        {openers.length > 0 ? (
+          openers.map(opener => {
+            const userLetter = opener.username.charAt(0).toUpperCase()
+            return (
+              <Avatar key={opener.username} style={{ backgroundColor }} className={classes.avatar}>
+                {userLetter}
+              </Avatar>
+            )
+          })
+        ) : (
+          <>
+            <Avatar style={{ backgroundColor }} className={classes.avatar}>
+              ?
+            </Avatar>
+            <Typography className={classes.noOpenerMsg}>Attention ! Pas d'ouvreur</Typography>
+          </>
+        )}
+      </div>
+    )
+  }
+
   return (
-    <Card style={{ backgroundColor: permanenceCardBackground }} className={classes.card}>
+    <Card
+      style={{ backgroundColor: permanenceCardBackground }}
+      className={classes.card}
+      classes={{
+        root: classes.cardRoot
+      }}
+    >
       <CardContent>
         {/* Titre de l'évênement si évênement */}
         {permanence.eventTitle && (
@@ -106,25 +140,7 @@ const PermanceCard = ({ permanence }) => {
         <Typography style={{ color: permanenceCardContentColor }} className={classes.permHour}>
           {dayjs(permanence.date).format('HH:mm')}
         </Typography>
-        <div className={classes.avatarLine}>
-          {permanence.openers.length > 0 ? (
-            permanence.openers.map(opener => {
-              const userLetter = opener.username.charAt(0).toUpperCase()
-              return (
-                <Avatar style={{ backgroundColor: permanenceCardContentColor }} className={classes.avatar}>
-                  {userLetter}
-                </Avatar>
-              )
-            })
-          ) : (
-            <div className={classes.avatarLine}>
-              <Avatar style={{ backgroundColor: permanenceCardContentColor }} className={classes.avatar}>
-                ?
-              </Avatar>
-              <Typography className={classes.noOpenerMsg}>Attention ! Pas d'ouvreur</Typography>
-            </div>
-          )}
-        </div>
+        {!isPermDatePassed && renderCardFooter(permanence.openers, permanenceCardContentColor)}
       </CardContent>
     </Card>
   )
