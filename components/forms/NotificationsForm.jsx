@@ -8,16 +8,11 @@ import palette from '~/variables'
 
 const useStyle = makeStyles(theme => ({
   newsletter: {
-    padding: 4,
-    top: 70,
     color: palette.greyLight,
-    display: 'block'
+    display: 'block',
+    margin: theme.spacing(1, 0)
   },
-  title: {
-    top: 15,
-    left: 15,
-    marginBottom: 15
-  },
+
   titles: {
     textAlign: 'center',
     fontSize: 17,
@@ -32,7 +27,7 @@ const useStyle = makeStyles(theme => ({
   composters: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center' },
   composterName: {
     textAlign: 'center',
-    margin: theme.spacing(1)
+    margin: theme.spacing(1, 0, 2)
   },
   newsCompostri: {
     margin: theme.spacing(2),
@@ -46,7 +41,6 @@ const useStyle = makeStyles(theme => ({
 
 const NotificationsForm = () => {
   const classes = useStyle()
-  const [value, setValue] = React.useState(0)
   const { addToast } = useToasts()
 
   const { userContext } = useContext(UserContext)
