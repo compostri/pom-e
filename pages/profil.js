@@ -8,6 +8,7 @@ import { Formik, Form, Field } from 'formik'
 import { UserContext } from '~/context/UserContext'
 import api from '~/utils/api'
 import ProfileForm from '~/components/forms/ProfileForm'
+import NotificationsForm from '~/components/forms/NotificationsForm'
 
 const UpdateProfil = Yup.object().shape({
   lastname: Yup.string().required('Nom requis'),
@@ -133,6 +134,7 @@ const Profil = () => {
         <Tabs value={value} onChange={handleChange} className={classes.appBar} indicatorColor="primary">
           <Tab className={classes.tab} label="Informations personnelles" {...a11yProps(0)} />
           <Tab className={classes.tab} label="Mot de passe" {...a11yProps(1)} />
+          <Tab className={classes.tab} label="Notifications" {...a11yProps(2)} />
         </Tabs>
         <TabPanel value={value} index={0}>
           <ProfileForm />
@@ -179,6 +181,9 @@ const Profil = () => {
               Enregistrer le nouveau mot de passe
             </Button>
           </form>
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          <NotificationsForm />
         </TabPanel>
       </Paper>
     </Container>
