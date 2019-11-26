@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Typography, IconButton, Button, Modal, Tabs, Tab, Paper, TextField, Box, InputBase, CircularProgress, Grid } from '@material-ui/core'
 import { Clear, Search } from '@material-ui/icons'
-import nextCookie from 'next-cookies'
 import { makeStyles } from '@material-ui/styles'
 
 import api from '~/utils/api'
 import ComposterContainer from '~/components/ComposterContainer'
-import OuvreurCard from '../../../components/OuvreurCard'
+import OuvreurCard from '~/components/OuvreurCard'
 import palette from '~/variables'
 
 const useStyles = makeStyles(theme => ({
