@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef, Fragment, useContext } from 'react'
+import React, { useState, useEffect, useMemo, useRef, Fragment, useCallback } from 'react'
 import { rrulestr } from 'rrule'
 import { Typography, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
@@ -10,6 +10,7 @@ import { composterType, permanenceType } from '~/types'
 import api from '~/utils/api'
 import ComposterContainer from '~/components/ComposterContainer'
 import PermanceCard from '~/components/PermanenceCard'
+import { PopoverPermanenceToCome } from '~/components/PermanenceCard/PermananceCardPopover'
 import palette from '~/variables'
 
 import Calendar from '~/components/Calendar'
@@ -26,6 +27,9 @@ const useStyles = makeStyles(() => ({
   nav: {
     display: 'flex',
     justifyContent: 'space-between'
+  },
+  permanence: {
+    padding: 6
   }
 }))
 
@@ -45,14 +49,10 @@ const ComposterPermanences = ({ perms, composter }) => {
 
   const [date, setDate] = useState(today)
   const [permanences, setPermanences] = useState(perms)
+  const [permanenceDetails, setPermanenceDetails] = useState(null)
 
   const startOfMonth = useMemo(() => date.startOf('month'), [date])
   const endOfMonth = useMemo(() => date.endOf('month'), [date])
-
-  // ex: [12, 26, 28]
-  const rulesDates = rrulestr(composter.permanencesRule, { forceset: true })
-    .between(startOfMonth.toDate(), endOfMonth.toDate())
-    .map(d => dayjs(d).get('date'))
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -79,30 +79,57 @@ const ComposterPermanences = ({ perms, composter }) => {
     changeMonth('add')
   }
 
-  const renderPermanence = perm => <PermanceCard permanence={perm} />
-
-  const renderDefaultPermanenceDay = () => {
-    const perm = {
-      cancel: false,
-      openers: []
-    }
-    return renderPermanence(perm)
+  const handleClose = () => {
+    setPermanenceDetails(null)
+  }
+  const handleClick = (perm, { vertical, horizontal }) => ({ currentTarget }) => {
+    setPermanenceDetails({
+      data: perm,
+      anchorEl: currentTarget,
+      vPos: vertical,
+      hPos: horizontal
+    })
   }
 
   const isThereAnyPermanences = day => perm => getDayInMonthFromPermanence(perm) === day
 
-  const renderDay = day => {
-    const permanencesOfTheDay = permanences.filter(isThereAnyPermanences(day))
+  const renderDay = useCallback(
+    (day, position) => {
+      const rulesDates = rrulestr(composter.permanencesRule, { forceset: true })
+        .between(startOfMonth.toDate(), endOfMonth.toDate())
+        .map(d => dayjs(d).get('date'))
 
-    if (permanencesOfTheDay.length > 0) {
-      return permanencesOfTheDay.map(renderWithKey(renderPermanence))
-    }
+      const renderPermanence = pos => perm => {
+        return (
+          <Button className={classes.permanence} classes={{ root: classes.permanenceRoot }} onClick={handleClick(perm, pos)}>
+            <PermanceCard permanence={perm} />
+          </Button>
+        )
+      }
 
-    if (rulesDates.includes(day)) {
-      return renderDefaultPermanenceDay()
-    }
-    return null
-  }
+      const renderDefaultPermanenceDay = pos => {
+        const perm = {
+          cancel: false,
+          openers: []
+        }
+        return renderPermanence(pos)(perm)
+      }
+
+      const permanencesOfTheDay = permanences.filter(isThereAnyPermanences(day))
+
+      if (permanencesOfTheDay.length > 0) {
+        return permanencesOfTheDay.map(renderWithKey(renderPermanence(position)))
+      }
+
+      if (rulesDates.includes(day)) {
+        return renderDefaultPermanenceDay(position)
+      }
+      return null
+    },
+    [classes.permanence, classes.permanenceRoot, composter.permanencesRule, endOfMonth, permanences, startOfMonth]
+  )
+
+  const { anchorEl, data: currentPermanence, hPos, vPos } = permanenceDetails || {}
 
   return (
     <ComposterContainer composter={composter}>
@@ -114,6 +141,9 @@ const ComposterPermanences = ({ perms, composter }) => {
         <Button onClick={goOneMonthForward} startIcon={<ChevronRight />} />
       </div>
       <Calendar date={date} renderDay={renderDay} />
+      {anchorEl && currentPermanence && (
+        <PopoverPermanenceToCome anchorEl={anchorEl} permanence={currentPermanence} onClose={handleClose} vertical={vPos} horizontal={hPos} />
+      )}
     </ComposterContainer>
   )
 }
