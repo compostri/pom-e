@@ -7,6 +7,7 @@ import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
 import { UserContext } from '~/context/UserContext'
 import api from '~/utils/api'
+import ProfileForm from '~/components/forms/ProfileForm'
 
 const UpdateProfil = Yup.object().shape({
   lastname: Yup.string().required('Nom requis'),
@@ -16,7 +17,7 @@ const UpdateProfil = Yup.object().shape({
     .required('Email requis'),
   username: Yup.string().required('Pseudo requis')
 })
-const useStyle = makeStyles((theme) => ({
+const useStyle = makeStyles(theme => ({
   sectionProfil: {
     padding: theme.spacing(2, 5, 5, 5),
     margin: theme.spacing(10, 15)
@@ -117,7 +118,7 @@ const Profil = () => {
   const FormikTextField = ({ field, form, ...props }) => {
     return <TextField {...field} {...props} />
   }
-  const handleSubmit = async (values) => {
+  const handleSubmit = async values => {
     const res = await userContext.updateUser(values)
     console.log(values)
     if (res.data === 200) {
@@ -134,95 +135,7 @@ const Profil = () => {
           <Tab className={classes.tab} label="Mot de passe" {...a11yProps(1)} />
         </Tabs>
         <TabPanel value={value} index={0}>
-          <Formik enableReinitialize initialValues={user} validationSchema={UpdateProfil} onSubmit={handleSubmit}>
-            {({ values, errors, touched, handleChange }) => (
-              <Form className={classes.form}>
-                <div className={classes.info}>
-                  <Field
-                    component={FormikTextField}
-                    // onChange={handleChange}
-                    error={errors.lastname && touched.lastname}
-                    helperText={errors.lastname && touched.lastname ? errors.lastname : undefined}
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                    fullWidth
-                    className={classes.input}
-                    name="lastname"
-                    label="Nom"
-                    placeholder="Entrez votre nom ici"
-                  />
-                  <Field
-                    component={FormikTextField}
-                    /* value={user.firstname || ''} */
-                    onChange={handleChange}
-                    error={errors.firstname && touched.firstname}
-                    helperText={errors.firstname && touched.firstname ? errors.firstname : undefined}
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                    className={classNames(classes.input, classes.second)}
-                    fullWidth
-                    name="firstname"
-                    label="Prénom"
-                    placeholder="Entrez votre prénom ici"
-                  />
-                </div>
-
-                <div className={classes.info}>
-                  <Field
-                    component={FormikTextField}
-                    /* value={user.email || ''} */
-                    onChange={handleChange}
-                    error={errors.email && touched.email}
-                    helperText={errors.email && touched.email ? errors.email : undefined}
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                    className={classes.input}
-                    name="email"
-                    label="E-mail"
-                    placeholder="Entrez votre e-mail ici"
-                  />
-
-                  <Field
-                    component={FormikTextField}
-                    /* placeholder={user.username || ''} */
-                    onChange={handleChange}
-                    error={errors.username && touched.username}
-                    helperText={errors.username && touched.username ? errors.username : undefined}
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                    fullWidth
-                    className={classNames(classes.input, classes.second)}
-                    name="username"
-                    label="Pseudo"
-                    placeholder="Entrez votre pseudo ici"
-                  />
-                </div>
-                <FormControlLabel
-                  className={classes.newsletter}
-                  value="newsletterComposteur"
-                  label="S'abonner à la newsletter du composteur"
-                  control={<Switch color="primary" />}
-                  labelPlacement="end"
-                />
-
-                <FormControlLabel
-                  className={classes.newsletter}
-                  value="newsletter"
-                  label="S'abonner à la newsletter de Compostri"
-                  control={<Switch color="primary" />}
-                  labelPlacement="end"
-                />
-
-                <Button className={classes.buttonSubmit} type="submit" variant="contained" color="primary">
-                  Modifier mes informations
-                </Button>
-              </Form>
-            )}
-          </Formik>
+          <ProfileForm />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <form className={classes.form}>
