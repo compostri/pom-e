@@ -4,12 +4,21 @@ import palette from './variables'
 const defaultTheme = createMuiTheme({})
 
 const theme = createMuiTheme({
+  typography: {
+    fontFamily: 'PT Sans, sans-serif',
+    color: palette.greyDark
+  },
   palette: {
     primary: { main: palette.greenPrimary },
     secondary: { main: palette.orangePrimary }
   },
   overrides: {
     MuiTypography: {
+      h1: {
+        color: palette.greyDark,
+        fontSize: 20,
+        fontWeight: '700'
+      },
       h2: {
         color: palette.greyDark,
         fontSize: 16,

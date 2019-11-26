@@ -10,7 +10,7 @@ import ReactMapGL, { Popup, Source, Layer } from 'react-map-gl'
 import { composterType } from '~/types'
 import Sidebar from '~/components/Sidebar'
 import DefaultImage from '~/components/DefaultImage'
-import getComposterColor from '~/utils/utils'
+import { getComposterColor } from '~/utils/utils'
 
 import api from '~/utils/api'
 import UserButton from '~/components/UserButton'

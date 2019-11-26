@@ -12,7 +12,8 @@ import { ComposterContext } from '~/context/ComposterContext'
 
 const useStyles = makeStyles(theme => ({
   appBar: {
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    marginBottom: theme.typography.pxToRem(36)
   },
   logo: {
     width: 80,
@@ -56,13 +57,15 @@ const useStyles = makeStyles(theme => ({
     borderBottomColor: 'transparent',
     padding: theme.spacing(6, 0, 3, 0),
     marginRight: theme.spacing(4),
-    '&:hover': {
+    borderRadius: 0,
+    '&:hover, &:focus': {
       borderBottomColor: palette.greenPrimary,
       backgroundColor: 'white'
     }
   },
   activeButton: {
     borderBottomColor: palette.greenPrimary,
+    fontWeight: 700,
     backgroundColor: 'white'
   }
 }))
@@ -102,30 +105,32 @@ const Header = () => {
           </div>
           <div className={classes.toolbarLink}>
             <Link href="/composter/[slug]" as={`/composter/${slug}`} passHref>
-              <Button className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]' })}>Informations</Button>
+              <Button disableRipple className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]' })}>
+                Informations
+              </Button>
             </Link>
             <Can I={READ} this={{ $type: COMPOSTER_PERMANENCES, permanencesRule }}>
               <Link href="/composter/[slug]/permanences" as={`/composter/${slug}/permanences`} passHref>
-                <Button className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/permanences' })}>
+                <Button disableRipple className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/permanences' })}>
                   Permanences
                 </Button>
               </Link>
             </Can>
             <Link href="/composter/[slug]/statistiques" as={`/composter/${slug}/statistiques`} passHref>
-              <Button className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/statistiques' })}>
-                Statistiques
+              <Button disableRipple className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/statistiques' })}>
+                Stastiques
               </Button>
             </Link>
             <Can I={READ} this={COMPOSTER_LISTES_OUVREURS}>
               <Link href="/composter/[slug]/ouvreurs" as={`/composter/${slug}/ouvreurs`} passHref>
-                <Button className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/ouvreurs' })}>
+                <Button disableRipple className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/ouvreurs' })}>
                   Listes d'ouvreurs
                 </Button>
               </Link>
             </Can>
             <Can I={READ} this={COMPOSTER_NEWLETTERS}>
               <Link href="/composter/[slug]/newsletter" as={`/composter/${slug}/newsletter`} passHref>
-                <Button className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/newsletter' })}>
+                <Button disableRipple className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/newsletter' })}>
                   Newsletter
                 </Button>
               </Link>

@@ -8,6 +8,7 @@ import 'dayjs/locale/fr'
 import palette from '~/variables'
 
 import { permanenceType } from '~/types'
+import { getInitial } from '~/utils/utils'
 
 const useStyles = makeStyles(({ typography }) => ({
   card: {
@@ -93,10 +94,9 @@ const PermanceCard = ({ permanence }) => {
       <div className={classes.avatarLine}>
         {openers.length > 0 ? (
           openers.map(opener => {
-            const userLetter = opener.username.charAt(0).toUpperCase()
             return (
               <Avatar key={opener.username} style={{ backgroundColor }} className={classes.avatar}>
-                {userLetter}
+                {getInitial(opener.username)}
               </Avatar>
             )
           })

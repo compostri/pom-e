@@ -7,6 +7,7 @@ import api from '~/utils/api'
 import { UserContext } from '~context/UserContext'
 import { ComposterContext } from '~/context/ComposterContext'
 import { useToasts, TOAST } from '~/components/Snackbar'
+import { getInitial } from '~/utils/utils'
 
 const ContactSchema = Yup.object().shape({
   receive: Yup.boolean()
@@ -30,10 +31,6 @@ const ContactForm = () => {
   const { composterContext } = useContext(ComposterContext)
   const { composter } = composterContext
   const { addToast } = useToasts()
-
-  useEffect(() => {
-    composterContext.setComposter(composter)
-  }, [])
 
   const {
     userContext: { user }
@@ -102,7 +99,7 @@ const ContactForm = () => {
                     <Chip
                       key={`rece-${index}`}
                       className={classes.receiver}
-                      avatar={<Avatar>{receiver.username.substr(0, 1).toUpperCase()}</Avatar>}
+                      avatar={<Avatar>{getInitial(receiver.username)}</Avatar>}
                       label={receiver.username}
                     />
                   ))}

@@ -1,6 +1,6 @@
 import palette from '../variables'
 
-const getComposterColor = composter => {
+export const getComposterColor = composter => {
   let composterColor = palette.grey
   if (!composter) {
     return composterColor
@@ -24,4 +24,6 @@ const getComposterColor = composter => {
   return composterColor
 }
 
-export default getComposterColor
+export const getInitial = name => {
+  return name.charAt(0).toUpperCase()
+}
