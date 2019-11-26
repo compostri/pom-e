@@ -106,7 +106,7 @@ const NotificationsForm = () => {
         {userComposter.length > 0 &&
           userComposter.map(uc => {
             return (
-              <Paper className={classes.composterUc}>
+              <Paper className={classes.composterUc} key={`uc-${index}`}>
                 <Typography className={classes.composterName} component="h2" variant="h2">
                   {uc.composter.name}
                 </Typography>
