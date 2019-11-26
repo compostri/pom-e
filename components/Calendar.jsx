@@ -48,17 +48,20 @@ const useStyles = makeStyles(theme => ({
     fontSize: 12,
     fontWeight: '400',
     letterSpacing: 1.71,
-    height: '115px'
+    height: '180px',
+    padding: 0
   },
   tableCellContent: {
     position: 'absolute',
     top: 0,
     display: 'flex',
     flexDirection: 'column',
-    padding: '6px'
+    padding: 0,
+    width: '100%'
   },
   tableCellContentDay: {
-    alignSelf: 'start'
+    alignSelf: 'start',
+    padding: 0
   }
 }))
 
