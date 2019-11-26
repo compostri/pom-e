@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { Typography, IconButton, Button, Modal, Tabs, Tab, Paper, TextField, Box, InputBase, CircularProgress, Grid } from '@material-ui/core'
 import { Clear, Search } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
-
+import Autocomplete from '@material-ui/lab/Autocomplete'
 import api from '~/utils/api'
 import ComposterContainer from '~/components/ComposterContainer'
 import OuvreurCard from '~/components/OuvreurCard'
 import palette from '~/variables'
+import RegisterForm from '~/components/forms/RegisterForm'
+import AddUserComposterForm from '~/components/forms/AddUserComposterForm'
 
 const useStyles = makeStyles(theme => ({
   btnAdd: {
@@ -100,10 +102,7 @@ const Content = ({ composter, users }) => {
   const handleClose = () => {
     setOpenModal(false)
   }
-  const handleSubmit = () => {
-    // TODO Ajouter l'ouvreur a la permanence
-    handleClose()
-  }
+
   return (
     <>
       <div>
@@ -116,11 +115,11 @@ const Content = ({ composter, users }) => {
           <Box my={2}>
             <Grid container spacing={2}>
               {users.length > 0 ? (
-                <Grid item md={3} xs={6}>
-                  {users.map((o, index) => (
+                users.map((o, index) => (
+                  <Grid item md={3} xs={6}>
                     <OuvreurCard uc={o} key={`ouvr-${index}`} />
-                  ))}
-                </Grid>
+                  </Grid>
+                ))
               ) : (
                 <Grid item xs={12}>
                   <Typography>Aucun ouvreur pour le moment</Typography>
@@ -166,18 +165,7 @@ const Content = ({ composter, users }) => {
             id="creation-compte-content"
             aria-labelledby="creation-compte"
           >
-            <div className={classes.info}>
-              <TextField fullWidth id="nom" label="Nom" placeholder="Entrez le nom ici" />
-              <TextField className={classes.second} fullWidth id="prenom" label="Prénom" placeholder="Entrez le prénom ici" />
-            </div>
-            <div className={classes.info}>
-              <TextField fullWidth id="pseudo" label="Pseudo" placeholder="Entrez le pseudo ici" />
-              <TextField className={classes.second} fullWidth id="mail" label="E-mail" placeholder="Entrez l'e-mail ici" />
-            </div>
-            <Button variant="contained" onClick={handleSubmit} color="secondary" className={[classes.btnAdd, classes.btnNew].join(' ')}>
-              Créer un compte pour ce composteur
-            </Button>
-            <Typography className={classes.smallTxt}>Attention ! L’ouvreur devra accepté l’invitation via mail avant d’être actif.</Typography>
+            <RegisterForm handleClose={handleClose} />
           </Box>
           <Box
             p={3}
@@ -187,20 +175,7 @@ const Content = ({ composter, users }) => {
             id="recherche-compte-content"
             aria-labelledby="recherche-compte"
           >
-            <div className={classes.search}>
-              <InputBase className={classes.searchInput} placeholder="Rechercher un utilisateur" />
-              <IconButton className={classes.searchBtn} type="submit" aria-label="search">
-                <Search />
-              </IconButton>
-            </div>
-            <div className={classes.searchResult}>
-              <Typography>{'arnaudban@matierenoire.io'}</Typography>
-            </div>
-
-            <Button variant="contained" color="secondary" onClick={handleSubmit} className={[classes.btnAdd, classes.btnNew].join(' ')}>
-              Associer ce compte à ce composteur
-            </Button>
-            <Typography className={classes.smallTxt}>Attention ! L’ouvreur devra accepté l’invitation via mail avant d’être actif.</Typography>
+            <AddUserComposterForm />
           </Box>
         </Paper>
       </Modal>
