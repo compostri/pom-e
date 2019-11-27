@@ -45,8 +45,6 @@ const NotificationsForm = () => {
   /* Notifications */
   async function getUserComposter() {
     const dataComposters = await api.getUserComposter({ user: userContext.user.userId })
-    console.log('TCL: getUserComposter -> userContext.user.id', userContext.user.userId)
-
     if (dataComposters.status === 200) {
       setUserComposter(dataComposters.data['hydra:member'])
     }
