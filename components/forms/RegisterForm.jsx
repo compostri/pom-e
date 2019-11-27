@@ -57,6 +57,7 @@ const RegisterForm = ({ handleClose }) => {
         plainPassword: Math.random()
           .toString(36)
           .replace(/[^a-z]+/g, ''),
+        userConfirmedAccountURL: `${window.location.origin}/confirmation`,
         email: ''
       }}
       validationSchema={RegisterSchema}
