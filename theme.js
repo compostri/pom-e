@@ -111,8 +111,10 @@ const theme = createMuiTheme({
       }
     },
     MuiInputBase: {
+      root: {
+        backgroundColor: palette.greyExtraLight
+      },
       input: {
-        backgroundColor: palette.greyExtraLight,
         color: palette.greyMedium,
         padding: '14px',
         borderRadius: 2

@@ -56,7 +56,7 @@ export const TOAST = {
 
 export { useToasts }
 
-export default function MNSnackbar({ className, action, appearance, children, autoDismissTimeout, ...other }) {
+export default function MNSnackbar({ className, action, appearance, children, autoDismissTimeout = 4000, ...other }) {
   const classes = toastStyles()
   const [openSnackBar, setOpenSnackBar] = useState(true)
 

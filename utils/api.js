@@ -69,6 +69,8 @@ class MNApi {
 
   updateComposter = (slug, args) => this.put(`/composters/${slug}`, args)
 
+  createUserComposter = args => this.post(`/user_composters`, args)
+
   updateUserComposter = (id, args) => this.put(id, args)
 
   getComposterGeojson = () => this.get('/composters.geojson')
