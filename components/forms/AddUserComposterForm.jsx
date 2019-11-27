@@ -1,6 +1,6 @@
 import React, { Fragment, useContext } from 'react'
 import { Typography, TextField, Box, Avatar, Button, CircularProgress } from '@material-ui/core'
-import { Search, RecentActorsTwoTone } from '@material-ui/icons'
+import { Search } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import throttle from 'lodash/throttle'
