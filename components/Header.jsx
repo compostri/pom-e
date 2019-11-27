@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import { Typography, AppBar, Toolbar, IconButton } from '@material-ui/core'
+import { Typography, AppBar, Toolbar, IconButton, Box } from '@material-ui/core'
 import { ChevronLeft } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 import palette from '~/variables'
@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: theme.spacing(8)
   },
   toolbarGlobal: {
-    alignItems: 'flex-end'
+    alignItems: 'stretch'
   },
   toolbarTitle: {
     flexGrow: 1,
@@ -32,10 +32,12 @@ const useStyles = makeStyles(theme => ({
     display: 'flex'
   },
   toolbarLeft: {
+    padding: theme.spacing(5, 4, 0, 4),
     width: '100%',
     display: 'flex',
-    flexWrap: 'wrap',
-    height: 150
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap'
   },
   chevronLeft: {
     padding: '0',
@@ -66,18 +68,20 @@ const Header = props => {
           </IconButton>
         </Link>
         <div className={classes.toolbarLeft}>
-          <div className={classes.toolbarTitle}>
-            <Link href="/" passHref>
-              <IconButton className={classes.chevronLeft}>
-                <ChevronLeft />
-              </IconButton>
-            </Link>
-            <Typography variant="h1" className={classes.title}>
-              {props.title}
-            </Typography>
-          </div>
+          <Box display="flex" justifyContent="space-between" alignItems="flex-start" width="100%">
+            <div className={classes.toolbarTitle}>
+              <Link href="/" passHref>
+                <IconButton className={classes.chevronLeft}>
+                  <ChevronLeft />
+                </IconButton>
+              </Link>
+              <Typography variant="h1" className={classes.title}>
+                {props.title}
+              </Typography>
+            </div>
 
-          <UserButton />
+            <UserButton />
+          </Box>
 
           <div className={classes.children}>{props.children}</div>
         </div>

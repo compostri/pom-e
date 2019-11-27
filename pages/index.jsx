@@ -16,14 +16,14 @@ import api from '~/utils/api'
 import UserButton from '~/components/UserButton'
 import palette from '~/variables'
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(({ spacing }) => ({
   mapContainer: {
     marginLeft: '0'
   },
   userButton: {
     position: 'fixed',
-    top: '40px',
-    right: '40px',
+    top: spacing(5),
+    right: spacing(4),
     zIndex: 150
   },
   listItem: {

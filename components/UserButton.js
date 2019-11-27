@@ -9,8 +9,6 @@ import { Lens, ExpandMore, ExpandLess } from '@material-ui/icons'
 
 const useStyles = makeStyles(theme => ({
   UserButtonLog: {
-    alignSelf: 'center',
-    margin: theme.spacing(0, 5, 8, 0),
     '&:hover': {
       backgroundColor: palette.orangeOpacity
     }
