@@ -37,10 +37,10 @@ const toastStyles = makeStyles(
       color: palette.white
     },
     snack: {
-      index: 1500
+      zIndex: 1500
     }
   }),
-  { name: 'HookToast', index: 2 }
+  { name: 'HookToast', index: 10 }
 )
 
 const variantIcon = {

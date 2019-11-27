@@ -1,12 +1,13 @@
-import React, { useContext } from 'react'
-import { Typography, TextField, Grid, Avatar } from '@material-ui/core'
-import { Search } from '@material-ui/icons'
+import React, { Fragment, useContext } from 'react'
+import { Typography, TextField, Box, Avatar, Button, CircularProgress } from '@material-ui/core'
+import { Search, RecentActorsTwoTone } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import throttle from 'lodash/throttle'
 import api from '~/utils/api'
 import { ComposterContext } from '~/context/ComposterContext'
 import { getInitial } from '~/utils/utils'
+import { useToasts, TOAST } from '../Snackbar'
 
 const useStyles = makeStyles(() => ({
   autocomplete: {
@@ -19,19 +20,18 @@ const AddUserComposterForm = () => {
   const {
     composterContext: { composter }
   } = useContext(ComposterContext)
+  const { addToast } = useToasts()
+  const [isLoading, setIsLoading] = React.useState(false)
   const [inputValue, setInputValue] = React.useState('')
+  const [selectedUser, setSelectedUser] = React.useState({})
   const [options, setOptions] = React.useState([])
-
-  const handleChange = event => {
-    setInputValue(event.target.value)
-  }
 
   const fetch = React.useMemo(
     () =>
-      throttle(input => {
-        api.getUserComposter({ composter: composter.rid, user: input })
+      throttle((input, cb) => {
+        api.getUsers({ email: input }).then(cb)
       }, 200),
-    [composter.rid]
+    []
   )
 
   React.useEffect(() => {
@@ -42,9 +42,9 @@ const AddUserComposterForm = () => {
       return undefined
     }
 
-    fetch({ input: inputValue }, results => {
+    fetch(inputValue, results => {
       if (active) {
-        setOptions(results || [])
+        setOptions(results.data['hydra:member'] || [])
       }
     })
 
@@ -53,15 +53,45 @@ const AddUserComposterForm = () => {
     }
   }, [inputValue, fetch])
 
+  const onChange = (e, value) => {
+    setSelectedUser(value)
+  }
+
+  const onInputChange = (e, value) => {
+    setInputValue(value)
+  }
+
+  async function onSubmit() {
+    console.log('TCL: onSubmit -> !selectedUser && !inputValue', !selectedUser.username)
+    if (!selectedUser.username) {
+      addToast('Veuillez sélectionner un utilisateur.', TOAST.ERROR)
+      return
+    }
+    setIsLoading(true)
+    const res = await api.createUserComposter({ composter: composter['@id'], user: selectedUser['@id'] })
+    if (res.status === 201) {
+      addToast("L'utilisateur a bien été ajouté.", TOAST.SUCCESS)
+    } else {
+      addToast('Une erreur est intervenue. Veuillez rééssayer plus tard.', TOAST.ERROR)
+    }
+    setIsLoading(false)
+  }
+
   return (
     <>
       <div className={classes.search}>
         <Autocomplete
           className={classes.autocomplete}
           id="searchuc"
-          freeSolo
-          getOptionLabel={option => option.username}
+          noOptionsText={'Aucun utilisateur correspondant'}
+          getOptionLabel={option => option.email}
           options={options}
+          onInputChange={onInputChange}
+          onChange={onChange}
+          filterOptions={users => {
+            const newUsers = [...users]
+            return newUsers.filter(user => !user.userComposters.find(uc => uc.composter === composter['@id']))
+          }}
           renderInput={params => (
             <TextField
               {...params}
@@ -71,7 +101,6 @@ const AddUserComposterForm = () => {
               InputLabelProps={{
                 shrink: true
               }}
-              onChange={handleChange}
               InputProps={{
                 ...params.InputProps,
                 endAdornment: <Search />
@@ -79,22 +108,23 @@ const AddUserComposterForm = () => {
             />
           )}
           renderOption={option => {
-            console.log(option)
-
             return (
-              <Grid container alignItems="center">
-                <Grid item>
+              <Fragment key={option.email}>
+                <Box mr={2}>
                   <Avatar>{getInitial(option.username)}</Avatar>
-                </Grid>
-                <Grid item xs>
-                  <Typography variant="body2" color="textSecondary">
-                    {option.username}
-                  </Typography>
-                </Grid>
-              </Grid>
+                </Box>
+                <Typography variant="body2" color="textSecondary">
+                  {option.email}
+                </Typography>
+              </Fragment>
             )
           }}
         />
+        <Box align="center">
+          <Button variant="contained" color="secondary" onClick={onSubmit}>
+            {isLoading ? <CircularProgress size={24} /> : 'Associer'}
+          </Button>
+        </Box>
       </div>
     </>
   )
