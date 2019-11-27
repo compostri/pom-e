@@ -9,6 +9,7 @@ import { UserContext } from '~/context/UserContext'
 import api from '~/utils/api'
 import ProfileForm from '~/components/forms/ProfileForm'
 import NotificationsForm from '~/components/forms/NotificationsForm'
+import Header from '~/components/Header'
 
 const UpdateProfil = Yup.object().shape({
   lastname: Yup.string().required('Nom requis'),
@@ -129,64 +130,67 @@ const Profil = () => {
     }
   }
   return (
-    <Container maxWidth="lg">
-      <Paper className={classes.sectionProfil}>
-        <Tabs value={value} onChange={handleChange} className={classes.appBar} indicatorColor="primary">
-          <Tab className={classes.tab} label="Informations personnelles" {...a11yProps(0)} />
-          <Tab className={classes.tab} label="Mot de passe" {...a11yProps(1)} />
-          <Tab className={classes.tab} label="Notifications" {...a11yProps(2)} />
-        </Tabs>
-        <TabPanel value={value} index={0}>
-          <ProfileForm />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <form className={classes.form}>
-            <div className={classes.info}>
-              <TextField
-                InputLabelProps={{
-                  shrink: true
-                }}
-                fullWidth
-                className={classNames(classes.input, classes.inputAncienMdp)}
-                id="lastMdp"
-                type="password"
-                label="Ancien mot de passe"
-                placeholder="Entrez votre ancien mot de passe"
-              />
-            </div>
-            <div className={classes.info}>
-              <TextField
-                InputLabelProps={{
-                  shrink: true
-                }}
-                className={classes.input}
-                id="newMdp"
-                type="password"
-                label="Nouveau mot de passe"
-                placeholder="Entrez votre nouveau mot de passe"
-              />
-              <TextField
-                InputLabelProps={{
-                  shrink: true
-                }}
-                placeholder="Confirmez votre nouveau mot de passe"
-                fullWidth
-                className={classNames(classes.inputConfirmMdp, classes.second, classes.input)}
-                id="confirmNewMdp"
-                type="password"
-                label="Confirmer mon mot de passe"
-              />
-            </div>
-            <Button className={classes.buttonSubmit} type="submit" variant="contained" color="primary">
-              Enregistrer le nouveau mot de passe
-            </Button>
-          </form>
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          <NotificationsForm />
-        </TabPanel>
-      </Paper>
-    </Container>
+    <>
+      <Header title="Mon profil" />
+      <Container maxWidth="lg">
+        <Paper className={classes.sectionProfil}>
+          <Tabs value={value} onChange={handleChange} className={classes.appBar} indicatorColor="primary">
+            <Tab className={classes.tab} label="Informations personnelles" {...a11yProps(0)} />
+            <Tab className={classes.tab} label="Mot de passe" {...a11yProps(1)} />
+            <Tab className={classes.tab} label="Notifications" {...a11yProps(2)} />
+          </Tabs>
+          <TabPanel value={value} index={0}>
+            <ProfileForm />
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <form className={classes.form}>
+              <div className={classes.info}>
+                <TextField
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                  fullWidth
+                  className={classNames(classes.input, classes.inputAncienMdp)}
+                  id="lastMdp"
+                  type="password"
+                  label="Ancien mot de passe"
+                  placeholder="Entrez votre ancien mot de passe"
+                />
+              </div>
+              <div className={classes.info}>
+                <TextField
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                  className={classes.input}
+                  id="newMdp"
+                  type="password"
+                  label="Nouveau mot de passe"
+                  placeholder="Entrez votre nouveau mot de passe"
+                />
+                <TextField
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                  placeholder="Confirmez votre nouveau mot de passe"
+                  fullWidth
+                  className={classNames(classes.inputConfirmMdp, classes.second, classes.input)}
+                  id="confirmNewMdp"
+                  type="password"
+                  label="Confirmer mon mot de passe"
+                />
+              </div>
+              <Button className={classes.buttonSubmit} type="submit" variant="contained" color="primary">
+                Enregistrer le nouveau mot de passe
+              </Button>
+            </form>
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            <NotificationsForm />
+          </TabPanel>
+        </Paper>
+      </Container>
+    </>
   )
 }
 
