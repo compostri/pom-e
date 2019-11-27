@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { Paper, FormControlLabel, Switch, Typography } from '@material-ui/core'
+import { Paper, FormControlLabel, Switch, Typography, Grid } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import { useToasts, TOAST } from '~/components/Snackbar'
 import { UserContext } from '~/context/UserContext'
@@ -14,28 +14,24 @@ const useStyle = makeStyles(theme => ({
   },
 
   titles: {
-    textAlign: 'center',
     fontSize: 17,
-    margin: theme.spacing(3)
+    margin: theme.spacing(0, 0, 3)
   },
+  newsCompostri: {
+    margin: theme.spacing(2, 0),
+    display: 'flex',
+    flexWrap: 'wrap',
+    color: palette.greyLight
+  },
+  composters: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center' },
   composterUc: {
     background: palette.greyExtraLight,
-    margin: theme.spacing(2),
     padding: theme.spacing(2),
     borderRadius: 2
   },
-  composters: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center' },
   composterName: {
     textAlign: 'center',
     margin: theme.spacing(1, 0, 2)
-  },
-  newsCompostri: {
-    margin: theme.spacing(2),
-    padding: theme.spacing(2),
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    color: palette.greyLight
   }
 }))
 
@@ -48,7 +44,8 @@ const NotificationsForm = () => {
 
   /* Notifications */
   async function getUserComposter() {
-    const dataComposters = await api.getUserComposter({ user: userContext.user.id })
+    const dataComposters = await api.getUserComposter({ user: userContext.user.userId })
+    console.log('TCL: getUserComposter -> userContext.user.id', userContext.user.userId)
 
     if (dataComposters.status === 200) {
       setUserComposter(dataComposters.data['hydra:member'])
@@ -59,9 +56,8 @@ const NotificationsForm = () => {
     const newUCs = userComposter.map(oldUC => {
       if (oldUC['@id'] === uc['@id']) {
         return { ...uc, [field]: !uc[field] }
-      } else {
-        return oldUC
       }
+      return oldUC
     })
     setUserComposter(newUCs)
   }
@@ -96,43 +92,45 @@ const NotificationsForm = () => {
         Mes composteurs
       </Typography>
 
-      <div className={classes.composters}>
+      <Grid container spacing={2}>
         {userComposter.length > 0 &&
           userComposter.map((uc, index) => {
             return (
-              <Paper className={classes.composterUc} key={`uc-${uc.id}`}>
-                <Typography className={classes.composterName} component="h3" variant="h2">
-                  {uc.composter.name}
-                </Typography>
+              <Grid item xs={6} key={`uc-${uc.id}`}>
+                <Paper className={classes.composterUc}>
+                  <Typography className={classes.composterName} component="h3" variant="h2">
+                    {uc.composter.name}
+                  </Typography>
 
-                <FormControlLabel
-                  onChange={() => updateUC(uc, 'notif')}
-                  className={classes.newsletter}
-                  name="notif"
-                  label="Être notifié lors de mes permanences"
-                  control={<Switch value="notif" checked={uc.notif} color="primary" />}
-                  labelPlacement="end"
-                />
-                <FormControlLabel
-                  onChange={() => updateUC(uc, 'newsletter')}
-                  className={classes.newsletter}
-                  name="newsletter"
-                  label="S'abonner à la newsletter du composteur"
-                  control={<Switch value="newsletter" checked={uc.newsletter} color="primary" />}
-                  labelPlacement="end"
-                />
-                <FormControlLabel
-                  onChange={() => updateUC(uc, 'composterContactReceiver')}
-                  className={classes.newsletter}
-                  name="composterContactReceiver"
-                  label="Recevoir les formulaires de contact"
-                  control={<Switch value="composterContactReceiver" checked={uc.composterContactReceiver} color="primary" />}
-                  labelPlacement="end"
-                />
-              </Paper>
+                  <FormControlLabel
+                    onChange={() => updateUC(uc, 'notif')}
+                    className={classes.newsletter}
+                    name="notif"
+                    label="Être notifié lors de mes permanences"
+                    control={<Switch value="notif" checked={uc.notif} color="primary" />}
+                    labelPlacement="end"
+                  />
+                  <FormControlLabel
+                    onChange={() => updateUC(uc, 'newsletter')}
+                    className={classes.newsletter}
+                    name="newsletter"
+                    label="S'abonner à la newsletter du composteur"
+                    control={<Switch value="newsletter" checked={uc.newsletter} color="primary" />}
+                    labelPlacement="end"
+                  />
+                  <FormControlLabel
+                    onChange={() => updateUC(uc, 'composterContactReceiver')}
+                    className={classes.newsletter}
+                    name="composterContactReceiver"
+                    label="Recevoir les formulaires de contact"
+                    control={<Switch value="composterContactReceiver" checked={uc.composterContactReceiver} color="primary" />}
+                    labelPlacement="end"
+                  />
+                </Paper>
+              </Grid>
             )
           })}
-      </div>
+      </Grid>
     </>
   )
 }

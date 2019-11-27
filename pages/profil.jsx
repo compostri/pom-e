@@ -9,6 +9,7 @@ import { UserContext } from '~/context/UserContext'
 import api from '~/utils/api'
 import ProfileForm from '~/components/forms/ProfileForm'
 import NotificationsForm from '~/components/forms/NotificationsForm'
+import PasswordForm from '~/components/forms/PasswordForm'
 import Header from '~/components/Header'
 
 const UpdateProfil = Yup.object().shape({
@@ -81,9 +82,9 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props
 
   return (
-    <Typography component="div" role="tabpanel" hidden={value !== index} id={`tabpanel-${index}`} aria-labelledby={`tab-${index}`} {...other}>
+    <Box role="tabpanel" hidden={value !== index} id={`tabpanel-${index}`} aria-labelledby={`tab-${index}`} {...other}>
       <Box p={3}>{children}</Box>
-    </Typography>
+    </Box>
   )
 }
 
@@ -97,38 +98,11 @@ function a11yProps(index) {
 const Profil = () => {
   const classes = useStyle()
   const [value, setValue] = React.useState(0)
-  const [isUpdateSuccess, setUpdateStatus] = React.useState(false)
-  const [user, setUser] = React.useState({ username: '', lastname: '', firstname: '', email: '' })
-  const { userContext } = useContext(UserContext)
 
-  async function getUser(values) {
-    const data = await userContext.getUser(values).catch(console.log)
-    if (data) {
-      const { username, firstname, lastname, email } = data
-      setUser({ username, firstname, lastname, email })
-    }
+  function handleChange(e, value) {
+    setValue(value)
   }
 
-  useEffect(() => {
-    getUser()
-  }, [isUpdateSuccess])
-  /* console.log(userContext.isLoggedIn()) */
-  const handleChange = (event, newValue) => {
-    setValue(newValue)
-  }
-
-  const FormikTextField = ({ field, form, ...props }) => {
-    return <TextField {...field} {...props} />
-  }
-  const handleSubmit = async values => {
-    const res = await userContext.updateUser(values)
-    console.log(values)
-    if (res.data === 200) {
-      setUpdateStatus(true)
-    } else {
-      setUpdateStatus(false)
-    }
-  }
   return (
     <>
       <Header title="Mon profil" />
@@ -143,47 +117,7 @@ const Profil = () => {
             <ProfileForm />
           </TabPanel>
           <TabPanel value={value} index={1}>
-            <form className={classes.form}>
-              <div className={classes.info}>
-                <TextField
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                  fullWidth
-                  className={classNames(classes.input, classes.inputAncienMdp)}
-                  id="lastMdp"
-                  type="password"
-                  label="Ancien mot de passe"
-                  placeholder="Entrez votre ancien mot de passe"
-                />
-              </div>
-              <div className={classes.info}>
-                <TextField
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                  className={classes.input}
-                  id="newMdp"
-                  type="password"
-                  label="Nouveau mot de passe"
-                  placeholder="Entrez votre nouveau mot de passe"
-                />
-                <TextField
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                  placeholder="Confirmez votre nouveau mot de passe"
-                  fullWidth
-                  className={classNames(classes.inputConfirmMdp, classes.second, classes.input)}
-                  id="confirmNewMdp"
-                  type="password"
-                  label="Confirmer mon mot de passe"
-                />
-              </div>
-              <Button className={classes.buttonSubmit} type="submit" variant="contained" color="primary">
-                Enregistrer le nouveau mot de passe
-              </Button>
-            </form>
+            <PasswordForm />
           </TabPanel>
           <TabPanel value={value} index={2}>
             <NotificationsForm />

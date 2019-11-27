@@ -5,30 +5,36 @@ import { Formik, Form } from 'formik'
 import { UserContext } from '~/context/UserContext'
 import { useToasts, TOAST } from '../Snackbar'
 
-const profile = Yup.object().shape({
-  lastname: Yup.string().required('Nom requis'),
-  firstname: Yup.string().required('Prénom requis'),
-  email: Yup.string()
-    .email('Email non valide')
-    .required('Email requis'),
-  username: Yup.string().required('Pseudo requis')
+const validationSchema = Yup.object({
+  oldPassword: Yup.string().required('Ancien mot de passe requis'),
+  plainPassword: Yup.string().required('Nouveau mot de passe requis'),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref('plainPassword'), null], 'Les deux mots de passe doivent être identiques')
+    .required('Confirmation du mot de passe requise')
 })
 
-const ProfileForm = () => {
+const initialValues = {
+  oldPassword: '',
+  plainPassword: '',
+  confirmPassword: ''
+}
+
+const PasswordForm = () => {
   const { userContext } = useContext(UserContext)
   const { addToast } = useToasts()
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     const res = await userContext.updateUser(values)
     if (res.status === 200) {
       setSubmitting(false)
+      resetForm(initialValues)
       addToast('Les modifications ont bien été prise en compte.', TOAST.SUCCESS)
     } else {
       addToast('Une erreur a eu lieu', TOAST.ERROR)
     }
   }
   return (
-    <Formik enableReinitialize initialValues={userContext.user} validationSchema={profile} onSubmit={handleSubmit}>
+    <Formik enableReinitialize initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
       {({ values, handleChange, handleBlur, errors, touched, isSubmitting }) => (
         <Form>
           <Grid container spacing={2}>
@@ -39,13 +45,34 @@ const ProfileForm = () => {
                 InputLabelProps={{
                   shrink: true
                 }}
-                label="Nom"
-                name="lastname"
-                value={values.lastname}
+                InputProps={{ type: 'password' }}
+                label="Ancien mot de passe"
+                name="oldPassword"
+                value={values.oldPassword}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={errors.lastname && touched.lastname}
-                helperText={errors.lastname && touched.lastname ? errors.lastname : null}
+                error={errors.oldPassword && touched.oldPassword}
+                helperText={errors.oldPassword && touched.oldPassword ? errors.oldPassword : null}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              &nbsp;
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                required
+                fullWidth
+                InputLabelProps={{
+                  shrink: true
+                }}
+                InputProps={{ type: 'password' }}
+                label="Nouveau mot de passe"
+                name="plainPassword"
+                value={values.plainPassword}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.plainPassword && touched.plainPassword}
+                helperText={errors.plainPassword && touched.plainPassword ? errors.plainPassword : null}
               />
             </Grid>
             <Grid item xs={6}>
@@ -55,51 +82,20 @@ const ProfileForm = () => {
                 InputLabelProps={{
                   shrink: true
                 }}
-                label="Prénom"
-                name="firstname"
-                value={values.firstname}
+                InputProps={{ type: 'password' }}
+                label="Confirmer le mot de passe"
+                name="confirmPassword"
+                value={values.confirmPassword}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={errors.firstname && touched.firstname}
-                helperText={errors.firstname && touched.firstname ? errors.firstname : null}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                required
-                fullWidth
-                InputLabelProps={{
-                  shrink: true
-                }}
-                label="Pseudo"
-                name="username"
-                value={values.username}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.username && touched.usernames}
-                helperText={errors.usernames && touched.username ? errors.username : null}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                required
-                fullWidth
-                InputLabelProps={{
-                  shrink: true
-                }}
-                label="Email"
-                name="email"
-                value={values.email}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.email && touched.email}
-                helperText={errors.email && touched.email ? errors.email : null}
+                error={errors.confirmPassword && touched.confirmPasswords}
+                helperText={errors.confirmPassword && touched.confirmPassword ? errors.confirmPassword : null}
               />
             </Grid>
           </Grid>
           <Box align="center">
             <Button type="submit" variant="contained" color="primary">
-              {isSubmitting ? <CircularProgress /> : 'Modifier mes informations'}
+              {isSubmitting ? <CircularProgress size={24} /> : 'Modifier mon mot de passe'}
             </Button>
           </Box>
         </Form>
@@ -108,4 +104,4 @@ const ProfileForm = () => {
   )
 }
 
-export default ProfileForm
+export default PasswordForm
