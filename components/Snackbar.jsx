@@ -35,9 +35,6 @@ const toastStyles = makeStyles(
     },
     defaultColor: {
       color: palette.white
-    },
-    snack: {
-      zIndex: 1500
     }
   }),
   { name: 'HookToast', index: 10 }
@@ -79,13 +76,7 @@ export default function MNSnackbar({ className, action, appearance, children, au
 
   const Icon = variantIcon[appearance]
   return (
-    <Snackbar
-      className={classes.snack}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      onClose={onClose}
-      open={openSnackBar}
-      autoHideDuration={autoDismissTimeout}
-    >
+    <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} onClose={onClose} open={openSnackBar} autoHideDuration={autoDismissTimeout}>
       <SnackbarContent
         className={classNames(classes[appearance], className)}
         aria-describedby="client-snackbar"

@@ -88,8 +88,8 @@ const useStyles = makeStyles(theme => ({
 
 const Content = ({ composter, users }) => {
   const classes = useStyles()
-  const [openModal, setOpenModal] = useState(true)
-  const [activeTab, setActiveTab] = useState('recherche-compte')
+  const [openModal, setOpenModal] = useState(false)
+  const [activeTab, setActiveTab] = useState('creation-compte')
   const [value, setValue] = React.useState(0)
 
   const handleChange = (event, newValue) => {
