@@ -48,17 +48,20 @@ const useStyles = makeStyles(theme => ({
     fontSize: 12,
     fontWeight: '400',
     letterSpacing: 1.71,
-    height: '115px'
+    height: '180px',
+    padding: 0
   },
   tableCellContent: {
     position: 'absolute',
     top: 0,
     display: 'flex',
     flexDirection: 'column',
-    padding: '6px'
+    padding: 0,
+    width: '100%'
   },
   tableCellContentDay: {
-    alignSelf: 'start'
+    alignSelf: 'start',
+    padding: 0
   }
 }))
 
@@ -95,20 +98,41 @@ const Calendar = memo(({ date, renderDay }) => {
     [[]]
   )
 
+  const getSpacePosition = (day, monthCalendar) => {
+    const [TOP, BOTTOM, LEFT, RIGHT] = ['top', 'bottom', 'left', 'right']
+    const getHorizontalCoord = x => (x < 4 ? LEFT : RIGHT)
+    const getVerticalCoord = y => (y < 1 ? TOP : BOTTOM)
+
+    const [vertical, horizontal] = monthCalendar.slice(0).reduce((acc, week, i, arr) => {
+      if (week.includes(day)) {
+        arr.splice(1)
+        return [getVerticalCoord(i), getHorizontalCoord(week.indexOf(day))]
+      }
+      return acc
+    }, [])
+
+    return {
+      vertical,
+      horizontal
+    }
+  }
+
   const renderWeekDayNames = weekDayName => (
     <TableCell align="center" className={classes.calendarDay}>
       {weekDayName}
     </TableCell>
   )
 
-  const renderWeekDay = day => (
-    <TableCell align="left" className={classes.tableCell}>
-      <div key={day} className={classes.tableCellContent}>
-        <span className={classes.tableCellContentDay}>{day}</span>
-        {renderDay(day)}
-      </div>
-    </TableCell>
-  )
+  const renderWeekDay = day => {
+    return (
+      <TableCell align="left" className={classes.tableCell}>
+        <div key={day} className={classes.tableCellContent}>
+          <span className={classes.tableCellContentDay}>{day}</span>
+          {renderDay(day, getSpacePosition(day, calendar))}
+        </div>
+      </TableCell>
+    )
+  }
 
   const renderDays = week => week.map(renderDayWithKey(renderWeekDay))
 

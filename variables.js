@@ -1,7 +1,9 @@
 const palette = {
+  white: '#fff',
   /* Green */
   greenPrimary: '#a3c538',
   greenOpacity: 'rgba(163, 197, 56, 0.2)',
+  greenExtraLight: '#edf3d8',
   /* Orange */
   orangePrimary: '#e86034',
   orangeOpacity: '#EB734D',
