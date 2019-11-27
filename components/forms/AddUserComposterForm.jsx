@@ -62,7 +62,6 @@ const AddUserComposterForm = () => {
   }
 
   async function onSubmit() {
-    console.log('TCL: onSubmit -> !selectedUser && !inputValue', !selectedUser.username)
     if (!selectedUser.username) {
       addToast('Veuillez sélectionner un utilisateur.', TOAST.ERROR)
       return
@@ -83,7 +82,7 @@ const AddUserComposterForm = () => {
         <Autocomplete
           className={classes.autocomplete}
           id="searchuc"
-          noOptionsText={'Aucun utilisateur correspondant'}
+          noOptionsText="Aucun utilisateur correspondant"
           getOptionLabel={option => option.email}
           options={options}
           onInputChange={onInputChange}
