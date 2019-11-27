@@ -7,6 +7,7 @@ import { ToastProvider } from 'react-toast-notifications'
 import theme from '~/theme'
 import UserProvider from '~/context/UserContext'
 import Snackbar from '../components/Snackbar'
+import AppToastContainer from '~/components/AppToastContainer'
 
 class MyApp extends App {
   componentDidMount() {
@@ -21,7 +22,7 @@ class MyApp extends App {
     const { Component, pageProps, token } = this.props
     return (
       <ThemeProvider theme={theme}>
-        <ToastProvider autoDismissTimeout={5000} components={{ Toast: Snackbar }}>
+        <ToastProvider autoDismissTimeout={5000} components={{ Toast: Snackbar, ToastContainer: AppToastContainer }}>
           <UserProvider token={token}>
             <CssBaseline />
             <Component {...pageProps} />
