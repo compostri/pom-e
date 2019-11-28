@@ -118,7 +118,7 @@ const usePermanenceToComeWithOpenersStyle = makeStyles(({ typography }) => ({
 }))
 
 const withPermanancePopoverWrapper = WrappedComponent => {
-  function WithPermanancePopoverWrapper({ anchorEl, onClose, permanence, vertical, horizontal, onEdit }) {
+  function WithPermanancePopoverWrapper({ anchorEl, onClose, permanence, vertical, horizontal, onSubmit }) {
     const {
       composterContext: { composter }
     } = useContext(ComposterContext)
@@ -163,7 +163,7 @@ const withPermanancePopoverWrapper = WrappedComponent => {
             }}
           />
           <CardContent className={baseStyle.popoverCardContent}>
-            <WrappedComponent permanence={permanence} composterId={composter.rid} onEdit={onEdit} />
+            <WrappedComponent permanence={permanence} composterId={composter.rid} onSubmit={onSubmit} />
           </CardContent>
         </Card>
       </Popover>
@@ -173,7 +173,7 @@ const withPermanancePopoverWrapper = WrappedComponent => {
   WithPermanancePopoverWrapper.propTypes = {
     permanence: permanenceType.isRequired,
     onClose: PropTypes.func.isRequired,
-    onEdit: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
     // eslint-disable-next-line react/forbid-prop-types
     anchorEl: PropTypes.object.isRequired,
     vertical: PropTypes.oneOf(['top', 'bottom']).isRequired,
@@ -185,16 +185,15 @@ const withPermanancePopoverWrapper = WrappedComponent => {
 
 const getId = opener => opener['@id']
 
-const PopoverPermanenceToComeContent = ({ permanence, composterId, onEdit }) => {
+const PopoverPermanenceToComeContent = ({ permanence, composterId, onSubmit }) => {
   const defaultOpenersToAdd = []
-  const { EDIT, DELETE } = Action
+  const { EDIT, CREATE, DELETE } = Action
   const { COMPOSTER_LISTES_OUVREURS, COMPOSTER_OUVREUR } = Subject
 
   const {
     userContext: { user }
   } = useContext(UserContext)
 
-  const { addToast } = useToasts()
   const baseStyle = useBaseStyle()
   const permanenceToComeWithOpenersStyle = usePermanenceToComeWithOpenersStyle()
   const {
@@ -237,6 +236,17 @@ const PopoverPermanenceToComeContent = ({ permanence, composterId, onEdit }) => 
     fetchUserComposter()
   }, [composterId, permanence.openers])
 
+  const handleAddingCurrentOpener = useCallback(
+    currentOpeners => () => {
+      const userAsOpener = {
+        ...user,
+        '@id': `/users/${user.userId}`
+      }
+      setOpenersAdded([...currentOpeners, userAsOpener])
+    },
+    [user]
+  )
+
   const handleOpenerRemoval = id => () => {
     setOpenersAdded(openersAdded.filter(opener => getId(opener) !== id))
   }
@@ -251,14 +261,7 @@ const PopoverPermanenceToComeContent = ({ permanence, composterId, onEdit }) => 
 
   const handleSubmit = evt => {
     evt.preventDefault()
-    api.putPermanences(permanence.id, { openers: openersAdded.map(getId) }).then(res => {
-      if (res.status === 200) {
-        addToast('Votre demande a bien été prise en compte !', TOAST.SUCCESS)
-        onEdit()
-      } else {
-        addToast('Une erreur a eu lieu', TOAST.ERROR)
-      }
-    })
+    onSubmit(permanence.id, openersAdded.map(getId))
   }
 
   const renderOpenersToAdd = openerList => {
@@ -290,6 +293,11 @@ const PopoverPermanenceToComeContent = ({ permanence, composterId, onEdit }) => 
               <DeleteIcon />
             </IconButton>
           </Can>
+          <Can I={DELETE} this={{ $type: COMPOSTER_OUVREUR, self: getId(opener) === `/users/${user.userId}` }}>
+            <IconButton aria-label="remove" onClick={handleOpenerRemoval(openerId)} className={openerListItemDeleteIcon}>
+              <DeleteIcon />
+            </IconButton>
+          </Can>
         </li>
       )
     }
@@ -305,6 +313,44 @@ const PopoverPermanenceToComeContent = ({ permanence, composterId, onEdit }) => 
   }
 
   const isSelectVisible = allOpeners.length && allOpeners > openersAdded
+
+  const AsOpernerFooter = () => {
+    const isUserSelfEdited = permanence.openers.length !== openersAdded.length
+
+    const isUserAlreadyAddedHimSelf = openersAdded.map(getId).includes(`/users/${user.userId}`)
+
+    if (isUserSelfEdited) {
+      return (
+        <>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={handleCancel}
+            className={classNames(openerListBtn, openerListBtnCancel)}
+            classes={{ label: openerListBtnLabel }}
+          >
+            Annuler
+          </Button>
+          <Button type="submit" className={classNames(openerListBtn, openerListBtnSubmit)} variant="contained" classes={{ label: openerListBtnLabel }}>
+            Enregister
+          </Button>
+        </>
+      )
+    }
+    if (isUserAlreadyAddedHimSelf) {
+      return ''
+    }
+    return (
+      <Button
+        className={classNames(openerListBtn, openerListBtnSubmit)}
+        variant="contained"
+        classes={{ label: openerListBtnLabel }}
+        onClick={handleAddingCurrentOpener(openersAdded)}
+      >
+        S'ajouter
+      </Button>
+    )
+  }
 
   const placeholder = useCallback(() => 'Modifier les ouvreurs', [])
 
@@ -332,6 +378,9 @@ const PopoverPermanenceToComeContent = ({ permanence, composterId, onEdit }) => 
           Enregister
         </Button>
       </Can>
+      <Can I={CREATE} this={COMPOSTER_OUVREUR}>
+        <AsOpernerFooter />
+      </Can>
     </form>
   )
 }
@@ -339,7 +388,7 @@ const PopoverPermanenceToComeContent = ({ permanence, composterId, onEdit }) => 
 PopoverPermanenceToComeContent.propTypes = {
   permanence: permanenceType.isRequired,
   composterId: PropTypes.number.isRequired,
-  onEdit: PropTypes.func.isRequired
+  onSubmit: PropTypes.func.isRequired
 }
 
 const PopoverPermanenceToCome = withPermanancePopoverWrapper(PopoverPermanenceToComeContent)

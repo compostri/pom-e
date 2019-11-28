@@ -10,10 +10,11 @@ import { composterType, permanenceType } from '~/types'
 import api from '~/utils/api'
 import ComposterContainer from '~/components/ComposterContainer'
 import PermanceCard from '~/components/PermanenceCard'
-import { PopoverPermanenceToCome } from '~/components/PermanenceCard/PermanenceCardPopover/PermananceCardPopover'
+import { PopoverPermanenceToCome } from '~/components/PermanenceCard/PermanenceCardPopover/PermanenceCardPopover'
 import palette from '~/variables'
 
 import Calendar from '~/components/Calendar'
+import { useToasts, TOAST } from '~/components/Snackbar'
 
 dayjs.locale('fr')
 
@@ -46,30 +47,37 @@ const ComposterPermanences = ({ perms, composter }) => {
   const classes = useStyles()
 
   const isInitialMount = useRef(true)
+  const { addToast } = useToasts()
 
   const [date, setDate] = useState(today)
   const [permanences, setPermanences] = useState(perms)
   const [permanenceDetails, setPermanenceDetails] = useState(null)
-  const [isPermanenceDetailsHasBeenEdited, setPermanenceDetailsEditingStatus] = useState(false)
 
   const startOfMonth = useMemo(() => date.startOf('month'), [date])
   const endOfMonth = useMemo(() => date.endOf('month'), [date])
+
+  const handlePopoverClosing = () => {
+    setPermanenceDetails(null)
+  }
+
+  const fetchPermanences = useCallback(async () => {
+    const before = endOfMonth.toISOString()
+    const after = startOfMonth.toISOString()
+
+    const { data, status } = await api.getPermanences({ composterId: composter.rid, before, after })
+    if (status === 200) {
+      handlePopoverClosing()
+      setPermanences(data['hydra:member'])
+    }
+  }, [composter.rid, endOfMonth, startOfMonth])
 
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false
       return
     }
-    const fetchPermanences = async () => {
-      const before = endOfMonth.toISOString()
-      const after = startOfMonth.toISOString()
-
-      const { data } = await api.getPermanences({ composterId: composter.rid, before, after })
-
-      setPermanences(data['hydra:member'])
-    }
     fetchPermanences()
-  }, [composter.rid, endOfMonth, startOfMonth, isPermanenceDetailsHasBeenEdited])
+  }, [fetchPermanences])
 
   const changeMonth = (action = 'add') => setDate(date[action](1, 'month'))
 
@@ -80,11 +88,15 @@ const ComposterPermanences = ({ perms, composter }) => {
     changeMonth('add')
   }
 
-  const handleClose = () => {
-    setPermanenceDetails(null)
-  }
-  const handleEdit = () => {
-    setPermanenceDetailsEditingStatus(true)
+  const handleSubmit = async (permId, openers) => {
+    api.putPermanences(permId, { openers }).then(res => {
+      if (res.status === 200) {
+        addToast('Votre demande a bien été prise en compte !', TOAST.SUCCESS)
+        fetchPermanences()
+      } else {
+        addToast('Une erreur a eu lieu', TOAST.ERROR)
+      }
+    })
   }
   const handleClick = (perm, { vertical, horizontal }) => ({ currentTarget }) => {
     setPermanenceDetails({
@@ -147,12 +159,12 @@ const ComposterPermanences = ({ perms, composter }) => {
       <Calendar date={date} renderDay={renderDay} />
       {anchorEl && currentPermanence && (
         <PopoverPermanenceToCome
-          onEdit={handleEdit}
           anchorEl={anchorEl}
           permanence={currentPermanence}
-          onClose={handleClose}
           vertical={vPos}
           horizontal={hPos}
+          onClose={handlePopoverClosing}
+          onSubmit={handleSubmit}
         />
       )}
     </ComposterContainer>
