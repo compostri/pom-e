@@ -1,12 +1,12 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import Link from 'next/link'
-import { Paper, Typography, Button, List, ListItem, ListItemText, ListItemIcon, InputBase, InputLabel, FormControl, Fab } from '@material-ui/core'
+import { Paper, Typography, List, ListItem, ListItemText, ListItemIcon, Fab } from '@material-ui/core'
 import { Room, Person, RadioButtonChecked, Lock, WatchLater, Edit } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 
 import { composterType } from '~/types'
 
-import { Can, Action, Subject } from '~context/AbilityContext'
+import { Can, Action, Subject } from '~/context/AbilityContext'
 
 import api from '~/utils/api'
 import palette from '~/variables'

@@ -48,7 +48,7 @@ const AbilityProvider = ({ children, composterSlug }) => {
     userContext: { user }
   } = useContext(UserContext)
 
-  const [currentAbility, setCurrentAbility] = useState(Ability.Referent)
+  const [currentAbility, setCurrentAbility] = useState(Ability.Default)
 
   useEffect(() => {
     if (user) {
