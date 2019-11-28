@@ -10,7 +10,7 @@ import { composterType, permanenceType } from '~/types'
 import api from '~/utils/api'
 import ComposterContainer from '~/components/ComposterContainer'
 import PermanceCard from '~/components/PermanenceCard'
-import { PopoverPermanenceToCome } from '~/components/PermanenceCard/PermananceCardPopover'
+import { PopoverPermanenceToCome } from '~/components/PermanenceCard/PermanenceCardPopover/PermananceCardPopover'
 import palette from '~/variables'
 
 import Calendar from '~/components/Calendar'
@@ -50,6 +50,7 @@ const ComposterPermanences = ({ perms, composter }) => {
   const [date, setDate] = useState(today)
   const [permanences, setPermanences] = useState(perms)
   const [permanenceDetails, setPermanenceDetails] = useState(null)
+  const [isPermanenceDetailsHasBeenEdited, setPermanenceDetailsEditingStatus] = useState(false)
 
   const startOfMonth = useMemo(() => date.startOf('month'), [date])
   const endOfMonth = useMemo(() => date.endOf('month'), [date])
@@ -68,7 +69,7 @@ const ComposterPermanences = ({ perms, composter }) => {
       setPermanences(data['hydra:member'])
     }
     fetchPermanences()
-  }, [composter.rid, endOfMonth, startOfMonth])
+  }, [composter.rid, endOfMonth, startOfMonth, isPermanenceDetailsHasBeenEdited])
 
   const changeMonth = (action = 'add') => setDate(date[action](1, 'month'))
 
@@ -81,6 +82,9 @@ const ComposterPermanences = ({ perms, composter }) => {
 
   const handleClose = () => {
     setPermanenceDetails(null)
+  }
+  const handleEdit = () => {
+    setPermanenceDetailsEditingStatus(true)
   }
   const handleClick = (perm, { vertical, horizontal }) => ({ currentTarget }) => {
     setPermanenceDetails({
@@ -142,7 +146,14 @@ const ComposterPermanences = ({ perms, composter }) => {
       </div>
       <Calendar date={date} renderDay={renderDay} />
       {anchorEl && currentPermanence && (
-        <PopoverPermanenceToCome anchorEl={anchorEl} permanence={currentPermanence} onClose={handleClose} vertical={vPos} horizontal={hPos} />
+        <PopoverPermanenceToCome
+          onEdit={handleEdit}
+          anchorEl={anchorEl}
+          permanence={currentPermanence}
+          onClose={handleClose}
+          vertical={vPos}
+          horizontal={hPos}
+        />
       )}
     </ComposterContainer>
   )
