@@ -99,8 +99,8 @@ const Profil = () => {
   const classes = useStyle()
   const [value, setValue] = React.useState(0)
 
-  function handleChange(e, value) {
-    setValue(value)
+  function handleChange(e, targetValue) {
+    setValue(targetValue)
   }
 
   return (
