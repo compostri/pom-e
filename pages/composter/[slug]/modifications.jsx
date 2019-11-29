@@ -13,6 +13,7 @@ import api from '~/utils/api'
 import { withAccessAbility, Subject } from '~/context/AbilityContext'
 import ComposterContainer from '~/components/ComposterContainer'
 import ContactForm from '~/components/forms/composter/ContactForm'
+import { composterType } from '~/types'
 
 dayjs.locale('fr')
 
@@ -158,6 +159,10 @@ const getInitialProps = async ({ query: { slug } }) => {
   return {
     composter: composter.data
   }
+}
+
+ComposterEdit.propTypes = {
+  composter: composterType.isRequired
 }
 
 ComposterEdit.getInitialProps = withAccessAbility(Subject.COMPOSTER_INFORMATION, getRedirectUrl)(getInitialProps)

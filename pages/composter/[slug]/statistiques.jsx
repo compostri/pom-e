@@ -7,6 +7,7 @@ import api from '~/utils/api'
 import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
 import { ComposterContext } from '~/context/ComposterContext'
+import { composterType } from '~/types'
 
 const useStyles = makeStyles(theme => ({
   graphContainer: {
@@ -72,6 +73,10 @@ const ComposterStatistiques = ({ composter }) => {
       </Paper>
     </ComposterContainer>
   )
+}
+
+ComposterStatistiques.propTypes = {
+  composter: composterType.isRequired
 }
 
 ComposterStatistiques.getInitialProps = async ({ query }) => {

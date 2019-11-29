@@ -9,6 +9,7 @@ import { Formik, Form, Field } from 'formik'
 import api from '~/utils/api'
 import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
+import { composterType } from '~/types'
 
 const useStyles = makeStyles(theme => ({
   newsletterContainer: {
@@ -237,6 +238,10 @@ const ComposterNewsletter = ({ composter }) => {
       </div>
     </ComposterContainer>
   )
+}
+
+ComposterNewsletter.propTypes = {
+  composter: composterType.isRequired
 }
 
 ComposterNewsletter.getInitialProps = async ({ query }) => {

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import Link from 'next/link'
-import { Paper, Typography, List, ListItem, ListItemText, ListItemIcon, Fab } from '@material-ui/core'
+import { Paper, Typography, List, ListItem, ListItemText, ListItemIcon, Fab, Grid } from '@material-ui/core'
 import { Room, Person, RadioButtonChecked, Lock, WatchLater, Edit } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 
@@ -19,11 +19,6 @@ const { EDIT } = Action
 const { COMPOSTER_INFORMATION } = Subject
 
 const useStyles = makeStyles(theme => ({
-  sectionDetail: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between'
-  },
   info: {
     display: 'flex',
     padding: theme.spacing(2, 2, 2, 2),
@@ -38,7 +33,8 @@ const useStyles = makeStyles(theme => ({
   },
   editIcon: { width: 15 },
   infoRight: {
-    marginLeft: theme.spacing(2)
+    marginLeft: theme.spacing(2),
+    flexGrow: 1
   },
   titleSectionSecondary: {
     paddingBottom: theme.spacing(2)
@@ -54,12 +50,6 @@ const useStyles = makeStyles(theme => ({
   infoList: {
     backgroundColor: palette.greyExtraLight,
     padding: theme.spacing(2, 2, 2, 2)
-  },
-  infoTxt: {
-    fontSize: 16,
-    fontWeight: '400',
-    color: palette.greyMedium,
-    margin: '0'
   },
   contactezNous: {
     padding: theme.spacing(2, 2, 2, 2)
@@ -77,9 +67,10 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(2)
   },
   map: {
-    marginLeft: theme.spacing(2),
     flexGrow: 1,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    height: '100%',
+    minHeight: 200
   }
 }))
 
@@ -90,8 +81,8 @@ const Content = () => {
 
   return (
     <>
-      <div className={classes.sectionDetail}>
-        <div className={classes.sectionLeft}>
+      <Grid container spacing={2}>
+        <Grid item md={composter.lat && composter.lng ? 8 : 12} xs={12}>
           <Paper className={classes.info}>
             <div>
               {' '}
@@ -116,51 +107,46 @@ const Content = () => {
                     <Room className={classes.infoIcone} />
                   </ListItemIcon>
                   <ListItemText className={classes.listItem}>
-                    {' '}
-                    <Typography className={classes.infoTxt} paragraph>
-                      {composter.address}{' '}
-                    </Typography>
+                    <Typography>{composter.address}</Typography>
                   </ListItemText>
                 </ListItem>
-                <ListItem className={classes.listItem}>
-                  <ListItemIcon>
-                    <RadioButtonChecked className={classes.infoIcone} />
-                  </ListItemIcon>
-                  <ListItemText>
-                    {' '}
-                    <Typography className={classes.infoTxt} paragraph>
-                      {' '}
-                      Quartier
-                    </Typography>
-                  </ListItemText>
-                </ListItem>
+                {composter.categorie && (
+                  <ListItem className={classes.listItem}>
+                    <ListItemIcon>
+                      <RadioButtonChecked className={classes.infoIcone} />
+                    </ListItemIcon>
+                    <ListItemText>
+                      <Typography>{composter.categorie.name}</Typography>
+                    </ListItemText>
+                  </ListItem>
+                )}
                 <ListItem className={classes.listItem}>
                   <ListItemIcon>
                     <Person className={classes.infoIcone} />
                   </ListItemIcon>
                   <ListItemText>
-                    {' '}
-                    <Typography className={classes.infoTxt}> Accepte de nouveau adhérents </Typography>
+                    <Typography>{composter.acceptNewMembers ? 'Accepte' : "N'accepte pas"} de nouveau adhérents</Typography>
                   </ListItemText>
                 </ListItem>
+
                 <ListItem className={classes.listItem}>
                   <ListItemIcon>
                     <Lock className={classes.infoIcone} />
                   </ListItemIcon>
                   <ListItemText>
-                    {' '}
-                    <Typography className={classes.infoTxt}> En service </Typography>
+                    <Typography>{composter.status === 'Active' ? 'En service' : 'Hors service'}</Typography>
                   </ListItemText>
                 </ListItem>
-                <ListItem className={classes.listItem}>
-                  <ListItemIcon>
-                    <WatchLater className={classes.infoIcone} />
-                  </ListItemIcon>
-                  <ListItemText>
-                    {' '}
-                    <Typography className={classes.infoTxt}> Permanences : mercredi de 18h30 à 19h00 et samedi de 11h30 à 12h00 </Typography>
-                  </ListItemText>
-                </ListItem>
+                {composter.permanencesDescription && (
+                  <ListItem className={classes.listItem}>
+                    <ListItemIcon>
+                      <WatchLater className={classes.infoIcone} />
+                    </ListItemIcon>
+                    <ListItemText>
+                      <Typography>{composter.permanencesDescription}</Typography>
+                    </ListItemText>
+                  </ListItem>
+                )}
               </List>
             </div>
           </Paper>
@@ -171,13 +157,15 @@ const Content = () => {
             </Typography>
             <ComposterContactForm />
           </Paper>
-        </div>
+        </Grid>
         {composter.lat && composter.lng && (
-          <Paper className={classes.map}>
-            <MapField record={composter} />
-          </Paper>
+          <Grid item md={4} xs={12}>
+            <Paper className={classes.map}>
+              <MapField record={composter} />
+            </Paper>
+          </Grid>
         )}
-      </div>
+      </Grid>
     </>
   )
 }

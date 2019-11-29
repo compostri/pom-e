@@ -8,6 +8,7 @@ import OuvreurCard from '~/components/OuvreurCard'
 import palette from '~/variables'
 import RegisterForm from '~/components/forms/RegisterForm'
 import AddUserComposterForm from '~/components/forms/AddUserComposterForm'
+import { composterType } from '~/types'
 
 const useStyles = makeStyles(theme => ({
   btnAdd: {
@@ -188,13 +189,17 @@ const ComposterOuvreurs = ({ composter }) => {
       }
     }
     getUsers()
-  }, [])
+  }, [composter])
 
   return (
     <ComposterContainer composter={composter}>
       <Content composter={composter} users={users} />
     </ComposterContainer>
   )
+}
+
+ComposterOuvreurs.propTypes = {
+  composter: composterType.isRequired
 }
 
 ComposterOuvreurs.getInitialProps = async ctx => {
