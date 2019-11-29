@@ -106,36 +106,28 @@ const Content = () => {
                   <ListItemIcon>
                     <Room className={classes.infoIcone} />
                   </ListItemIcon>
-                  <ListItemText className={classes.listItem}>
-                    <Typography>{composter.address}</Typography>
-                  </ListItemText>
+                  <ListItemText className={classes.listItem}>{composter.address}</ListItemText>
                 </ListItem>
                 {composter.categorie && (
                   <ListItem className={classes.listItem}>
                     <ListItemIcon>
                       <RadioButtonChecked className={classes.infoIcone} />
                     </ListItemIcon>
-                    <ListItemText>
-                      <Typography>{composter.categorie.name}</Typography>
-                    </ListItemText>
+                    <ListItemText>{composter.categorie.name}</ListItemText>
                   </ListItem>
                 )}
                 <ListItem className={classes.listItem}>
                   <ListItemIcon>
                     <Person className={classes.infoIcone} />
                   </ListItemIcon>
-                  <ListItemText>
-                    <Typography>{composter.acceptNewMembers ? 'Accepte' : "N'accepte pas"} de nouveau adhérents</Typography>
-                  </ListItemText>
+                  <ListItemText>{composter.acceptNewMembers ? 'Accepte' : "N'accepte pas"} de nouveau adhérents</ListItemText>
                 </ListItem>
 
                 <ListItem className={classes.listItem}>
                   <ListItemIcon>
                     <Lock className={classes.infoIcone} />
                   </ListItemIcon>
-                  <ListItemText>
-                    <Typography>{composter.status === 'Active' ? 'En service' : 'Hors service'}</Typography>
-                  </ListItemText>
+                  <ListItemText>{composter.status === 'Active' ? 'En service' : 'Hors service'}</ListItemText>
                 </ListItem>
                 {composter.permanencesDescription && (
                   <ListItem className={classes.listItem}>

@@ -47,17 +47,17 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const ComposterContainer = ({ composter, maxWidth = false, children }) => {
+const ComposterContainer = ({ composter, maxWidth = 'lg', children }) => {
   const classes = useStyles()
   const { READ } = Action
   const router = useRouter
   const { COMPOSTER_PERMANENCES, COMPOSTER_LISTES_OUVREURS, COMPOSTER_NEWLETTERS } = Subject
-  const { slug, permanencesRule } = composter
+  const { name, slug, permanencesRule } = composter
   return (
     <ComposterProvider composter={composter}>
       <div className={classnames({ [classes.wrapper]: maxWidth })}>
-        <AbilityProvider composterSlug={composter.slug}>
-          <Header title={composter.name}>
+        <AbilityProvider composterSlug={slug}>
+          <Header title={name}>
             <div className={classes.toolbarLink}>
               <Link href="/composter/[slug]" as={`/composter/${slug}`} passHref>
                 <Button disableRipple className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]' })}>
@@ -73,7 +73,7 @@ const ComposterContainer = ({ composter, maxWidth = false, children }) => {
               </Can>
               <Link href="/composter/[slug]/statistiques" as={`/composter/${slug}/statistiques`} passHref>
                 <Button disableRipple className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/statistiques' })}>
-                  Stastiques
+                  Statistiques
                 </Button>
               </Link>
               <Can I={READ} this={COMPOSTER_LISTES_OUVREURS}>

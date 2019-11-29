@@ -86,7 +86,7 @@ const PopupContent = ({ composter }) => {
                 <ListItemIcon className={classes.infoIcone}>
                   <Room style={{ color: composterColor }} />
                 </ListItemIcon>
-                <ListItemText>{composter.communeName}</ListItemText>
+                <ListItemText>{composter.commune.name}</ListItemText>
               </ListItem>
             </div>
             <div>
@@ -102,13 +102,7 @@ const PopupContent = ({ composter }) => {
                 <ListItemIcon className={classes.infoIcone}>
                   <Person style={{ color: composterColor }} />
                 </ListItemIcon>
-                {composter.acceptNewMembers ? (
-                  <ListItemText className={classes.infosText}>Accepte de nouveaux adhérents</ListItemText>
-                ) : (
-                  <ListItemText className={classes.infosText}>
-                    <Typography> N'accepte pas de nouveaux adhérents </Typography>
-                  </ListItemText>
-                )}
+                <ListItemText>{composter.acceptNewMembers ? 'Accepte' : "N'accepte pas"} de nouveau adhérents</ListItemText>
               </ListItem>
             </div>
           </List>
