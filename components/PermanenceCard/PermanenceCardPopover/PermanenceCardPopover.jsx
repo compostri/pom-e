@@ -12,7 +12,6 @@ import { ComposterContext } from '~/context/ComposterContext'
 import { permanenceType } from '~/types'
 import api from '~/utils/api'
 import palette from '~/variables'
-import { useToasts, TOAST } from '~/components/Snackbar'
 import { Can, Action, Subject } from '~/context/AbilityContext'
 import { UserContext } from '~/context/UserContext'
 
@@ -69,6 +68,9 @@ const usePermanenceToComeWithOpenersStyle = makeStyles(({ typography }) => ({
     backgroundColor: palette.greenPrimary,
     marginRight: typography.pxToRem(5)
   },
+  avatarQuestionMark: {
+    backgroundColor: palette.orangePrimary
+  },
   openerList: {
     padding: 0,
     margin: 0
@@ -83,6 +85,10 @@ const usePermanenceToComeWithOpenersStyle = makeStyles(({ typography }) => ({
     fontSize: typography.pxToRem(11),
     color: palette.greyMedium,
     listStyle: 'none'
+  },
+  noOpenerListItem: {
+    justifyContent: 'flex-start',
+    color: 'red'
   },
   openerListItemLeftContent: {
     display: 'flex',
@@ -114,6 +120,10 @@ const usePermanenceToComeWithOpenersStyle = makeStyles(({ typography }) => ({
   },
   selectRoot: {
     padding: typography.pxToRem(12)
+  },
+  noOpenerMsg: {
+    color: palette.greyDark,
+    fontSize: typography.pxToRem(11)
   }
 }))
 
@@ -196,11 +206,15 @@ const PopoverPermanenceToComeContent = ({ permanence, composterId, onSubmit }) =
 
   const baseStyle = useBaseStyle()
   const permanenceToComeWithOpenersStyle = usePermanenceToComeWithOpenersStyle()
+
   const {
     openerListItem,
     avatar,
+    avatarQuestionMark,
     contentTitle,
     openerList: openerListStyle,
+    noOpenerListItem,
+    noOpenerMsg,
     openerListBtnLabel,
     openerListBtn,
     openerListBtnCancel,
@@ -276,7 +290,10 @@ const PopoverPermanenceToComeContent = ({ permanence, composterId, onSubmit }) =
     })
   }
 
-  const mayRenderCurrentOpeners = openerList => {
+  const maybeRenderNoOpenersWarning = openerList =>
+    !openerList.length && <p className={noOpenerMsg}>S’il y a aucun ouvreur d’inscrit, la permanence ne pourra pas être assurée. Inscrivez-vous vite ! </p>
+
+  const maybeRenderCurrentOpeners = openerList => {
     const renderOpener = (opener, i) => {
       const { username } = opener
       const openerId = getId(opener)
@@ -303,12 +320,19 @@ const PopoverPermanenceToComeContent = ({ permanence, composterId, onSubmit }) =
     }
 
     return (
-      openerList.length > 0 && (
-        <>
-          <h3 className={contentTitle}>Liste des ouvreurs</h3>
-          <ul className={openerListStyle}>{openerList.map(renderOpener)}</ul>
-        </>
-      )
+      <>
+        <h3 className={contentTitle}>Liste des ouvreurs</h3>
+        <ul className={openerListStyle}>
+          {openerList.length > 0 ? (
+            openerList.map(renderOpener)
+          ) : (
+            <li className={classNames(openerListItem, noOpenerListItem)}>
+              <Avatar className={classNames(classNames(baseStyle.cardAvatar, avatar, avatarQuestionMark))}>?</Avatar>
+              Attention ! Pas d'ouvreur
+            </li>
+          )}
+        </ul>
+      </>
     )
   }
 
@@ -356,7 +380,7 @@ const PopoverPermanenceToComeContent = ({ permanence, composterId, onSubmit }) =
 
   return (
     <form onSubmit={handleSubmit}>
-      {mayRenderCurrentOpeners(openersAdded)}
+      {maybeRenderCurrentOpeners(openersAdded)}
       <Can I={EDIT} this={COMPOSTER_LISTES_OUVREURS}>
         {isSelectVisible && (
           <FormControl className={selectFormControl}>
@@ -365,6 +389,7 @@ const PopoverPermanenceToComeContent = ({ permanence, composterId, onSubmit }) =
             </Select>
           </FormControl>
         )}
+        {maybeRenderNoOpenersWarning(openersAdded)}
         <Button
           variant="outlined"
           color="secondary"
