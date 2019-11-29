@@ -103,6 +103,8 @@ class MNApi {
   updateUser = (id, args) => this.put(`/users/${id}`, args)
 
   validate = args => this.post('/user_password_changes', args)
+
+  reinit = args => this.post('/user_password_recoveries', args)
 }
 
 export default new MNApi()

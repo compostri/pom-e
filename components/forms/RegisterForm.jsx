@@ -38,7 +38,10 @@ const RegisterForm = ({ handleClose }) => {
   const submit = async (values, { setSubmitting }) => {
     // On cherche la relation du user en cours et on l'update
 
-    const addRelation = await api.createUserComposter({ user: { ...values }, composter: composter['@id'] })
+    const addRelation = await api.createUserComposter({
+      user: { ...values, userConfirmedAccountURL: `${window.location.origin}/confirmation` },
+      composter: composter['@id']
+    })
     if (addRelation.status === 201) {
       addToast('Votre invitation a bien été envoyée.', TOAST.SUCCESS)
     } else {
@@ -57,7 +60,6 @@ const RegisterForm = ({ handleClose }) => {
         plainPassword: Math.random()
           .toString(36)
           .replace(/[^a-z]+/g, ''),
-        userConfirmedAccountURL: `${window.location.origin}/confirmation`,
         email: ''
       }}
       validationSchema={RegisterSchema}

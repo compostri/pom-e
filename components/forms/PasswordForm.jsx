@@ -19,6 +19,10 @@ const initialValues = {
   confirmPassword: ''
 }
 
+/**
+ * Permet de changer le mot de passe dans le profil
+ */
+
 const PasswordForm = () => {
   const { userContext } = useContext(UserContext)
   const { addToast } = useToasts()
