@@ -60,6 +60,16 @@ class MNApi {
     return this.mnApi[method](path, data)
   }
 
+  $withPromiseHandling = async (apiCall, ...params) => {
+    const errorMessage = 'Une erreur est survenue'
+    const { status, data } = await apiCall(...params)
+
+    if ([200, 201].includes(status)) {
+      return data || 'success'
+    }
+    throw errorMessage
+  }
+
   // composters
   getComposters = args => this.get('/composters', { params: args })
 
@@ -86,9 +96,11 @@ class MNApi {
   // Permanences
 
   getPermanences = ({ composterId: composter, before, after }) =>
-    this.get('/permanences', { params: { composter, 'date[before]': before, 'date[after]': after } })
+    this.$withPromiseHandling(this.get, '/permanences', { params: { composter, 'date[before]': before, 'date[after]': after } })
 
-  putPermanences = (permanenceId, args) => this.put(`/permanences/${permanenceId}`, args)
+  putPermanences = (permanenceId, args) => this.$withPromiseHandling(this.put, `/permanences/${permanenceId}`, args)
+
+  postPermanences = ({ date, openers, composter }) => this.$withPromiseHandling(this.post, '/permanences', { date, openers, composter })
 
   // Media
   uploadMedia = formData => this.post('/media_objects', formData)

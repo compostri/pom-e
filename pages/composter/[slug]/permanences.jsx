@@ -56,6 +56,10 @@ const ComposterPermanences = ({ perms, composter }) => {
   const startOfMonth = useMemo(() => date.startOf('month'), [date])
   const endOfMonth = useMemo(() => date.endOf('month'), [date])
 
+  const displayErrorFromApi = useCallback(() => {
+    addToast('Une erreur a eu lieu', TOAST.ERROR)
+  }, [addToast])
+
   const handlePopoverClosing = () => {
     setPermanenceDetails(null)
   }
@@ -64,12 +68,13 @@ const ComposterPermanences = ({ perms, composter }) => {
     const before = endOfMonth.toISOString()
     const after = startOfMonth.toISOString()
 
-    const { data, status } = await api.getPermanences({ composterId: composter.rid, before, after })
-    if (status === 200) {
+    const data = await api.getPermanences({ composterId: composter.rid, before, after }).catch(displayErrorFromApi)
+
+    if (data) {
       handlePopoverClosing()
       setPermanences(data['hydra:member'])
     }
-  }, [composter.rid, endOfMonth, startOfMonth])
+  }, [composter.rid, displayErrorFromApi, endOfMonth, startOfMonth])
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -79,7 +84,9 @@ const ComposterPermanences = ({ perms, composter }) => {
     fetchPermanences()
   }, [fetchPermanences])
 
-  const changeMonth = (action = 'add') => setDate(date[action](1, 'month'))
+  const changeMonth = (action = 'add') => {
+    setDate(date[action](1, 'month'))
+  }
 
   const goOneMonthBack = () => {
     changeMonth('subtract')
@@ -89,14 +96,15 @@ const ComposterPermanences = ({ perms, composter }) => {
   }
 
   const handleSubmit = async (permId, openers) => {
-    api.putPermanences(permId, { openers }).then(res => {
-      if (res.status === 200) {
-        addToast('Votre demande a bien été prise en compte !', TOAST.SUCCESS)
-        fetchPermanences()
-      } else {
-        addToast('Une erreur a eu lieu', TOAST.ERROR)
-      }
-    })
+    const isSuccessFul = await (permId
+      ? api.putPermanences(permId, { openers })
+      : api.postPermanences({ openers, composter: composter['@id'], date: permanenceDetails.data.date })
+    ).catch(displayErrorFromApi)
+
+    if (isSuccessFul) {
+      addToast('Votre demande a bien été prise en compte !', TOAST.SUCCESS)
+      fetchPermanences()
+    }
   }
   const handleClick = (perm, { vertical, horizontal }) => ({ currentTarget }) => {
     setPermanenceDetails({
@@ -125,7 +133,7 @@ const ComposterPermanences = ({ perms, composter }) => {
 
       const renderDefaultPermanenceDay = pos => {
         const perm = {
-          cancel: false,
+          date: date.date(day).toISOString(),
           openers: []
         }
         return renderPermanence(pos)(perm)
@@ -142,10 +150,21 @@ const ComposterPermanences = ({ perms, composter }) => {
       }
       return null
     },
-    [classes.permanence, classes.permanenceRoot, composter.permanencesRule, endOfMonth, permanences, startOfMonth]
+    [classes.permanence, classes.permanenceRoot, composter.permanencesRule, date, endOfMonth, permanences, startOfMonth]
   )
 
-  const { anchorEl, data: currentPermanence, hPos, vPos } = permanenceDetails || {}
+  const maybeRenderPopover = ({ anchorEl, data: currentPermanence, hPos, vPos }) =>
+    anchorEl &&
+    currentPermanence && (
+      <PopoverPermanenceToCome
+        anchorEl={anchorEl}
+        permanence={currentPermanence}
+        vertical={vPos}
+        horizontal={hPos}
+        onClose={handlePopoverClosing}
+        onSubmit={handleSubmit}
+      />
+    )
 
   return (
     <ComposterContainer composter={composter}>
@@ -157,16 +176,7 @@ const ComposterPermanences = ({ perms, composter }) => {
         <Button onClick={goOneMonthForward} startIcon={<ChevronRight />} />
       </div>
       <Calendar date={date} renderDay={renderDay} />
-      {anchorEl && currentPermanence && (
-        <PopoverPermanenceToCome
-          anchorEl={anchorEl}
-          permanence={currentPermanence}
-          vertical={vPos}
-          horizontal={hPos}
-          onClose={handlePopoverClosing}
-          onSubmit={handleSubmit}
-        />
-      )}
+      {maybeRenderPopover(permanenceDetails || {})}
     </ComposterContainer>
   )
 }
@@ -175,7 +185,7 @@ ComposterPermanences.getInitialProps = async ({ query }) => {
   const [after, before] = ['startOf', 'endOf'].map(method => today[method]('month').toISOString())
 
   const { data: composter } = await api.getComposter(query.slug)
-  const { data } = await api.getPermanences({ composterId: composter.rid, before, after })
+  const data = await api.getPermanences({ composterId: composter.rid, before, after })
 
   return {
     composter,
