@@ -1,9 +1,9 @@
 import React from 'react'
 import { Container, Paper, Typography, Box } from '@material-ui/core'
+import { useRouter } from 'next/router'
 
 import { makeStyles } from '@material-ui/core/styles'
 import PasswordChange from '~/components/forms/PasswordChange'
-import { useRouter } from 'next/router'
 
 const useStyles = makeStyles(theme => ({
   container: {

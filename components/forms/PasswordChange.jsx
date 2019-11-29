@@ -42,7 +42,7 @@ const PasswordChange = () => {
       const res = await api.validate(values)
       if (res.status === 201) {
         resetForm(initialValues)
-        addToast('Votre compte a bien été confirmé ! Vous allez être redirigé...', TOAST.SUCCESS)
+        addToast('Votre mot de passe a bien été modifié ! Vous allez être redirigé...', TOAST.SUCCESS)
         router.push('/login')
       } else {
         addToast('Une erreur a eu lieu', TOAST.ERROR)
