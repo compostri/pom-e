@@ -9,7 +9,7 @@ import api from '~/utils/api'
 import { useToasts, TOAST } from '../components/Snackbar'
 
 const ConfirmationSchema = Yup.object().shape({
-  plainPassword: Yup.string().required('Nouveau mot de passe requis'),
+  newPassword: Yup.string().required('Nouveau mot de passe requis'),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('plainPassword'), null], 'Les deux mots de passe doivent être identiques')
     .required('Confirmation du mot de passe requise')
