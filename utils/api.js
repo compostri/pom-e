@@ -101,6 +101,8 @@ class MNApi {
   getUsers = args => this.get('/users', { params: args })
 
   updateUser = (id, args) => this.put(`/users/${id}`, args)
+
+  validate = args => this.post('/user_password_changes', args)
 }
 
 export default new MNApi()
