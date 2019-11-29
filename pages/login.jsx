@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react'
-import { Container, TextField, Paper, Typography, Button, Snackbar, SnackbarContent } from '@material-ui/core'
+import React, { useContext } from 'react'
+import { Container, TextField, Paper, Typography, Button } from '@material-ui/core'
 import Link from 'next/link'
 import Router from 'next/router'
 import { makeStyles } from '@material-ui/core/styles'
@@ -7,6 +7,7 @@ import { Formik, Form, Field } from 'formik'
 import * as Yup from 'yup'
 import { UserContext } from '~/context/UserContext'
 import palette from '../variables'
+import { useToasts, TOAST } from '~/components/Snackbar'
 
 const LogInSchema = Yup.object().shape({
   email: Yup.string()
@@ -15,7 +16,7 @@ const LogInSchema = Yup.object().shape({
   password: Yup.string().required('Mot de passe requis')
 })
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -52,8 +53,7 @@ const useStyles = makeStyles((theme) => ({
 const LogIn = () => {
   const classes = useStyles()
   const { userContext } = useContext(UserContext)
-
-  const [snackBarMessage, setSnackBarMessage] = useState(false)
+  const { addToast } = useToasts()
 
   return (
     <Container component="main" maxWidth="sm" className={classes.container}>
@@ -64,19 +64,20 @@ const LogIn = () => {
         <Formik
           initialValues={{ email: '', password: '' }}
           validationSchema={LogInSchema}
-          onSubmit={async (values) => {
+          onSubmit={async values => {
             try {
               const response = await userContext.login(values)
               if (response.status === 200 && response.data.token) {
                 const route = Router.query.ref || '/'
                 Router.replace(route)
               } else {
-                setSnackBarMessage('Une erreur est survenue')
+                addToast('Une erreur est survenue', TOAST.ERROR)
               }
             } catch (e) {
-              setSnackBarMessage('Combinaison d‘email et mot de passe incorrect')
+              addToast('Combinaison d‘email et mot de passe incorrect', TOAST.ERROR)
             }
-          }}>
+          }}
+        >
           {({ values, errors, touched, handleChange }) => (
             <Form className={classes.form}>
               <Field
@@ -119,10 +120,6 @@ const LogIn = () => {
         <Link href="/" passHref>
           <Button className={classes.forgotMdp}>Mot de passe oublié ?</Button>
         </Link>
-
-        <Snackbar open={snackBarMessage} onClose={() => setSnackBarMessage(false)}>
-          <SnackbarContent variant="error" message={snackBarMessage} />
-        </Snackbar>
       </Paper>
     </Container>
   )
