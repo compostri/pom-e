@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useCallback } from 'react'
 import * as Yup from 'yup'
 import { Formik, Form, Field, FieldArray } from 'formik'
 import { Box, FormGroup, FormControlLabel, Switch, Button, Typography, Chip, Avatar, CircularProgress } from '@material-ui/core'
@@ -36,18 +36,16 @@ const ContactForm = () => {
     userContext: { user }
   } = useContext(UserContext)
 
-  const getUserComposter = () =>
-    api.getUserComposter({ composter: composter.rid }).then(res => {
-      if (res.status === 200) {
-        // On stocke toutes les relations user <-> composteur
-        const rec = res.data['hydra:member']
-        setReceivers(rec)
-      }
-    })
+  const getUserComposter = useCallback(async () => {
+    const data = await api.getUserComposter({ composter: composter.rid }).catch(console.error)
+    if (data) {
+      setReceivers(data['hydra:member'])
+    }
+  }, [composter.rid])
 
   useEffect(() => {
     getUserComposter()
-  }, [composter.id])
+  }, [getUserComposter])
 
   const isReceiver = () => {
     // Parmi toutes les relations, on filtre celles du user en cours et qui sont classées receivers

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react'
+import React, { useState, useContext, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { makeStyles } from '@material-ui/styles'
@@ -10,7 +10,6 @@ import 'dayjs/locale/fr'
 
 import { ComposterContext } from '~/context/ComposterContext'
 import { permanenceType } from '~/types'
-import api from '~/utils/api'
 import palette from '~/variables'
 import { Can, Action, Subject } from '~/context/AbilityContext'
 import { UserContext } from '~/context/UserContext'
@@ -195,8 +194,7 @@ const withPermanancePopoverWrapper = WrappedComponent => {
 
 const getId = opener => opener['@id']
 
-const PopoverPermanenceToComeContent = ({ permanence, composterId, onSubmit }) => {
-  const defaultOpenersToAdd = []
+const PopoverPermanenceToComeContent = ({ permanence, onSubmit }) => {
   const { EDIT, CREATE, DELETE } = Action
   const { COMPOSTER_LISTES_OUVREURS, COMPOSTER_OUVREUR } = Subject
 
@@ -226,29 +224,8 @@ const PopoverPermanenceToComeContent = ({ permanence, composterId, onSubmit }) =
     selectRoot
   } = permanenceToComeWithOpenersStyle
 
-  const [allOpeners, setAllOpeners] = useState(defaultOpenersToAdd)
   const [openersAdded, setOpenersAdded] = useState(permanence.openers)
   const opernerAddedIds = openersAdded.map(getId)
-
-  useEffect(() => {
-    function fetchUserComposter() {
-      api.getUserComposter({ composter: composterId }).then(res => {
-        if (res.status === 200) {
-          const composterOpeners = res.data['hydra:member'].map(({ user }) => user)
-          setAllOpeners(
-            [...permanence.openers, ...composterOpeners].reduce((openerList, opener) => {
-              if (!openerList.length) {
-                return [opener]
-              }
-              return openerList.map(getId).includes(getId(opener)) ? openerList : [...openerList, opener]
-            }, [])
-          )
-        }
-      })
-    }
-
-    fetchUserComposter()
-  }, [composterId, permanence.openers])
 
   const handleAddingCurrentOpener = useCallback(
     currentOpeners => () => {
@@ -266,7 +243,7 @@ const PopoverPermanenceToComeContent = ({ permanence, composterId, onSubmit }) =
   }
 
   const handleOpenerAdding = ({ target: { value: ids } }) => {
-    setOpenersAdded(allOpeners.filter(opener => ids.includes(getId(opener))))
+    setOpenersAdded(permanence.$openersAvailable.filter(opener => ids.includes(getId(opener))))
   }
 
   const handleCancel = () => {
@@ -275,7 +252,7 @@ const PopoverPermanenceToComeContent = ({ permanence, composterId, onSubmit }) =
 
   const handleSubmit = evt => {
     evt.preventDefault()
-    onSubmit(permanence.id, openersAdded.map(getId))
+    onSubmit({ openers: openersAdded.map(getId) })
   }
 
   const renderOpenersToAdd = openerList => {
@@ -310,7 +287,7 @@ const PopoverPermanenceToComeContent = ({ permanence, composterId, onSubmit }) =
               <DeleteIcon />
             </IconButton>
           </Can>
-          <Can I={DELETE} this={{ $type: COMPOSTER_OUVREUR, self: getId(opener) === `/users/${user.userId}` }}>
+          <Can I={DELETE} this={{ $type: COMPOSTER_OUVREUR, self: user && getId(opener) === `/users/${user.userId}` }}>
             <IconButton aria-label="remove" onClick={handleOpenerRemoval(openerId)} className={openerListItemDeleteIcon}>
               <DeleteIcon />
             </IconButton>
@@ -336,7 +313,7 @@ const PopoverPermanenceToComeContent = ({ permanence, composterId, onSubmit }) =
     )
   }
 
-  const isSelectVisible = allOpeners.length && allOpeners > openersAdded
+  const isSelectVisible = permanence.$openersAvailable.length && permanence.$openersAvailable > openersAdded
 
   const AsOpernerFooter = () => {
     const isUserSelfEdited = permanence.openers.length !== openersAdded.length
@@ -385,7 +362,7 @@ const PopoverPermanenceToComeContent = ({ permanence, composterId, onSubmit }) =
         {isSelectVisible && (
           <FormControl className={selectFormControl}>
             <Select multiple className={select} classes={{ root: selectRoot }} onChange={handleOpenerAdding} value={opernerAddedIds} renderValue={placeholder}>
-              {renderOpenersToAdd(allOpeners)}
+              {renderOpenersToAdd(permanence.$openersAvailable)}
             </Select>
           </FormControl>
         )}
@@ -412,7 +389,6 @@ const PopoverPermanenceToComeContent = ({ permanence, composterId, onSubmit }) =
 
 PopoverPermanenceToComeContent.propTypes = {
   permanence: permanenceType.isRequired,
-  composterId: PropTypes.number.isRequired,
   onSubmit: PropTypes.func.isRequired
 }
 
