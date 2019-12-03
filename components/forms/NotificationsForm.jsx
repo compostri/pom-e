@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useCallback } from 'react'
 import { Paper, FormControlLabel, Switch, Typography, Grid } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import { useToasts, TOAST } from '~/components/Snackbar'
@@ -43,12 +43,12 @@ const NotificationsForm = () => {
   const [userComposter, setUserComposter] = React.useState([])
 
   /* Notifications */
-  async function getUserComposter() {
-    const dataComposters = await api.getUserComposter({ user: userContext.user.userId })
-    if (dataComposters.status === 200) {
-      setUserComposter(dataComposters.data['hydra:member'])
+  const getUserComposter = useCallback(async () => {
+    const data = await api.getUserComposter({ user: userContext.user.userId }).catch(console.error)
+    if (data) {
+      setUserComposter(data['hydra:member'])
     }
-  }
+  }, [userContext.user.userId])
 
   const updateNotif = (uc, field) => {
     const newUCs = userComposter.map(oldUC => {
@@ -62,7 +62,7 @@ const NotificationsForm = () => {
 
   useEffect(() => {
     getUserComposter()
-  }, [])
+  }, [getUserComposter])
 
   /* Update Notifications */
   const updateUC = async (uc, field) => {

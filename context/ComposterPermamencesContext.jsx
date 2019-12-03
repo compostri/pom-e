@@ -181,8 +181,7 @@ const ComposterPermanencesProvider = ({ children, composterId, composterAtId, pe
 
       permanenceDetailsAction.success({
         ...permanenceDetails,
-        ...permanence,
-        $openersAvailable: $removeDuplicate(permanenceDetails.$openersAvailable, { by: '@id' })
+        ...permanence
       })
       $displaySuccessFromApi()
     } else {

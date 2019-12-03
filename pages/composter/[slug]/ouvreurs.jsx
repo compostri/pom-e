@@ -183,13 +183,13 @@ const ComposterOuvreurs = ({ composter }) => {
 
   useEffect(() => {
     const getUsers = async () => {
-      const res = await api.getUserComposter({ composter: composter.rid })
-      if (res.data) {
-        setUsers(res.data['hydra:member'])
+      const data = await api.getUserComposter({ composter: composter.rid }).catch(console.error)
+      if (data) {
+        setUsers(data['hydra:member'])
       }
     }
     getUsers()
-  }, [composter])
+  }, [composter.rid])
 
   return (
     <ComposterContainer composter={composter}>
