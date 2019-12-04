@@ -26,6 +26,7 @@ const useStyles = makeStyles(({ spacing }) => ({
     right: spacing(4),
     zIndex: 150
   },
+
   listItem: {
     padding: 0
   },
@@ -53,7 +54,7 @@ const useStyles = makeStyles(({ spacing }) => ({
   buttonTitre: {
     alignSelf: 'center'
   },
-  InfoImg: {
+  infoImg: {
     display: 'flex'
   }
 }))
@@ -71,7 +72,7 @@ const PopupContent = ({ composter }) => {
           </Typography>
         </Button>
       </Link>
-      <div className={classes.InfoImg}>
+      <div className={classes.infoImg}>
         {composter.image ? (
           <Box>
             <img src={composter.image} alt="Composteur" id="imgComposter" />
@@ -127,7 +128,8 @@ const Home = ({ allCommunes, allCategories }) => {
     pitch: 0
   })
 
-  const [selectedCommune, setSelectedCommune] = useState(allCommunes[0].id)
+  const [acceptNewMembers, setAcceptNewMembers] = useState(true)
+  const [selectedCommune, setSelectedCommune] = useState(allCommunes.map(com => com.id))
   const [selectedCategories, setSelectedCategories] = useState(allCategories.map(cat => cat.id))
   const [selectedStatus, setSelectedStatus] = useState(['Active'])
   const [mapPopup, setMapPopup] = useState(false)
@@ -166,7 +168,18 @@ const Home = ({ allCommunes, allCategories }) => {
       </Head>
 
       <Sidebar
-        {...{ allCommunes, allCategories, selectedCommune, setSelectedCommune, selectedCategories, setSelectedCategories, selectedStatus, setSelectedStatus }}
+        {...{
+          allCommunes,
+          allCategories,
+          selectedCommune,
+          setSelectedCommune,
+          selectedCategories,
+          setSelectedCategories,
+          selectedStatus,
+          setSelectedStatus,
+          acceptNewMembers,
+          setAcceptNewMembers
+        }}
       />
 
       <div className={classes.userButton}>
@@ -193,7 +206,13 @@ const Home = ({ allCommunes, allCategories }) => {
                     'circle-color': ['match', ['get', 'categorie'], 1, '#7bced1', 2, '#e86034', 3, '#6c3727', 4, '#a3c538', '#7b7d75'],
                     'circle-stroke-color': 'white'
                   },
-                  filter: ['all', ['==', 'commune', selectedCommune], ['in', 'categorie', ...selectedCategories], ['in', 'status', ...selectedStatus]]
+                  filter: [
+                    'all',
+                    ['in', 'commune', ...selectedCommune],
+                    ['in', 'categorie', ...selectedCategories],
+                    ['in', 'status', ...selectedStatus],
+                    ['==', 'acceptNewMembers', acceptNewMembers]
+                  ]
                 }}
               />
             </Source>
