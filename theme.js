@@ -43,6 +43,23 @@ const theme = createMuiTheme({
       containedPrimary: {
         color: 'white',
         backgroundColor: palette.orangePrimary
+      },
+      outlined: {
+        boxShadow: 'none',
+        backgroundColor: palette.greyExtraLight,
+        color: palette.greyMedium,
+        padding: defaultTheme.spacing(1, 3),
+        fontSize: '1rem',
+        fontWeight: '700',
+        letterSpacing: 1,
+        '&:hover': {
+          boxShadow: 'none',
+          backgroundColor: palette.greenOpacity
+        },
+        '&:active': {
+          boxShadow: 'none',
+          backgroundColor: palette.greenOpacity
+        }
       }
     },
     MuiBackdrop: {
@@ -176,6 +193,7 @@ const theme = createMuiTheme({
     },
     MuiSelect: {
       select: {
+        borderRadius: 2,
         backgroundColor: palette.greyExtraLight
       }
     },

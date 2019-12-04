@@ -1,27 +1,31 @@
 import palette from '../variables'
 
-export const getComposterColor = composter => {
-  let composterColor = palette.grey
-  if (!composter) {
-    return composterColor
+export const getCategoryColor = category => {
+  let color = palette.grey
+  if (!category) {
+    return color
   }
-  switch (composter.categorie) {
+  switch (category.id) {
     case 1:
-      composterColor = palette.blue
+      color = palette.blue
       break
     case 2:
-      composterColor = palette.orangePrimary
+      color = palette.orangePrimary
       break
     case 3:
-      composterColor = palette.brown
+      color = palette.brown
       break
     case 4:
-      composterColor = palette.greenPrimary
+      color = palette.greenPrimary
       break
     default:
-      composterColor = palette.grey
+      color = palette.grey
   }
-  return composterColor
+  return color
+}
+
+export const getComposterColor = composter => {
+  return getCategoryColor(composter.category)
 }
 
 export const getInitial = name => {
