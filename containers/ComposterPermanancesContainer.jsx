@@ -1,20 +1,18 @@
 import React, { useState, useMemo, Fragment, useCallback, useContext, useEffect, useRef } from 'react'
 import { rrulestr } from 'rrule'
+import PropTypes from 'prop-types'
 import { Typography, Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import { ChevronLeft, ChevronRight } from '@material-ui/icons'
 import dayjs from 'dayjs'
 import 'dayjs/locale/fr'
 
-import ComposterContainer from '~/components/ComposterContainer'
-import PermanceCard from '~/components/PermanenceCard'
-import { PopoverPermanenceToCome } from '~/components/PermanenceCard/PermanenceCardPopover/PermanenceCardPopover'
+import PermanceCard, { PermanenceToComeDetails } from '~/components/PermanenceCard'
 import palette from '~/variables'
 
 import Calendar from '~/components/Calendar'
 
 import { ComposterPermanencesContext } from '~/context/ComposterPermamencesContext'
-import { composterType } from '~/types'
 
 dayjs.locale('fr')
 
@@ -44,12 +42,13 @@ const renderWithKey = renderFn => (data, i) => {
 }
 
 const propTypes = {
-  composter: composterType.isRequired
+  permanencesRule: PropTypes.string.isRequired
 }
 
-const ComposterPermanancesContainer = ({ composter }) => {
+const ComposterPermanancesContainer = ({ permanencesRule }) => {
   const isInitialMount = useRef(true)
   const classes = useStyles()
+
   const { permanences, addPermanenceDetails, permanenceDetails, retrievePermanences, removePermanenceDetails, updatePermanenceDetails } = useContext(
     ComposterPermanencesContext
   )
@@ -104,7 +103,7 @@ const ComposterPermanancesContainer = ({ composter }) => {
         return null
       }
 
-      const rulesDates = rrulestr(composter.permanencesRule, { forceset: true })
+      const rulesDates = rrulestr(permanencesRule, { forceset: true })
         .between(startOfMonth.toDate(), endOfMonth.toDate())
         .map(d => dayjs(d).get('date'))
 
@@ -135,14 +134,14 @@ const ComposterPermanancesContainer = ({ composter }) => {
       }
       return null
     },
-    [classes.permanence, classes.permanenceRoot, composter.permanencesRule, date, endOfMonth, handleClick, permanences, startOfMonth]
+    [classes.permanence, classes.permanenceRoot, permanencesRule, date, endOfMonth, handleClick, permanences, startOfMonth]
   )
 
   const maybeRenderPopover = ({ $popover, ...details }) => {
     return (
       $popover &&
       details && (
-        <PopoverPermanenceToCome
+        <PermanenceToComeDetails
           anchorEl={$popover.anchorEl}
           permanence={details}
           vertical={$popover.vPos}
@@ -155,7 +154,7 @@ const ComposterPermanancesContainer = ({ composter }) => {
   }
 
   return (
-    <ComposterContainer composter={composter}>
+    <>
       <div className={classes.nav}>
         <Button onClick={goOneMonthBack} startIcon={<ChevronLeft />} />
         <Typography variant="h1">
@@ -165,7 +164,7 @@ const ComposterPermanancesContainer = ({ composter }) => {
       </div>
       <Calendar date={date} renderDay={renderDay} />
       {maybeRenderPopover((permanenceDetails || {}).data || {})}
-    </ComposterContainer>
+    </>
   )
 }
 

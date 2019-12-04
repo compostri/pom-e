@@ -6,12 +6,15 @@ import PermanencesProvider from '~/context/ComposterPermamencesContext'
 import api from '~/utils/api'
 import { composterType, permanenceType } from '~/types'
 import ComposterPermanancesContainer from '~/containers/ComposterPermanancesContainer'
+import ComposterContainer from '~/components/ComposterContainer'
 
 const ComposterPermanences = ({ composter, permanences }) => {
   return (
-    <PermanencesProvider permanences={permanences} composterId={composter.rid} composterAtId={composter['@id']}>
-      <ComposterPermanancesContainer composter={composter} />
-    </PermanencesProvider>
+    <ComposterContainer composter={composter}>
+      <PermanencesProvider permanences={permanences} composterId={composter.rid} composterAtId={composter['@id']}>
+        <ComposterPermanancesContainer permanencesRule={composter.permanencesRule} />
+      </PermanencesProvider>
+    </ComposterContainer>
   )
 }
 
@@ -25,6 +28,7 @@ ComposterPermanences.getInitialProps = async ({ query }) => {
 
   return {
     composter,
+    slug: query.slug,
     permanences: data['hydra:member']
   }
 }
