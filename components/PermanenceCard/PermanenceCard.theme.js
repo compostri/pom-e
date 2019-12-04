@@ -61,10 +61,12 @@ const useBaseStyle = makeStyles(({ typography }) => ({
   },
   popoverTitle: {
     fontSize: typography.pxToRem(12),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    margin: 0
   },
   popoverSubHeader: {
-    fontSize: typography.pxToRem(11)
+    fontSize: typography.pxToRem(11),
+    margin: 0
   },
   popoverCardContent: {
     paddingRight: typography.pxToRem(11),
