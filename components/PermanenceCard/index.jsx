@@ -6,45 +6,11 @@ import 'dayjs/locale/fr'
 
 import { permanenceType } from '~/types'
 
-import useBaseStyle, { useBlueTheme, useRedTheme, useGreenTheme, useGreyTheme } from './PermanenceCard.theme'
+import useBaseStyle from './PermanenceCard.theme'
+import { useTheme, usePermanenceStatus } from './PermanenceCardPopover/hooks'
+import PermanenceToComeDetails from './PermanenceCardPopover/PermanenceCardPopoverToCome'
 
 const dateDuJour = dayjs()
-
-const usePermanenceStatus = ({ canceled, date: permDate }, date) => {
-  const isPermDatePassed = date.isAfter(permDate)
-  const setStatus = status => ({ status })
-
-  if (canceled) {
-    return setStatus('Permanence annulée')
-  }
-  if (isPermDatePassed) {
-    return setStatus('Permanence passée')
-  }
-
-  return setStatus('Permanence à venir')
-}
-const useTheme = ({ canceled, date, openers, eventTitle }) => {
-  const greenTheme = useGreenTheme()
-  const greyTheme = useGreyTheme()
-  const redTheme = useRedTheme()
-  const blueTheme = useBlueTheme()
-
-  const isPermDatePassed = dateDuJour.isAfter(date)
-  const hasAnyOpeners = openers.length > 0
-  const hasTitle = eventTitle
-
-  if (isPermDatePassed || canceled) {
-    return greyTheme
-  }
-
-  if (hasAnyOpeners) {
-    if (hasTitle) {
-      return blueTheme
-    }
-    return greenTheme
-  }
-  return redTheme
-}
 
 const propTypes = { permanence: permanenceType.isRequired }
 
@@ -105,3 +71,4 @@ const PermanceCard = ({ permanence }) => {
 PermanceCard.propTypes = propTypes
 
 export default PermanceCard
+export { PermanenceToComeDetails }
