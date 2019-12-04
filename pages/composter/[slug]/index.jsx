@@ -15,7 +15,7 @@ import MapField from '~/components/MapField'
 import ComposterContactForm from '~/components/forms/composter/ComposterContactForm'
 import { ComposterContext } from '~/context/ComposterContext'
 
-const { EDIT } = Action
+const { MODIFY } = Action
 const { COMPOSTER_INFORMATION } = Subject
 
 const useStyles = makeStyles(theme => ({
@@ -93,7 +93,7 @@ const Content = () => {
                 <Typography variant="h2" className={classes.titleSectionSecondary}>
                   Informations sur le site de compostage
                 </Typography>
-                <Can I={EDIT} this={COMPOSTER_INFORMATION}>
+                <Can I={MODIFY} this={COMPOSTER_INFORMATION}>
                   <Link href="/composter/[slug]/modifications" as={`/composter/${composter.slug}/modifications`} passHref>
                     <Fab size="small" color="secondary" aria-label="edit" className={classes.edit}>
                       <Edit className={classes.editIcon} />
