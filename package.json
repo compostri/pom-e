@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next build && next start --port $PORT --hostname 0.0.0.0"
+    "install": "next build",
+    "start": "next start --port $PORT --hostname 0.0.0.0"
   },
   "dependencies": {
     "@casl/ability": "^3.2.0",
