@@ -44,7 +44,7 @@ const withPermanencePopoverWrapper = WrappedComponent => {
         <Card className={baseStyle.popoverCard}>
           <CardHeader
             title={cardTitle}
-            x
+            
             subheader={dayjs(permanence.date).format('HH:mm')}
             action={
               <IconButton aria-label="close" onClick={onClose}>
