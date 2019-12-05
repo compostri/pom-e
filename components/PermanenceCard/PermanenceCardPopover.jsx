@@ -3,7 +3,20 @@ import React, { useContext, useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { makeStyles } from '@material-ui/styles'
-import { Avatar, IconButton, Button, FormControl, MenuItem, Select, Checkbox, ListItemText, TextField, FormControlLabel, Switch } from '@material-ui/core'
+import {
+  Avatar,
+  IconButton,
+  Button,
+  FormControl,
+  MenuItem,
+  Select,
+  Checkbox,
+  ListItemText,
+  TextField,
+  FormControlLabel,
+  Switch,
+  InputAdornment
+} from '@material-ui/core'
 import { Delete as DeleteIcon } from '@material-ui/icons'
 import { Formik, Form } from 'formik'
 import dayjs from 'dayjs'
@@ -13,9 +26,10 @@ import palette from '~/variables'
 import { Can, Action, Subject, AbilityContext } from '~/context/AbilityContext'
 import { UserContext } from '~/context/UserContext'
 
-import useBaseStyle from '../PermanenceCard.theme'
+import useBaseStyle from './PermanenceCard.theme'
 import withPermanancePopoverWrapper from './withPermanenceCardPopoverWrapper'
 import withFormikField from '~/utils/hoc/withFormikField'
+import { useTheme } from './hooks'
 
 const today = dayjs()
 
@@ -29,7 +43,6 @@ const usePermanenceToComeWithOpenersStyle = makeStyles(({ typography }) => ({
     margin: 0
   },
   avatar: {
-    backgroundColor: palette.greenPrimary,
     marginRight: typography.pxToRem(5)
   },
   avatarQuestionMark: {
@@ -49,6 +62,14 @@ const usePermanenceToComeWithOpenersStyle = makeStyles(({ typography }) => ({
     fontSize: typography.pxToRem(11),
     color: palette.greyMedium,
     listStyle: 'none'
+  },
+  field: {
+    marginTop: typography.pxToRem(10),
+    marginBottom: 0,
+    fontSize: typography.pxToRem(11),
+    width: '100%',
+    color: palette.greyMedium,
+    textAlign: 'center'
   },
   noOpenerListItem: {
     justifyContent: 'flex-start',
@@ -114,14 +135,23 @@ const FormikTextField = withFormikField(TextField)
 const FormikSwitch = withFormikField(Switch)
 const FormikSelect = withFormikField(Select)
 
-const PopoverPermanenceToComeContent = ({ permanence, onSubmit }) => {
+const PermanenceCardPopover = ({ permanence, onSubmit }) => {
   const { MODIFY, DELETE } = Action
   const { COMPOSTER_LISTES_OUVREURS, COMPOSTER_OUVREUR, COMPOSTER_PERMANENCE_MESSAGE } = Subject
   const isPermanencePassed = today.isAfter(permanence.date)
 
   const initialValues = useMemo(() => {
-    const { openers, eventTitle, eventMessage } = permanence
-    return { openers, eventTitle, eventMessage, isPermanenceAnEvent: !!eventTitle }
+    const emptyIfNull = value => (value === null ? '' : value)
+    const { openers, eventTitle, eventMessage, nbUsers, nbBuckets, temperature } = permanence
+    return {
+      openers,
+      eventTitle,
+      eventMessage,
+      nbUsers: emptyIfNull(nbUsers),
+      nbBuckets: emptyIfNull(nbBuckets),
+      temperature: emptyIfNull(temperature),
+      isPermanenceAnEvent: !!eventTitle
+    }
   }, [permanence])
 
   const {
@@ -130,42 +160,32 @@ const PopoverPermanenceToComeContent = ({ permanence, onSubmit }) => {
   const abilityContext = useContext(AbilityContext)
 
   const baseStyle = useBaseStyle()
-  const permanenceToComeWithOpenersStyle = usePermanenceToComeWithOpenersStyle()
+  const theme = useTheme(permanence)
+  const css = usePermanenceToComeWithOpenersStyle()
 
-  const {
-    openerListItem,
-    avatar,
-    avatarQuestionMark,
-    contentTitle,
-    openerList: openerListStyle,
-    noOpenerListItem,
-    noOpenerMsg,
-    openerListBtnLabel,
-    openerListBtn,
-    openerListBtnCancel,
-    openerListBtnSubmit,
-    openerListItemDeleteIcon,
-    openerListItemLeftContent,
-    selectFormControl,
-    select,
-    switchLabel,
-    switchRoot,
-    selectRoot,
-    eventMessageTitle,
-    eventMessageText
-  } = permanenceToComeWithOpenersStyle
-
-  const handleSubmit = useCallback(({ openers, eventTitle, eventMessage, isPermanenceAnEvent }, actions) => {
+  const handleSubmit = useCallback(({ openers, eventTitle, eventMessage, nbUsers, nbBuckets, temperature, isPermanenceAnEvent }, actions) => {
     const mayBeEmptyValue = value => (isPermanenceAnEvent ? value : '')
+    const nullIfEmpty = value => (value === '' ? null : value)
+    const isPermanenceToCome = !isPermanencePassed
 
-    onSubmit({ openers: openers.map(getId), eventTitle: mayBeEmptyValue(eventTitle), eventMessage: mayBeEmptyValue(eventMessage) })
+    onSubmit(
+      isPermanenceToCome
+        ? {
+            openers: openers.map(getId),
+            eventTitle: mayBeEmptyValue(eventTitle),
+            eventMessage: mayBeEmptyValue(eventMessage)
+          }
+        : { nbUsers: nullIfEmpty(nbUsers), nbBuckets: nullIfEmpty(nbBuckets), temperature: nullIfEmpty(temperature) }
+    )
     actions.setSubmitting(false)
   }, [])
 
   const mayRenderNoOpenersWarning = useCallback(
     openerList =>
-      !openerList.length && <p className={noOpenerMsg}>S’il y a aucun ouvreur d’inscrit, la permanence ne pourra pas être assurée. Inscrivez-vous vite ! </p>,
-    []
+      !openerList.length && (
+        <p className={css.noOpenerMsg}>S’il y a aucun ouvreur d’inscrit, la permanence ne pourra pas être assurée. Inscrivez-vous vite ! </p>
+      ),
+    [isPermanencePassed]
   )
 
   const mayRenderCurrentOpeners = useCallback(
@@ -174,20 +194,20 @@ const PopoverPermanenceToComeContent = ({ permanence, onSubmit }) => {
         const { username } = opener
         const openerId = getId(opener)
         return (
-          <li className={openerListItem} key={`edit-opener-${username}-${i}`}>
-            <div className={openerListItemLeftContent}>
-              <Avatar aria-label={username} className={classNames(baseStyle.cardAvatar, avatar)}>
+          <li className={css.openerListItem} key={`edit-opener-${username}-${i}`}>
+            <div className={css.openerListItemLeftContent}>
+              <Avatar aria-label={username} className={classNames(baseStyle.cardAvatar, theme.cardAvatar, css.avatar)}>
                 {username[0]}
               </Avatar>
               {username}
             </div>
             <Can I={MODIFY} this={{ $type: COMPOSTER_LISTES_OUVREURS, isPermanencePassed }}>
-              <IconButton aria-label="remove" onClick={onRemoval(openerId)} className={openerListItemDeleteIcon}>
+              <IconButton aria-label="remove" onClick={onRemoval(openerId)} className={css.openerListItemDeleteIcon}>
                 <DeleteIcon />
               </IconButton>
             </Can>
             <Can I={DELETE} this={{ $type: COMPOSTER_OUVREUR, self: user && getId(opener) === `/users/${user.userId}`, isPermanencePassed }}>
-              <IconButton aria-label="remove" onClick={onRemoval(openerId)} className={openerListItemDeleteIcon}>
+              <IconButton aria-label="remove" onClick={onRemoval(openerId)} className={css.openerListItemDeleteIcon}>
                 <DeleteIcon />
               </IconButton>
             </Can>
@@ -197,13 +217,13 @@ const PopoverPermanenceToComeContent = ({ permanence, onSubmit }) => {
 
       return (
         <>
-          <h3 className={contentTitle}>Liste des ouvreurs</h3>
-          <ul className={openerListStyle}>
+          <h3 className={css.contentTitle}>Liste des ouvreurs</h3>
+          <ul className={css.openerList}>
             {openerList.length > 0 ? (
               openerList.map(renderOpener)
             ) : (
-              <li className={classNames(openerListItem, noOpenerListItem)}>
-                <Avatar className={classNames(classNames(baseStyle.cardAvatar, avatar, avatarQuestionMark))}>?</Avatar>
+              <li className={classNames(css.openerListItem, css.noOpenerListItem)}>
+                <Avatar className={classNames(classNames(baseStyle.cardAvatar, css.avatar, css.avatarQuestionMark))}>?</Avatar>
                 Attention ! Pas d'ouvreur
               </li>
             )}
@@ -217,6 +237,10 @@ const PopoverPermanenceToComeContent = ({ permanence, onSubmit }) => {
   const mayRenderOpenerCapabilityFooter = useCallback(
     (openers, openersAvailable, handleAddingOpener, handleCancel) => {
       if (abilityContext.cannot(Action.CREATE, Subject.COMPOSTER_OUVREUR)) {
+        return null
+      }
+
+      if (isPermanencePassed) {
         return null
       }
 
@@ -238,12 +262,17 @@ const PopoverPermanenceToComeContent = ({ permanence, onSubmit }) => {
               variant="outlined"
               color="secondary"
               onClick={handleCancel}
-              className={classNames(openerListBtn, openerListBtnCancel)}
-              classes={{ label: openerListBtnLabel }}
+              className={classNames(css.openerListBtn, css.openerListBtnCancel)}
+              classes={{ label: css.openerListBtnLabel }}
             >
               Annuler
             </Button>
-            <Button type="submit" className={classNames(openerListBtn, openerListBtnSubmit)} variant="contained" classes={{ label: openerListBtnLabel }}>
+            <Button
+              type="submit"
+              className={classNames(css.openerListBtn, css.openerListBtnSubmit)}
+              variant="contained"
+              classes={{ label: css.openerListBtnLabel }}
+            >
               Enregister
             </Button>
           </>
@@ -254,16 +283,16 @@ const PopoverPermanenceToComeContent = ({ permanence, onSubmit }) => {
       }
       return (
         <Button
-          className={classNames(openerListBtn, openerListBtnSubmit)}
+          className={classNames(css.openerListBtn, css.openerListBtnSubmit)}
           variant="contained"
-          classes={{ label: openerListBtnLabel }}
+          classes={{ label: css.openerListBtnLabel }}
           onClick={handleAddingCurrentOpener}
         >
           S'ajouter
         </Button>
       )
     },
-    [user, abilityContext]
+    [user, abilityContext, isPermanencePassed]
   )
 
   const mayRenderOpenersSelect = useCallback((openersAvailable, openers) => {
@@ -294,8 +323,8 @@ const PopoverPermanenceToComeContent = ({ permanence, onSubmit }) => {
     }
 
     return (
-      <FormControl className={selectFormControl}>
-        <FormikSelect multiple className={select} classes={{ root: selectRoot }} name="openers" displayEmpty renderValue={renderValue}>
+      <FormControl className={css.selectFormControl}>
+        <FormikSelect multiple className={css.select} classes={{ root: css.selectRoot }} name="openers" displayEmpty renderValue={renderValue}>
           {renderOpenersToAdd(openersAvailable, openers)}
         </FormikSelect>
       </FormControl>
@@ -306,8 +335,23 @@ const PopoverPermanenceToComeContent = ({ permanence, onSubmit }) => {
     hasTobeRendered =>
       hasTobeRendered && (
         <>
-          <FormikTextField name="eventTitle" label="Titre de l'évènement" />
-          <FormikTextField multiline rows="4" name="eventMessage" label="Message de l'évènement" placeholder="Écrivez ici le message" />
+          <FormikTextField
+            InputLabelProps={{
+              shrink: true
+            }}
+            name="eventTitle"
+            label="Titre de l'évènement"
+          />
+          <FormikTextField
+            InputLabelProps={{
+              shrink: true
+            }}
+            multiline
+            rows="4"
+            name="eventMessage"
+            label="Message de l'évènement"
+            placeholder="Écrivez ici le message"
+          />
         </>
       ),
     []
@@ -316,15 +360,123 @@ const PopoverPermanenceToComeContent = ({ permanence, onSubmit }) => {
   const mayRenderEventMessage = useCallback((title, text) => {
     return (
       <>
-        {title && <TextField className={eventMessageTitle} value={title} label="L’évenement" disabled />}
-        {text && <TextField multiple className={eventMessageText} value={text} disabled />}
+        {title && <TextField className={css.eventMessageTitle} value={title} label="L’évenement" disabled />}
+        {text && <TextField multiple className={css.eventMessageText} value={text} disabled />}
       </>
     )
   }, [])
 
+  const mayRenderStats = useMemo(() => {
+    if (isPermanencePassed === false) {
+      return null
+    }
+
+    const isEditable = abilityContext.can(Action.MODIFY, {
+      $type: Subject.COMPOSTER_STATISTIQUES,
+      self: user && permanence.openers.map(getId).includes(`/users/${user.userId}`)
+    })
+
+    const disabled = isEditable === false
+
+    return (
+      <>
+        <FormikTextField
+          InputLabelProps={{
+            shrink: true
+          }}
+          className={css.field}
+          name="nbUsers"
+          label="Utilisateurs"
+          type="number"
+          disabled={disabled}
+        />
+        <FormikTextField
+          InputLabelProps={{
+            shrink: true
+          }}
+          className={css.field}
+          name="nbBuckets"
+          label="Sceaux"
+          type="number"
+          disabled={disabled}
+        />
+        <FormikTextField
+          className={css.field}
+          name="temperature"
+          label="Température"
+          type="number"
+          disabled={disabled}
+          InputProps={{
+            shrink: true,
+            endAdornment: <InputAdornment position="end">°C</InputAdornment>
+          }}
+        />
+      </>
+    )
+  }, [isPermanencePassed, abilityContext, user, permanence])
+
+  const mayRenderSwitch = useCallback(isPermanenceAnEvent => {
+    return (
+      <FormControlLabel
+        className={css.switchRoot}
+        classes={{ label: css.switchLabel }}
+        control={<FormikSwitch name="isPermanenceAnEvent" checked={isPermanenceAnEvent} />}
+        label="Cette permanence est un événement"
+      />
+    )
+  }, [])
+
+  const renderCancelSubmitButton = useCallback(
+    (setValues, dirty) => {
+      const handleCancel = () => {
+        setValues(initialValues)
+      }
+
+      return (
+        dirty && (
+          <>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={handleCancel}
+              className={classNames(css.openerListBtn, css.openerListBtnCancel)}
+              classes={{ label: css.openerListBtnLabel }}
+            >
+              Annuler
+            </Button>
+            <Button
+              type="submit"
+              className={classNames(css.openerListBtn, css.openerListBtnSubmit)}
+              variant="contained"
+              classes={{ label: css.openerListBtnLabel }}
+            >
+              Enregister
+            </Button>
+          </>
+        )
+      )
+    },
+    [initialValues]
+  )
+
+  const mayRenderRefentPopoverBody = useCallback(
+    ({ openers, isPermanenceAnEvent }) => {
+      if (isPermanencePassed) {
+        return null
+      }
+      return [
+        mayRenderOpenersSelect(permanence.$openersAvailable, openers),
+        mayRenderNoOpenersWarning(openers),
+        mayRenderSwitch(isPermanenceAnEvent),
+        mayRenderEventFields(isPermanenceAnEvent)
+      ]
+    },
+    [permanence, isPermanencePassed]
+  )
+
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-      {({ values, setFieldValue }) => {
+      {({ values, setFieldValue, setValues, dirty }) => {
         const handleOpenerRemoval = id => () => {
           setFieldValue(
             'openers',
@@ -341,28 +493,18 @@ const PopoverPermanenceToComeContent = ({ permanence, onSubmit }) => {
         return (
           <Form>
             {mayRenderCurrentOpeners(values.openers, handleOpenerRemoval)}
+            {mayRenderStats}
             <Can I={MODIFY} this={COMPOSTER_LISTES_OUVREURS}>
-              {mayRenderOpenersSelect(permanence.$openersAvailable, values.openers)}
-              {mayRenderNoOpenersWarning(values.openers)}
-              <FormControlLabel
-                className={switchRoot}
-                classes={{ label: switchLabel }}
-                control={<FormikSwitch name="isPermanenceAnEvent" checked={values.isPermanenceAnEvent} />}
-                label="Cette permanence est un événement"
-              />
-              {mayRenderEventFields(values.isPermanenceAnEvent)}
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={handleCancel}
-                className={classNames(openerListBtn, openerListBtnCancel)}
-                classes={{ label: openerListBtnLabel }}
-              >
-                Annuler
-              </Button>
-              <Button type="submit" className={classNames(openerListBtn, openerListBtnSubmit)} variant="contained" classes={{ label: openerListBtnLabel }}>
-                Enregister
-              </Button>
+              {mayRenderRefentPopoverBody(values)}
+            </Can>
+            <Can
+              I={MODIFY}
+              this={{
+                $type: Subject.COMPOSTER_STATISTIQUES,
+                self: user && permanence.openers.map(getId).includes(`/users/${user.userId}`)
+              }}
+            >
+              {renderCancelSubmitButton(setValues, dirty)}
             </Can>
             <Can not I={MODIFY} this={COMPOSTER_PERMANENCE_MESSAGE}>
               {mayRenderEventMessage(permanence.eventTitle, permanence.eventMessage)}
@@ -375,11 +517,11 @@ const PopoverPermanenceToComeContent = ({ permanence, onSubmit }) => {
   )
 }
 
-PopoverPermanenceToComeContent.propTypes = {
+PermanenceCardPopover.propTypes = {
   permanence: permanenceType.isRequired,
   onSubmit: PropTypes.func.isRequired
 }
 
-const PopoverPermanenceToCome = withPermanancePopoverWrapper(PopoverPermanenceToComeContent)
+const PopoverPermanenceToCome = withPermanancePopoverWrapper(PermanenceCardPopover)
 
 export default PopoverPermanenceToCome

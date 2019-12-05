@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight } from '@material-ui/icons'
 import dayjs from 'dayjs'
 import 'dayjs/locale/fr'
 
-import PermanceCard, { PermanenceToComeDetails } from '~/components/PermanenceCard'
+import PermanceCard, { PermanenceCardPopover } from '~/components/PermanenceCard'
 import palette from '~/variables'
 
 import Calendar from '~/components/Calendar'
@@ -140,7 +140,7 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
     return (
       $popover &&
       details && (
-        <PermanenceToComeDetails
+        <PermanenceCardPopover
           anchorEl={$popover.anchorEl}
           permanence={details}
           vertical={$popover.vPos}
