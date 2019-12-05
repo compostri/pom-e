@@ -1,9 +1,10 @@
-import React, { createContext, useReducer } from 'react'
+import React, { createContext, useReducer, useContext } from 'react'
 import PropTypes from 'prop-types'
 
 import { permanenceType } from '~/types'
 import api from '~/utils/api'
 import { useToasts, TOAST } from '~/components/Snackbar'
+import { AbilityContext, Subject, Action } from './AbilityContext'
 
 /* Type */
 
@@ -133,6 +134,7 @@ const defaultProps = {
 
 const ComposterPermanencesProvider = ({ children, composterId, composterAtId, permanences: defaultPermanences }) => {
   const { addToast } = useToasts()
+  const abilityContext = useContext(AbilityContext)
 
   const [state, dispatch] = useReducer(reducer, { ...INITIAL_STATE, collection: { ...INITIAL_STATE.collection, data: defaultPermanences } })
 
@@ -195,6 +197,11 @@ const ComposterPermanencesProvider = ({ children, composterId, composterAtId, pe
   }
 
   const addPermanenceDetails = async (permanence, { $popover, $date }) => {
+    if (abilityContext.cannot(Action.MODIFY, Subject.COMPOSTER_LISTES_OUVREURS)) {
+      permanenceDetailsAction.success({ ...permanence, $popover, $openersAvailable: [], $date })
+      return
+    }
+
     permanenceDetailsAction.request()
 
     const data = await api.getUserComposter({ composter: composterId }).catch($displayErrorFromApi)
