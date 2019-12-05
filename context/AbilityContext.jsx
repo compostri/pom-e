@@ -69,9 +69,17 @@ const withAccessAbility = (subject, redirectUrl = () => '/') => getInitialPropsF
 
   const userAbility = getAbilityBuilder({ user, composterSlug })
 
+  if (typeof subject === 'function') {
+    const initialProps = await getInitialPropsFn(ctx)
+    if (userAbility.can(Action.READ, subject(initialProps, ctx))) {
+      return initialProps
+    }
+  }
+
   if (userAbility.can(Action.READ, subject)) {
     return getInitialPropsFn(ctx)
   }
+
   redirect({ Router, ctx, location: redirectUrl(ctx) })
   return {}
 }

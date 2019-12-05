@@ -7,6 +7,7 @@ import api from '~/utils/api'
 import { composterType, permanenceType } from '~/types'
 import ComposterPermanancesContainer from '~/containers/ComposterPermanancesContainer'
 import ComposterContainer from '~/components/ComposterContainer'
+import { withAccessAbility, Subject } from '~/context/AbilityContext'
 
 const ComposterPermanences = ({ composter, permanences }) => {
   return (
@@ -18,7 +19,11 @@ const ComposterPermanences = ({ composter, permanences }) => {
   )
 }
 
-ComposterPermanences.getInitialProps = async ({ query }) => {
+const getRedirectUrl = ({ asPath }) => {
+  return asPath.replace('/permanences', '')
+}
+
+const getInitialProps = async ({ query }) => {
   const today = dayjs()
 
   const [after, before] = ['startOf', 'endOf'].map(method => today[method]('month').toISOString())
@@ -32,6 +37,11 @@ ComposterPermanences.getInitialProps = async ({ query }) => {
     permanences: data['hydra:member']
   }
 }
+
+ComposterPermanences.getInitialProps = withAccessAbility(
+  ({ composter: { permanencesRule } }) => ({ $type: Subject.COMPOSTER_PERMANENCES, permanencesRule }),
+  getRedirectUrl
+)(getInitialProps)
 
 ComposterPermanences.propTypes = {
   composter: composterType.isRequired,
