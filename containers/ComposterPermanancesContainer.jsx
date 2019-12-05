@@ -84,7 +84,6 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
   const handleClick = useCallback(
     (permanence, { vertical, horizontal }) => ({ currentTarget }) => {
       addPermanenceDetails(permanence, {
-        $date: date.toISOString(),
         $popover: {
           anchorEl: currentTarget,
           vPos: vertical,
@@ -92,7 +91,7 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
         }
       })
     },
-    [addPermanenceDetails, date]
+    [addPermanenceDetails]
   )
 
   const isThereAnyPermanences = day => perm => getDayInMonthFromPermanence(perm) === day

@@ -26,12 +26,13 @@ export const Default = AbilityBuilder.define({ subjectName }, can => {
 
 export const Opener = AbilityBuilder.define({ subjectName }, can => {
   can(READ, Subject.COMPOSTER_PERMANENCES, { permanencesRule: { $ne: null } })
-  can([CREATE, DELETE], Subject.COMPOSTER_OUVREUR, { self: { $eq: true } })
+  can([CREATE, DELETE], Subject.COMPOSTER_OUVREUR, { self: { $eq: true }, isPermanencePassed: { $eq: false } })
 })
 
 export const Referent = AbilityBuilder.define({ subjectName }, can => {
-  can([READ, MODIFY], [Subject.COMPOSTER_INFORMATION, Subject.COMPOSTER_LISTES_OUVREURS, Subject.COMPOSTER_NEWLETTERS, Subject.COMPOSTER_PERMANENCE_MESSAGE])
+  can([READ, MODIFY], [Subject.COMPOSTER_INFORMATION, Subject.COMPOSTER_NEWLETTERS, Subject.COMPOSTER_PERMANENCE_MESSAGE])
   can(READ, Subject.COMPOSTER_PERMANENCES, { permanencesRule: { $ne: null } })
+  can(MODIFY, Subject.COMPOSTER_LISTES_OUVREURS, { isPermanencePassed: { $eq: false } })
 })
 
 export const Action = {

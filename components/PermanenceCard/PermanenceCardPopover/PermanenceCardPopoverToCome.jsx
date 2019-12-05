@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/styles'
 import { Avatar, IconButton, Button, FormControl, MenuItem, Select, Checkbox, ListItemText, TextField, FormControlLabel, Switch } from '@material-ui/core'
 import { Delete as DeleteIcon } from '@material-ui/icons'
 import { Formik, Form } from 'formik'
+import dayjs from 'dayjs'
 
 import { permanenceType } from '~/types'
 import palette from '~/variables'
@@ -15,6 +16,8 @@ import { UserContext } from '~/context/UserContext'
 import useBaseStyle from '../PermanenceCard.theme'
 import withPermanancePopoverWrapper from './withPermanenceCardPopoverWrapper'
 import withFormikField from '~/utils/hoc/withFormikField'
+
+const today = dayjs()
 
 const usePermanenceToComeWithOpenersStyle = makeStyles(({ typography }) => ({
   contentTitle: {
@@ -114,6 +117,7 @@ const FormikSelect = withFormikField(Select)
 const PopoverPermanenceToComeContent = ({ permanence, onSubmit }) => {
   const { MODIFY, DELETE } = Action
   const { COMPOSTER_LISTES_OUVREURS, COMPOSTER_OUVREUR, COMPOSTER_PERMANENCE_MESSAGE } = Subject
+  const isPermanencePassed = today.isAfter(permanence.date)
 
   const initialValues = useMemo(() => {
     const { openers, eventTitle, eventMessage } = permanence
@@ -177,12 +181,12 @@ const PopoverPermanenceToComeContent = ({ permanence, onSubmit }) => {
               </Avatar>
               {username}
             </div>
-            <Can I={MODIFY} this={COMPOSTER_LISTES_OUVREURS}>
+            <Can I={MODIFY} this={{ $type: COMPOSTER_LISTES_OUVREURS, isPermanencePassed }}>
               <IconButton aria-label="remove" onClick={onRemoval(openerId)} className={openerListItemDeleteIcon}>
                 <DeleteIcon />
               </IconButton>
             </Can>
-            <Can I={DELETE} this={{ $type: COMPOSTER_OUVREUR, self: user && getId(opener) === `/users/${user.userId}` }}>
+            <Can I={DELETE} this={{ $type: COMPOSTER_OUVREUR, self: user && getId(opener) === `/users/${user.userId}`, isPermanencePassed }}>
               <IconButton aria-label="remove" onClick={onRemoval(openerId)} className={openerListItemDeleteIcon}>
                 <DeleteIcon />
               </IconButton>
@@ -207,7 +211,7 @@ const PopoverPermanenceToComeContent = ({ permanence, onSubmit }) => {
         </>
       )
     },
-    [user]
+    [user, permanence.date]
   )
 
   const mayRenderOpenerCapabilityFooter = useCallback(
