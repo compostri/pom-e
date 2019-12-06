@@ -50,7 +50,7 @@ const useStyles = makeStyles(theme => ({
 const ComposterContainer = ({ composter, maxWidth = 'lg', children }) => {
   const classes = useStyles()
   const { READ } = Action
-  const router = useRouter
+  const router = useRouter()
   const { COMPOSTER_PERMANENCES, COMPOSTER_LISTES_OUVREURS, COMPOSTER_NEWLETTERS } = Subject
   const { name, slug, permanencesRule } = composter
   return (
