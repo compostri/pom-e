@@ -12,13 +12,13 @@ class UserProvider extends Component {
       isLoggedIn: false,
       token: props.token || null,
       user: getUserInfosFromToken(props.token) || null,
-      login: async (values) => {
+      login: async values => {
         const res = await api.login(values)
         // On set les cookies
         if (res.data && res.data.token) {
           cookie.set('token', res.data.token, { expires: 1 })
           cookie.set('refresh_token', res.data.refresh_token, { expires: 1 })
-          this.populateUser()
+          this.populateUser(res.data.token)
         }
         return res
       },
@@ -30,11 +30,11 @@ class UserProvider extends Component {
       isLoggedIn: () => {
         return !!this.state.token
       },
-      updateUser: async (values) => {
+      updateUser: async values => {
         const res = await api.updateUser(this.state.user.userId, values)
         return res
       },
-      getUser: async (values) => {
+      getUser: async values => {
         const { data, status } = await api.getUser(this.state.user.userId, values)
         if (status === 200) {
           return data
@@ -44,7 +44,7 @@ class UserProvider extends Component {
     }
   }
 
-  populateUser = (token) => {
+  populateUser = token => {
     const user = getUserInfosFromToken(token)
     this.setState({ user, token })
   }
@@ -72,6 +72,6 @@ class UserProvider extends Component {
   render = () => <UserContext.Provider value={{ userContext: this.state }}>{this.props.children}</UserContext.Provider>
 }
 
-export const withUser = (Component) => (props) => <UserContext.Consumer>{(store) => <Component {...props} {...store} />}</UserContext.Consumer>
+export const withUser = Component => props => <UserContext.Consumer>{store => <Component {...props} {...store} />}</UserContext.Consumer>
 
 export default UserProvider
