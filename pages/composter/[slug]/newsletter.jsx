@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import { Line } from 'react-chartjs-2'
+import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import { Paper, Typography, InputBase, IconButton, Modal, TextField, Button, Switch, FormControlLabel, FormGroup } from '@material-ui/core'
-import { Search, Add, Clear } from '@material-ui/icons'
-
+import { Add, Clear } from '@material-ui/icons'
+import PropTypes from 'prop-types'
 import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
 import api from '~/utils/api'
 import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
-import { composterType } from '~/types'
+import { composterType, consumerType } from '~/types'
+import withFormikField from '~/utils/hoc/withFormikField'
+import { useToasts, TOAST } from '~/components/Snackbar'
 
 const useStyles = makeStyles(theme => ({
   newsletterContainer: {
@@ -108,29 +109,73 @@ const NewsletterSchema = Yup.object().shape({
   messageNewsletter: Yup.string()
 })
 
-const ComposterNewsletter = ({ composter }) => {
-  const classes = useStyles()
-  const [users, setUsers] = useState([])
-  const [search, setSearch] = useState('')
-  const [openModal, setOpenModal] = useState(false)
+const UserSchema = Yup.object({
+  username: Yup.string().required(),
+  email: Yup.string()
+    .email()
+    .required()
+})
+const UserInitialValues = {
+  username: '',
+  email: ''
+}
 
-  const handleOpen = () => {
-    setOpenModal(true)
+const FormikTextField = withFormikField(TextField)
+
+const ComposterNewsletter = ({ composter, consumers, slug }) => {
+  const classes = useStyles()
+  const [users, setUser] = useState(consumers)
+  const [openModal, setOpenModal] = useState(false)
+  const { addToast } = useToasts()
+
+  const setModalVisibilityTo = status => () => {
+    setOpenModal(status)
   }
-  const handleClose = () => {
-    setOpenModal(false)
+
+  const displayToast = type => message => {
+    addToast(message, type)
   }
-  const handleSubmit = () => {
-    // TODO Ajouter l'ouvreur a la permanence
-    handleClose()
+
+  const displayErrorToast = message => {
+    displayToast(TOAST.ERROR)(message)
   }
-  useEffect(() => {
-    async function fetchData() {
-      const response = await api.getUsers({ email: search })
-      setUsers(response.data['hydra:member'])
+
+  const displaySuccessToast = message => {
+    displayToast(TOAST.SUCCESS)(message)
+  }
+
+  const mayRenderUsers = userList => {
+    if (!userList.length) {
+      return <strong>Aucun destinataires</strong>
     }
-    fetchData()
-  }, [search])
+    return userList.map(user => (
+      <Typography key={user['@id']} value={user['@id']} className={classes.searchResult}>
+        {user.email}
+      </Typography>
+    ))
+  }
+
+  const retrievesConsumers = async ({ email } = {}) => {
+    const handleError = () => displayErrorToast('Une erreur est survenue lors de la récuperation des destinataires')
+    const data = await api.getConsumers({ composter: slug, ...{ email } }).catch(handleError)
+    if (data) {
+      setUser(data['hydra:member'])
+    }
+  }
+
+  const handleConsumerAdding = async ({ username, email }) => {
+    const handleError = () => displayErrorToast("Une erreur est survenue lors de l'ajout du destinataire")
+    const data = await api.postConsumers({ username, email, composterId: composter['@id'] }).catch(handleError)
+    if (data) {
+      displaySuccessToast('Le destinataire a bien été ajouté')
+      retrievesConsumers()
+      setOpenModal(false)
+    }
+  }
+
+  const handleConsumerSearching = ({ target: { value: email } }) => {
+    retrievesConsumers({ email })
+  }
 
   return (
     <ComposterContainer composter={composter}>
@@ -141,51 +186,47 @@ const ComposterNewsletter = ({ composter }) => {
           </Typography>
 
           <div className={classes.search}>
-            <InputBase
-              type="search"
-              className={classes.searchInput}
-              placeholder="Rechercher un utilisateur"
-              value={search}
-              onChange={event => setSearch(event.target.value)}
-            />
-            <IconButton className={classes.searchBtn} type="submit" aria-label="search">
-              <Search />
-            </IconButton>
-            <IconButton className={[classes.searchBtn, classes.addBtn].join(' ')} type="submit" aria-label="add" onClick={handleOpen}>
+            <InputBase type="search" className={classes.searchInput} placeholder="Rechercher un utilisateur" onChange={handleConsumerSearching} />
+
+            <IconButton className={[classes.searchBtn, classes.addBtn].join(' ')} type="submit" aria-label="add" onClick={setModalVisibilityTo(true)}>
               <Add />
             </IconButton>
-            <Modal BackdropProps={{ style: { background: '#faf9f8' } }} className={classes.modal} open={openModal} onClose={handleClose}>
+            <Modal BackdropProps={{ style: { background: '#faf9f8' } }} className={classes.modal} open={openModal} onClose={setModalVisibilityTo(false)}>
               <Paper elevation={1} className={classes.modalPaper}>
-                <div className={classes.modalHeader}>
-                  <Typography variant="h2">Ajouter un nouveau destinataire pour la newsletter de {composter.name}</Typography>
-                  <IconButton className={classes.modalFermer} onClick={handleClose}>
-                    <Clear />
-                  </IconButton>
-                </div>
+                <Formik initialValues={UserInitialValues} validationSchema={UserSchema} onSubmit={handleConsumerAdding}>
+                  {() => (
+                    <Form>
+                      <div className={classes.modalHeader}>
+                        <Typography variant="h2">Ajouter un nouveau destinataire pour la newsletter de {composter.name}</Typography>
+                        <IconButton className={classes.modalFermer} onClick={setModalVisibilityTo(false)}>
+                          <Clear />
+                        </IconButton>
+                      </div>
 
-                <div className={classes.info}>
-                  <TextField className={classes.textField} fullWidth id="pseudo" label="Pseudo" placeholder="Entrez le pseudo ici" />
-                  <TextField className={classes.textField} fullWidth id="mail" label="E-mail" placeholder="Entrez l'e-mail ici" />
-                </div>
+                      <div className={classes.info}>
+                        <FormikTextField className={classes.textField} fullWidth name="username" label="Pseudo" placeholder="Entrez le pseudo ici" />
+                        <FormikTextField className={classes.textField} fullWidth name="email" type="email" label="E-mail" placeholder="Entrez l'e-mail ici" />
+                      </div>
 
-                <FormGroup>
-                  <FormControlLabel control={<Switch />} label="Ce destinataire recevra également la newsletter de Compostri" className={classes.switchLabel} />
-                </FormGroup>
+                      <FormGroup>
+                        <FormControlLabel
+                          control={<Switch />}
+                          label="Ce destinataire recevra également la newsletter de Compostri"
+                          className={classes.switchLabel}
+                        />
+                      </FormGroup>
 
-                <Button variant="contained" onClick={handleSubmit} color="secondary" className={[classes.btnAdd, classes.btnNew].join(' ')}>
-                  Valider
-                </Button>
+                      <Button type="submit" variant="contained" color="secondary" className={[classes.btnAdd, classes.btnNew].join(' ')}>
+                        Valider
+                      </Button>
+                    </Form>
+                  )}
+                </Formik>
               </Paper>
             </Modal>
           </div>
 
-          <div>
-            {users.map(user => (
-              <Typography key={user['@id']} value={user['@id']} className={classes.searchResult}>
-                {user.email}
-              </Typography>
-            ))}
-          </div>
+          {mayRenderUsers(users)}
         </Paper>
         <Paper elevation={1} className={classes.sectionRight}>
           <Typography variant="h2" className={classes.title}>
@@ -241,14 +282,19 @@ const ComposterNewsletter = ({ composter }) => {
 }
 
 ComposterNewsletter.propTypes = {
-  composter: composterType.isRequired
+  composter: composterType.isRequired,
+  slug: PropTypes.string.isRequired,
+  consumers: PropTypes.arrayOf(consumerType).isRequired
 }
 
 ComposterNewsletter.getInitialProps = async ({ query }) => {
   const composter = await api.getComposter(query.slug)
+  const consumers = (await api.getConsumers({ composters: query.slug }))['hydra:member']
 
   return {
-    composter: composter.data
+    composter: composter.data,
+    consumers,
+    slug: query.slug
   }
 }
 
