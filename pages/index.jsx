@@ -229,6 +229,9 @@ const Home = ({ allCommunes, allCategories }) => {
               <PopupContent composter={mapPopup} />
             </Popup>
           )}
+          <div style={{ position: 'absolute', left: 20, top: 20 }}>
+            <NavigationControl />
+          </div>
         </ReactMapGL>
       </section>
     </div>
