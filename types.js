@@ -29,3 +29,21 @@ export const userType = PropTypes.shape({
   firstname: PropTypes.string,
   email: PropTypes.string
 })
+
+export const consumerType = PropTypes.shape({
+  '@id': PropTypes.string,
+  '@type': PropTypes.string,
+  composters: PropTypes.arrayOf(PropTypes.string),
+  email: PropTypes.string,
+  id: PropTypes.number,
+  mailjetContactsLists: PropTypes.arrayOf(
+    PropTypes.shape({
+      IsActive: PropTypes.bool,
+      IsUnsub: PropTypes.bool,
+      ListID: PropTypes.number,
+      SubscribedAt: PropTypes.string
+    })
+  ),
+  mailjetId: PropTypes.number,
+  username: PropTypes.string
+})
