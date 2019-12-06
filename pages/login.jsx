@@ -123,7 +123,7 @@ const LogIn = () => {
             </Form>
           )}
         </Formik>
-        <Link href="/" passHref>
+        <Link href="/reinitialisation" passHref>
           <Button className={classes.forgotMdp}>Mot de passe oublié ?</Button>
         </Link>
       </Paper>
