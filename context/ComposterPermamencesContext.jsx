@@ -1,10 +1,13 @@
 import React, { createContext, useReducer, useContext } from 'react'
 import PropTypes from 'prop-types'
+import dayjs from 'dayjs'
 
 import { permanenceType } from '~/types'
 import api from '~/utils/api'
 import { useToasts, TOAST } from '~/components/Snackbar'
 import { AbilityContext, Subject, Action } from './AbilityContext'
+
+const today = dayjs()
 
 /* Type */
 
@@ -169,7 +172,7 @@ const ComposterPermanencesProvider = ({ children, composterId, composterAtId, pe
 
     const permanence = await (permanenceDetailsId
       ? api.putPermanences(permanenceDetailsId, payload)
-      : api.postPermanences({ composter: composterAtId, ...payload, date: permanenceDetails.$date })
+      : api.postPermanences({ composter: composterAtId, ...payload, date: permanenceDetails.date })
     ).catch($displayErrorFromApi)
 
     if (permanence) {
@@ -196,9 +199,12 @@ const ComposterPermanencesProvider = ({ children, composterId, composterAtId, pe
     permanenceDetailsAction.reset()
   }
 
-  const addPermanenceDetails = async (permanence, { $popover, $date }) => {
-    if (abilityContext.cannot(Action.MODIFY, Subject.COMPOSTER_LISTES_OUVREURS)) {
-      permanenceDetailsAction.success({ ...permanence, $popover, $openersAvailable: [], $date })
+  const addPermanenceDetails = async (permanence, { $popover }) => {
+    const hasNotAbilityToMofidyOpeners = abilityContext.cannot(Action.MODIFY, Subject.COMPOSTER_LISTES_OUVREURS)
+    const isPermanenceAlreadyPassed = today.isAfter(dayjs(permanence.date))
+
+    if (hasNotAbilityToMofidyOpeners || isPermanenceAlreadyPassed) {
+      permanenceDetailsAction.success({ ...permanence, $popover, $openersAvailable: [] })
       return
     }
 
@@ -209,7 +215,7 @@ const ComposterPermanencesProvider = ({ children, composterId, composterAtId, pe
       const composterOpeners = data['hydra:member'].map(({ user }) => user)
       const $openersAvailable = $removeDuplicate([...permanence.openers, ...composterOpeners], { by: '@id' })
 
-      permanenceDetailsAction.success({ ...permanence, $popover, $openersAvailable, $date })
+      permanenceDetailsAction.success({ ...permanence, $popover, $openersAvailable })
     } else {
       $displayErrorFromApi()
     }

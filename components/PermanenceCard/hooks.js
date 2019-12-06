@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { useBlueTheme, useRedTheme, useGreenTheme, useGreyTheme } from '../PermanenceCard.theme'
+import { useBlueTheme, useRedTheme, useGreenTheme, useGreyTheme } from './PermanenceCard.theme'
 
 const today = dayjs()
 

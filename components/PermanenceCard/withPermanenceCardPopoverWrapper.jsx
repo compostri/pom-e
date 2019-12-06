@@ -1,14 +1,25 @@
 import React, { useContext } from 'react'
 import dayjs from 'dayjs'
+import PropTypes from 'prop-types'
 import { Popover, Card, CardHeader, IconButton, CardContent } from '@material-ui/core'
 import classNames from 'classnames'
 import { Close as CloseIcon } from '@material-ui/icons'
 
 import { useTheme, usePermanenceStatus } from './hooks'
-import useBaseStyle from '../PermanenceCard.theme'
+import useBaseStyle from './PermanenceCard.theme'
 import { ComposterContext } from '~/context/ComposterContext'
+import { permanenceType } from '~/types'
 
 const today = dayjs()
+
+const propTypes = {
+  anchorEl: PropTypes.elementType.isRequired,
+  vertical: PropTypes.oneOf(['top', 'bottom']).isRequired,
+  horizontal: PropTypes.oneOf(['left', 'right']).isRequired,
+  permanence: permanenceType.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired
+}
 
 const withPermanencePopoverWrapper = WrappedComponent => {
   function WithPermanencePopoverWrapper({ anchorEl, onClose, permanence, vertical, horizontal, onSubmit }) {
@@ -44,7 +55,6 @@ const withPermanencePopoverWrapper = WrappedComponent => {
         <Card className={baseStyle.popoverCard}>
           <CardHeader
             title={cardTitle}
-            
             subheader={dayjs(permanence.date).format('HH:mm')}
             action={
               <IconButton aria-label="close" onClick={onClose}>
@@ -63,7 +73,7 @@ const withPermanencePopoverWrapper = WrappedComponent => {
       </Popover>
     )
   }
-
+  WithPermanencePopoverWrapper.propTypes = propTypes
   return WithPermanencePopoverWrapper
 }
 

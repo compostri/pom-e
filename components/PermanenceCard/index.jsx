@@ -7,8 +7,8 @@ import 'dayjs/locale/fr'
 import { permanenceType } from '~/types'
 
 import useBaseStyle from './PermanenceCard.theme'
-import { useTheme, usePermanenceStatus } from './PermanenceCardPopover/hooks'
-import PermanenceToComeDetails from './PermanenceCardPopover/PermanenceCardPopoverToCome'
+import { useTheme, usePermanenceStatus } from './hooks'
+import PermanenceCardPopover from './PermanenceCardPopover'
 
 const dateDuJour = dayjs()
 
@@ -71,4 +71,4 @@ const PermanceCard = ({ permanence }) => {
 PermanceCard.propTypes = propTypes
 
 export default PermanceCard
-export { PermanenceToComeDetails }
+export { PermanenceCardPopover }

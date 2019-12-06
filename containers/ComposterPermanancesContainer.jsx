@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight } from '@material-ui/icons'
 import dayjs from 'dayjs'
 import 'dayjs/locale/fr'
 
-import PermanceCard, { PermanenceToComeDetails } from '~/components/PermanenceCard'
+import PermanceCard, { PermanenceCardPopover } from '~/components/PermanenceCard'
 import palette from '~/variables'
 
 import Calendar from '~/components/Calendar'
@@ -84,7 +84,6 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
   const handleClick = useCallback(
     (permanence, { vertical, horizontal }) => ({ currentTarget }) => {
       addPermanenceDetails(permanence, {
-        $date: date.toISOString(),
         $popover: {
           anchorEl: currentTarget,
           vPos: vertical,
@@ -92,7 +91,7 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
         }
       })
     },
-    [addPermanenceDetails, date]
+    [addPermanenceDetails]
   )
 
   const isThereAnyPermanences = day => perm => getDayInMonthFromPermanence(perm) === day
@@ -141,7 +140,7 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
     return (
       $popover &&
       details && (
-        <PermanenceToComeDetails
+        <PermanenceCardPopover
           anchorEl={$popover.anchorEl}
           permanence={details}
           vertical={$popover.vPos}
