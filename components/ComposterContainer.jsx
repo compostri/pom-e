@@ -60,7 +60,12 @@ const ComposterContainer = ({ composter, maxWidth = 'lg', children }) => {
           <Header title={name}>
             <div className={classes.toolbarLink}>
               <Link href="/composter/[slug]" as={`/composter/${slug}`} passHref>
-                <Button disableRipple className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]' })}>
+                <Button
+                  disableRipple
+                  className={classnames(classes.button, {
+                    [classes.activeButton]: ['/composter/[slug]', '/composter/[slug]/modifications'.indexOf(router.pathname)]
+                  })}
+                >
                   Informations
                 </Button>
               </Link>
