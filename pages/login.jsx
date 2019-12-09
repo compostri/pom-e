@@ -27,7 +27,10 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: theme.spacing(4, 8)
+    padding: theme.spacing(4, 8),
+    [theme.breakpoints.down('md')]: {
+      padding: theme.spacing(2)
+    }
   },
   h1: {
     color: palette.greyDark,
