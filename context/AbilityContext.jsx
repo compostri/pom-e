@@ -51,10 +51,7 @@ const AbilityProvider = ({ children, composterSlug }) => {
   const [currentAbility, setCurrentAbility] = useState(Ability.Default)
 
   useEffect(() => {
-    if (user) {
-      const userAbility = getAbilityBuilder({ user, composterSlug })
-      setCurrentAbility(userAbility)
-    }
+    setCurrentAbility(user ? getAbilityBuilder({ user, composterSlug }) : Ability.Default)
   }, [user, composterSlug])
 
   return <AbilityContext.Provider value={currentAbility}>{children}</AbilityContext.Provider>
