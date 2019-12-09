@@ -16,6 +16,7 @@
     "@material-ui/lab": "^4.0.0-alpha.33",
     "@material-ui/pickers": "^3.2.7",
     "@material-ui/styles": "^4.5.0",
+    "@turf/bbox": "^6.0.1",
     "axios": "^0.19.0",
     "babel-plugin-root-import": "^6.4.1",
     "chart.js": "^2.9.2",
@@ -38,6 +39,7 @@
     "react-map-gl": "^5.0.12",
     "react-toast-notifications": "^2.2.5",
     "rrule": "^2.6.2",
+    "viewport-mercator-project": "^6.2.2",
     "yup": "^0.27.0"
   },
   "prettier": {

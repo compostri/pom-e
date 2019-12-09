@@ -159,17 +159,18 @@ const Sidebar = ({
   selectedStatus,
   setSelectedStatus,
   acceptNewMembers,
-  setAcceptNewMembers
+  setAcceptNewMembers,
+  openSidebar,
+  setOpenSidebar
 }) => {
   const classes = useStyles()
-  const [open, setOpen] = useState(true)
   const statuses = [
     { value: 'Active', label: 'En service' },
     { value: 'InProject', label: 'En projet' }
   ]
 
   const handleClick = () => {
-    setOpen(!open)
+    setOpenSidebar(!openSidebar)
   }
 
   const toggleCategories = cat => {
@@ -205,19 +206,19 @@ const Sidebar = ({
   const renderHeader = () => {
     return (
       <header className={classes.sidebarHeader}>
-        {open && (
+        {openSidebar && (
           <Link href="/index" as="/" passHref>
             <a>
               <img src="/static/logo.svg" alt="Logo de Compostri" />
             </a>
           </Link>
         )}
-        {!open && (
+        {!openSidebar && (
           <IconButton size="medium" className={classes.iconLogo}>
             <Eco />
           </IconButton>
         )}
-        {open && (
+        {openSidebar && (
           <Typography align="center" className={classes.slogan}>
             Carte des sites de compostage partagé
           </Typography>
@@ -227,7 +228,7 @@ const Sidebar = ({
   }
 
   const renderSearchBar = () => {
-    return open ? (
+    return openSidebar ? (
       <SearchBar />
     ) : (
       <IconButton size="medium" className={classes.iconButton} onClick={() => handleClick() && focusMethod()}>
@@ -346,11 +347,11 @@ const Sidebar = ({
   }
 
   return (
-    <div className={classNames(classes.sidebarContainer, { [classes.sidebarContainerClosed]: !open })}>
+    <div className={classNames(classes.sidebarContainer, { [classes.sidebarContainerClosed]: !openSidebar })}>
       <Paper component="section" elevation={2} className={classes.innerSidebar}>
         {renderHeader()}
         {renderSearchBar()}
-        <Collapse in={open} timeout={100}>
+        <Collapse in={openSidebar} timeout={100}>
           <>
             {renderFilters()}
             {renderFooter()}
@@ -358,7 +359,7 @@ const Sidebar = ({
         </Collapse>
       </Paper>
       <Fab color="secondary" size="medium" className={classes.buttonMenu} onClick={() => handleClick()}>
-        {open ? <Close /> : <MenuOpen />}
+        {openSidebar ? <Close /> : <MenuOpen />}
       </Fab>
     </div>
   )

@@ -1,9 +1,12 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
 import { Button, Typography, Paper, List, ListItem, ListItemText, ListItemIcon, Box } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import { Room, Person, RadioButtonChecked } from '@material-ui/icons'
+import { fitBounds } from 'viewport-mercator-project'
+import bbox from '@turf/bbox'
 
 import ReactMapGL, { Popup, Source, Layer, NavigationControl } from 'react-map-gl'
 
@@ -56,6 +59,11 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
   infoImg: {
     display: 'flex'
+  },
+  navigationControl: {
+    position: 'absolute',
+    right: spacing(4),
+    bottom: spacing(5)
   }
 }))
 const propTypes = { composter: composterType.isRequired }
@@ -119,7 +127,7 @@ const Home = ({ allCommunes, allCategories }) => {
   const classes = useStyles()
   const [composters, setComposters] = useState(null)
   const [mapViewport, setMapViewport] = useState({
-    width: '100%)',
+    width: '100%',
     height: '100vh',
     latitude: 47.1890984,
     longitude: -1.5704894,
@@ -127,23 +135,42 @@ const Home = ({ allCommunes, allCategories }) => {
     bearing: 0,
     pitch: 0
   })
-
+  const [openSidebar, setOpenSidebar] = useState(true)
   const [acceptNewMembers, setAcceptNewMembers] = useState(true)
   const [selectedCommune, setSelectedCommune] = useState(allCommunes.map(com => com.id))
   const [selectedCategories, setSelectedCategories] = useState(allCategories.map(cat => cat.id))
   const [selectedStatus, setSelectedStatus] = useState(['Active'])
   const [mapPopup, setMapPopup] = useState(false)
 
-  useEffect(() => {
-    fetchComposters()
-  }, [])
-
   const fetchComposters = async () => {
     const geojson = await api.getComposterGeojson()
     if (geojson.status === 200) {
       setComposters(geojson.data)
+
+      // Fit bound
+      const [minLng, minLat, maxLng, maxLat] = bbox(geojson.data)
+
+      const { longitude, latitude, zoom } = fitBounds({
+        width: window.innerWidth,
+        height: window.innerHeight,
+        bounds: [
+          [minLng, minLat],
+          [maxLng, maxLat]
+        ],
+        padding: {
+          top: 40,
+          bottom: 40,
+          right: 40,
+          left: openSidebar ? 460 : 40
+        }
+      })
+      setMapViewport({ ...mapViewport, longitude, latitude, zoom })
     }
   }
+
+  useEffect(() => {
+    fetchComposters()
+  }, [])
 
   const onMapClick = event => {
     const { features } = event
@@ -178,7 +205,9 @@ const Home = ({ allCommunes, allCategories }) => {
           selectedStatus,
           setSelectedStatus,
           acceptNewMembers,
-          setAcceptNewMembers
+          setAcceptNewMembers,
+          openSidebar,
+          setOpenSidebar
         }}
       />
 
@@ -229,7 +258,7 @@ const Home = ({ allCommunes, allCategories }) => {
               <PopupContent composter={mapPopup} />
             </Popup>
           )}
-          <div style={{ position: 'absolute', left: 20, top: 20 }}>
+          <div className={classes.navigationControl}>
             <NavigationControl />
           </div>
         </ReactMapGL>
