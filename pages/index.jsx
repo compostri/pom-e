@@ -180,7 +180,7 @@ const Home = ({ allCommunes, allCategories }) => {
 }
 
 Home.getInitialProps = async () => {
-  const communes = await api.getCommunes()
+  const communes = await api.getCommunes({ 'order[name]': 'ASC', 'exists[composters.lat]': true, 'exists[composters.lng]': true })
   const cat = await api.getCategories()
 
   return {

@@ -87,7 +87,7 @@ class MNApi {
 
   sendComposterContact = args => this.post('composter_contacts', args)
 
-  getCommunes = () => this.get('/communes')
+  getCommunes = args => this.get('/communes', { params: args })
 
   getCategories = () => this.get('/categories')
 
