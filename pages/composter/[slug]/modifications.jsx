@@ -75,7 +75,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const ComposterEdit = ({ composter }) => {
-  const [activeTab, setActiveTab] = React.useState('contact-composteur')
+  const [activeTab, setActiveTab] = React.useState('informations-composteur')
   const classes = useStyles()
 
   return (
