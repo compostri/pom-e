@@ -406,8 +406,10 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
           label="Température"
           type="number"
           disabled={disabled}
+          InputLabelProps={{
+            shrink: true
+          }}
           InputProps={{
-            shrink: true,
             endAdornment: <InputAdornment position="end">°C</InputAdornment>
           }}
         />

@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
   },
   searchBarContainer: {},
   searchBar: {
-    padding: theme.spacing(0, 4, 0, 2),
+    padding: theme.spacing(1.75, 4, 1.75, 3),
     backgroundColor: '#c2d97c',
     borderTop: '1px solid #fff',
     borderBottom: '1px solid #fff',

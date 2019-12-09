@@ -109,11 +109,10 @@ const theme = createMuiTheme({
     },
     MuiInputBase: {
       root: {
-        backgroundColor: palette.greyExtraLight
+        backgroundColor: palette.greyExtraLight,
+        padding: defaultTheme.spacing(1.75)
       },
       input: {
-        color: palette.greyMedium,
-        padding: '14px',
         borderRadius: 2
       },
       multiline: {
@@ -203,7 +202,11 @@ const theme = createMuiTheme({
     MuiSelect: {
       select: {
         borderRadius: 2,
-        backgroundColor: palette.greyExtraLight
+        color: palette.greyDark,
+        backgroundColor: palette.greyExtraLight,
+        '&:focus': {
+          backgroundColor: 'transparent'
+        }
       }
     },
     MuiSwitch: {
