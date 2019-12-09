@@ -12,9 +12,12 @@ import api from '~/utils/api'
 import UserButton from '~/components/UserButton'
 import ComposterInfoWindow from '~/components/ComposterInfoWindow'
 
-const useStyles = makeStyles(({ spacing }) => ({
+const useStyles = makeStyles(({ breakpoints, spacing }) => ({
   mapContainer: {
-    marginLeft: 80
+    marginLeft: 80,
+    [breakpoints.down('sm')]: {
+      marginLeft: 40
+    }
   },
   userButton: {
     position: 'fixed',
@@ -62,8 +65,8 @@ const Home = ({ allCommunes, allCategories }) => {
       const [minLng, minLat, maxLng, maxLat] = bbox(geojson.data)
 
       const { longitude, latitude, zoom } = fitBounds({
-        width: window.innerWidth,
-        height: window.innerHeight,
+        width: window && window.innerWidth,
+        height: window && window.innerHeight,
         bounds: [
           [minLng, minLat],
           [maxLng, maxLat]

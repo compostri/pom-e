@@ -30,13 +30,17 @@ const useStyles = makeStyles(theme => ({
     top: 0,
     left: 0,
     bottom: 0,
-    width: '420px',
+    maxWidth: 420,
+    width: '90%',
     backgroundColor: 'white',
-    zIndex: 100,
+    zIndex: theme.zIndex.mobileStepper,
     transition: 'all .3s'
   },
   sidebarContainerClosed: {
-    width: '80px'
+    width: '80px',
+    [theme.breakpoints.down('sm')]: {
+      width: 40
+    }
   },
   innerSidebar: {
     position: 'absolute',
@@ -48,9 +52,13 @@ const useStyles = makeStyles(theme => ({
   },
   sidebarHeader: {
     textAlign: 'center',
-    padding: theme.spacing(3.75),
+    padding: theme.spacing(3.75, 1),
     color: 'white',
     backgroundColor: palette.greenPrimary
+  },
+  miniLogo: {
+    padding: theme.spacing(2, 0),
+    width: '100%'
   },
   sidebarContent: {
     padding: theme.spacing(3.75)
@@ -101,20 +109,12 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 700,
     letterSpacing: 1
   },
-
   buttonMenu: {
     position: 'absolute',
     top: '50%',
     right: 0,
     transform: 'translate(50%, -50%)',
     zindex: 110
-  },
-  iconLogo: {
-    right: '10px'
-  },
-  iconButton: {
-    left: 15,
-    top: 20
   },
   slogan: {
     fontStyle: 'italic',
@@ -246,8 +246,8 @@ const Sidebar = ({
           </Link>
         )}
         {!openSidebar && (
-          <IconButton size="medium" className={classes.iconLogo}>
-            <Eco />
+          <IconButton size="medium">
+            <img src="/static/logo-mini.svg" className={classes.miniLogo} alt="Logo de Compostri" />
           </IconButton>
         )}
         {openSidebar && (
@@ -263,7 +263,7 @@ const Sidebar = ({
     return openSidebar ? (
       <SearchBar />
     ) : (
-      <IconButton size="medium" className={classes.iconButton} onClick={() => handleClick() && focusMethod()}>
+      <IconButton size="medium" className={classes.miniLogo} onClick={() => handleClick() && focusMethod()}>
         <Search />
       </IconButton>
     )
@@ -360,7 +360,7 @@ const Sidebar = ({
 
   return (
     <div className={classNames(classes.sidebarContainer, { [classes.sidebarContainerClosed]: !openSidebar })}>
-      <Paper component="section" elevation={2} className={classes.innerSidebar}>
+      <Paper square component="section" elevation={2} className={classes.innerSidebar}>
         {renderHeader()}
         {renderSearchBar()}
         <Collapse in={openSidebar} timeout={100}>
