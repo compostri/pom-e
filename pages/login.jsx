@@ -93,6 +93,9 @@ const LogIn = () => {
                 type="email"
                 autoComplete="email"
                 autoFocus
+                InputLabelProps={{
+                  shrink: true
+                }}
                 error={errors.email && touched.email}
                 helperText={errors.email && touched.email ? errors.email : undefined}
               />
@@ -108,6 +111,9 @@ const LogIn = () => {
                 autoComplete="current-password"
                 value={values.password}
                 onChange={handleChange}
+                InputLabelProps={{
+                  shrink: true
+                }}
                 error={errors.password && touched.password}
                 helperText={errors.password && touched.password ? errors.password : undefined}
               />
@@ -117,7 +123,7 @@ const LogIn = () => {
             </Form>
           )}
         </Formik>
-        <Link href="/" passHref>
+        <Link href="/reinitialisation" passHref>
           <Button className={classes.forgotMdp}>Mot de passe oublié ?</Button>
         </Link>
       </Paper>

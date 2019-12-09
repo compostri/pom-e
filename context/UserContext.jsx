@@ -23,7 +23,7 @@ class UserProvider extends Component {
         return res
       },
       logout: () => {
-        this.setState({ token: null, user: {} })
+        this.setState({ token: null, user: null })
         cookie.remove('token')
         cookie.remove('refresh_token')
       },

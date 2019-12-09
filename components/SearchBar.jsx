@@ -93,6 +93,7 @@ const SearchBar = () => {
           {...params}
           fullWidth
           variant="standard"
+          placeholder="Rechercher un composteur"
           InputLabelProps={{
             shrink: true
           }}

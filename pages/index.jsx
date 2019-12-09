@@ -5,7 +5,7 @@ import { Button, Typography, Paper, List, ListItem, ListItemText, ListItemIcon, 
 import { makeStyles } from '@material-ui/styles'
 import { Room, Person, RadioButtonChecked } from '@material-ui/icons'
 
-import ReactMapGL, { Popup, Source, Layer } from 'react-map-gl'
+import ReactMapGL, { Popup, Source, Layer, NavigationControl } from 'react-map-gl'
 
 import { composterType } from '~/types'
 import Sidebar from '~/components/Sidebar'
@@ -18,7 +18,7 @@ import palette from '~/variables'
 
 const useStyles = makeStyles(({ spacing }) => ({
   mapContainer: {
-    marginLeft: '0'
+    marginLeft: 80
   },
   userButton: {
     position: 'fixed',
@@ -229,6 +229,9 @@ const Home = ({ allCommunes, allCategories }) => {
               <PopupContent composter={mapPopup} />
             </Popup>
           )}
+          <div style={{ position: 'absolute', left: 20, top: 20 }}>
+            <NavigationControl />
+          </div>
         </ReactMapGL>
       </section>
     </div>

@@ -83,6 +83,17 @@ const useStyles = makeStyles(theme => ({
     fontSize: 14,
     fontWeight: 700
   },
+  hidden: {
+    position: 'absolute',
+    width: 1,
+    height: 1,
+    padding: 0,
+    margin: -1,
+    overflow: 'hidden',
+    clip: 'rect(0, 0, 0, 0)',
+    whiteSpace: 'nowrap',
+    border: 0
+  },
   formSectionTitle: {
     textTransform: 'uppercase',
     fontSize: 12,
@@ -110,6 +121,7 @@ const useStyles = makeStyles(theme => ({
     letterSpacing: 0.5,
     color: palette.white
   },
+  categorie: { marginTop: theme.spacing(2) },
   catFilter: {
     display: 'flex',
     alignItems: 'center',
@@ -289,7 +301,8 @@ const Sidebar = ({
           ))}
         </FormControl>
         <FormControl fullWidth className={classes.formControl}>
-          <InputLabel htmlFor="communes" className={classes.formSectionTitle}>
+          <Typography className={classes.formSectionTitle}>Communes</Typography>
+          <InputLabel htmlFor="communes" className={classNames(classes.formSectionTitle, classes.hidden)}>
             Communes
           </InputLabel>
           <Select
@@ -303,7 +316,7 @@ const Sidebar = ({
               id: 'communes'
             }}
           >
-            <MenuItem value="all">Tous</MenuItem>
+            <MenuItem value="all">Toutes</MenuItem>
             {allCommunes &&
               allCommunes.map(c => (
                 <MenuItem key={`commune-option-${c.id}`} value={c.id}>
