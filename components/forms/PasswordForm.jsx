@@ -42,7 +42,7 @@ const PasswordForm = () => {
       {({ values, handleChange, handleBlur, errors, touched, isSubmitting }) => (
         <Form>
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               <TextField
                 required
                 fullWidth
@@ -59,10 +59,10 @@ const PasswordForm = () => {
                 helperText={errors.oldPassword && touched.oldPassword ? errors.oldPassword : null}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               &nbsp;
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               <TextField
                 required
                 fullWidth
@@ -79,7 +79,7 @@ const PasswordForm = () => {
                 helperText={errors.plainPassword && touched.plainPassword ? errors.plainPassword : null}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               <TextField
                 required
                 fullWidth

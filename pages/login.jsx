@@ -33,7 +33,6 @@ const useStyles = makeStyles(theme => ({
     }
   },
   h1: {
-    color: palette.greyDark,
     fontSize: 20,
     fontWeight: '700'
   },

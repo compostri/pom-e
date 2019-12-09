@@ -13,7 +13,15 @@ const useStyles = makeStyles(theme => ({
     minHeight: '100vh'
   },
   paper: {
-    padding: theme.spacing(4)
+    padding: theme.spacing(4),
+    textAlign: 'center',
+    [theme.breakpoints.down('md')]: {
+      padding: theme.spacing(2)
+    }
+  },
+  h1: {
+    fontSize: 20,
+    fontWeight: '700'
   }
 }))
 
@@ -26,7 +34,7 @@ const Confirmation = () => {
     <Container component="main" maxWidth="sm" className={classes.container}>
       <Paper className={classes.paper}>
         <Box mb={2}>
-          <Typography component="h1" variant="h2">
+          <Typography className={classes.h1} component="h1" variant="h5">
             Confirmation du compte
           </Typography>
           <Typography>Afin de confirmer votre compte, veuillez définir un nouveau mot de passe</Typography>
