@@ -105,7 +105,8 @@ const useStyles = makeStyles(theme => ({
   buttonMenu: {
     position: 'absolute',
     top: '50%',
-    right: '-25px',
+    right: 0,
+    transform: 'translate(50%, -50%)',
     zindex: 110
   },
   iconLogo: {
