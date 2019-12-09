@@ -4,13 +4,14 @@ import { Paper, Typography, InputBase, IconButton, Modal, TextField, Button, Swi
 import { Add, Clear, Search } from '@material-ui/icons'
 import PropTypes from 'prop-types'
 import * as Yup from 'yup'
-import { Formik, Form, Field } from 'formik'
+import { Formik, Form } from 'formik'
 import api from '~/utils/api'
 import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
 import { composterType, consumerType } from '~/types'
 import withFormikField from '~/utils/hoc/withFormikField'
 import { useToasts, TOAST } from '~/components/Snackbar'
+import ComposterNewsletterForm from '~/components/forms/composter/ComposterNewsletterForm'
 
 const useStyles = makeStyles(theme => ({
   newsletterContainer: {
@@ -70,15 +71,6 @@ const useStyles = makeStyles(theme => ({
     fontSize: 14,
     marginTop: theme.spacing(1)
   },
-  submit: {
-    marginTop: theme.spacing(2),
-    maxWidth: 150,
-    display: 'block',
-    margin: '0 auto'
-  },
-  field: {
-    marginTop: 0
-  },
   modal: {
     backgroundColor: 'white',
     display: 'flex',
@@ -115,11 +107,6 @@ const useStyles = makeStyles(theme => ({
     display: 'block'
   }
 }))
-
-const NewsletterSchema = Yup.object().shape({
-  titreNewsletter: Yup.string(),
-  messageNewsletter: Yup.string()
-})
 
 const UserSchema = Yup.object({
   username: Yup.string().required(),
@@ -255,7 +242,7 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
                         />
                       </FormGroup>
 
-                      <Button type="submit" variant="contained" color="secondary" className={[classes.btnAdd, classes.btnNew].join(' ')}>
+                      <Button type="submit" variant="contained" color="secondary" className={classes.btnAdd}>
                         Valider
                       </Button>
                     </Form>
@@ -271,51 +258,7 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
           <Typography variant="h2" className={classes.title}>
             Envoyer la newsletter du {composter.name}
           </Typography>
-          <Formik initialValues={{ titreNewsletter: '', messageNewsletter: '' }} validationSchema={NewsletterSchema} onSubmit={async values => {}}>
-            {({ values, handleChange, field }) => (
-              <Form>
-                <Field
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                  className={classes.field}
-                  component={TextField}
-                  margin="normal"
-                  fullWidth
-                  id="titreNewsletter"
-                  label="Titre de la newsletter"
-                  name="titreNewsletter"
-                  value={values.titreNewsletter}
-                  onChange={handleChange}
-                  type="titreNewsletter"
-                  autoComplete="titreNewsletter"
-                  {...field}
-                />
-                <Field
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                  className={classes.field}
-                  component={TextField}
-                  margin="normal"
-                  fullWidth
-                  multiline
-                  rows="15"
-                  id="messageNewsletter"
-                  label="Message de la newsletter"
-                  name="messageNewsletter"
-                  value={values.messageNewsletter}
-                  onChange={handleChange}
-                  type="messageNewsletter"
-                  autoComplete="messageNewsletter"
-                  {...field}
-                />
-                <Button className={classes.submit} type="submit" variant="contained" color="secondary">
-                  Envoyer
-                </Button>
-              </Form>
-            )}
-          </Formik>
+          <ComposterNewsletterForm />
         </Paper>
       </div>
     </ComposterContainer>
