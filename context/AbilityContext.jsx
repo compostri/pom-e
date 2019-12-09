@@ -28,6 +28,9 @@ function redirect({ Router: router, ctx, location, status = 302 }) {
 }
 
 const getAbilityBuilder = ({ user, composterSlug }) => {
+  if (!user) {
+    return Ability.Default
+  }
   const { capability } =
     user.composters.find(({ slug }) => {
       return composterSlug === slug
@@ -47,11 +50,10 @@ const AbilityProvider = ({ children, composterSlug }) => {
   const {
     userContext: { user }
   } = useContext(UserContext)
-
   const [currentAbility, setCurrentAbility] = useState(Ability.Default)
 
   useEffect(() => {
-    setCurrentAbility(user ? getAbilityBuilder({ user, composterSlug }) : Ability.Default)
+    setCurrentAbility(getAbilityBuilder({ user, composterSlug }))
   }, [user, composterSlug])
 
   return <AbilityContext.Provider value={currentAbility}>{children}</AbilityContext.Provider>
