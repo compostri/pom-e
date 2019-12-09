@@ -4,7 +4,10 @@ export const composterType = PropTypes.shape({
   rid: PropTypes.number,
   name: PropTypes.string,
   slug: PropTypes.string,
-  commune: PropTypes.number,
+  commune: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired
+  }),
   acceptNewMembers: PropTypes.boolean,
   image: PropTypes.shape({
     id: PropTypes.number.isRequired,
