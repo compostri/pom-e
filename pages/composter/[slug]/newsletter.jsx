@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import { Paper, Typography, InputBase, IconButton, Modal, TextField, Button, Switch, FormControlLabel, FormGroup } from '@material-ui/core'
-import { Add, Clear } from '@material-ui/icons'
+import { Add, Clear, Search } from '@material-ui/icons'
 import PropTypes from 'prop-types'
 import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
@@ -36,16 +36,28 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexGrow: '1'
   },
-
-  searchInput: {
-    flexGrow: 1,
-    backgroundColor: palette.greenPrimary,
+  searchBar: {
+    backgroundColor: '#c2d97c',
+    borderTop: '1px solid #fff',
+    borderBottom: '1px solid #fff',
+    borderRadius: 2,
+    '&:before, &:after': { content: 'none' },
+    '&::placeholder': { color: 'white' }
+  },
+  searchBarInput: {
+    fontSize: theme.typography.pxToRem(16),
+    fontWeight: '700',
+    letterSpacing: 0.5,
     color: 'white'
+  },
+  searchIcon: {
+    color: 'white',
+    marginRight: theme.spacing(2)
   },
   searchBtn: {
     color: 'white',
-    backgroundColor: palette.greenPrimary,
-    borderRadius: 0,
+    backgroundColor: '#c2d97c',
+    borderRadius: 2,
     marginLeft: 1
   },
   addBtn: {
@@ -146,7 +158,7 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
 
   const mayRenderUsers = userList => {
     if (!userList.length) {
-      return <strong>Aucun destinataires</strong>
+      return <Typography className={classes.searchResult}>Aucun destinataire</Typography>
     }
     return userList.map(user => (
       <Typography key={user['@id']} value={user['@id']} className={classes.searchResult}>
@@ -186,7 +198,15 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
           </Typography>
 
           <div className={classes.search}>
-            <InputBase type="search" className={classes.searchInput} placeholder="Rechercher un utilisateur" onChange={handleConsumerSearching} />
+            <InputBase
+              type="search"
+              fullWidth
+              className={classes.searchBar}
+              classes={{ input: classes.searchBarInput }}
+              placeholder="Rechercher un utilisateur"
+              endAdornment={<Search className={classes.searchIcon} />}
+              onChange={handleConsumerSearching}
+            />
 
             <IconButton className={[classes.searchBtn, classes.addBtn].join(' ')} type="submit" aria-label="add" onClick={setModalVisibilityTo(true)}>
               <Add />
@@ -204,8 +224,27 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
                       </div>
 
                       <div className={classes.info}>
-                        <FormikTextField className={classes.textField} fullWidth name="username" label="Pseudo" placeholder="Entrez le pseudo ici" />
-                        <FormikTextField className={classes.textField} fullWidth name="email" type="email" label="E-mail" placeholder="Entrez l'e-mail ici" />
+                        <FormikTextField
+                          InputLabelProps={{
+                            shrink: true
+                          }}
+                          className={classes.textField}
+                          fullWidth
+                          name="username"
+                          label="Pseudo"
+                          placeholder="Entrez le pseudo ici"
+                        />
+                        <FormikTextField
+                          InputLabelProps={{
+                            shrink: true
+                          }}
+                          className={classes.textField}
+                          fullWidth
+                          name="email"
+                          type="email"
+                          label="E-mail"
+                          placeholder="Entrez l'e-mail ici"
+                        />
                       </div>
 
                       <FormGroup>
@@ -236,6 +275,9 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
             {({ values, handleChange, field }) => (
               <Form>
                 <Field
+                  InputLabelProps={{
+                    shrink: true
+                  }}
                   className={classes.field}
                   component={TextField}
                   margin="normal"
@@ -247,11 +289,12 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
                   onChange={handleChange}
                   type="titreNewsletter"
                   autoComplete="titreNewsletter"
-                  autoFocus
-                  autoOk
                   {...field}
                 />
                 <Field
+                  InputLabelProps={{
+                    shrink: true
+                  }}
                   className={classes.field}
                   component={TextField}
                   margin="normal"
@@ -265,8 +308,6 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
                   onChange={handleChange}
                   type="messageNewsletter"
                   autoComplete="messageNewsletter"
-                  autoFocus
-                  autoOk
                   {...field}
                 />
                 <Button className={classes.submit} type="submit" variant="contained" color="secondary">
