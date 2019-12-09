@@ -151,6 +151,15 @@ const theme = createMuiTheme({
         minWidth: 30
       }
     },
+    MuiListItemText: {
+      root: {
+        fontSize: defaultTheme.typography.pxToRem(14),
+        margin: 0
+      },
+      primary: {
+        fontSize: defaultTheme.typography.pxToRem(14)
+      }
+    },
     MuiPaper: {
       elevation1: {
         boxShadow: '0px 1px 3px 0px rgb(229, 229, 229), 0px 1px 1px 0px rgb(229, 229, 229), 0px 2px 1px -1px rgb(229, 229, 229)'

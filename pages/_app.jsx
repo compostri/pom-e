@@ -22,7 +22,7 @@ class MyApp extends App {
     const { Component, pageProps, token } = this.props
     return (
       <ThemeProvider theme={theme}>
-        <ToastProvider autoDismissTimeout={5000} components={{ Toast: Snackbar, ToastContainer: AppToastContainer }}>
+        <ToastProvider autoDismissTimeout={2500} components={{ Toast: Snackbar, ToastContainer: AppToastContainer }}>
           <UserProvider token={token}>
             <CssBaseline />
             <Component {...pageProps} />

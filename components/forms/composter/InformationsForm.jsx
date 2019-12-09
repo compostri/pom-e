@@ -64,8 +64,10 @@ const InformationsForm = () => {
             </Grid>
             <Grid item xs={10}>
               <Field
+                InputLabelProps={{
+                  shrink: true
+                }}
                 component={TextField}
-                margin="normal"
                 fullWidth
                 id="openingProcedures"
                 label="procédure d'ouverture"
@@ -75,7 +77,6 @@ const InformationsForm = () => {
                 type="openingProcedures"
                 autoComplete="openingProcedures"
                 autoFocus
-                autoOk
                 {...field}
               />
               <FormGroup>

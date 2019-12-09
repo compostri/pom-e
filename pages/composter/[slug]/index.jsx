@@ -134,9 +134,7 @@ const Content = () => {
                     <ListItemIcon>
                       <WatchLater className={classes.infoIcone} />
                     </ListItemIcon>
-                    <ListItemText>
-                      <Typography>{composter.permanencesDescription}</Typography>
-                    </ListItemText>
+                    <ListItemText>{composter.permanencesDescription}</ListItemText>
                   </ListItem>
                 )}
               </List>

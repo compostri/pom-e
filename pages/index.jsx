@@ -1,23 +1,16 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, useEffect } from 'react'
-import Link from 'next/link'
 import Head from 'next/head'
-import { Button, Typography, Paper, List, ListItem, ListItemText, ListItemIcon, Box } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import { Room, Person, RadioButtonChecked } from '@material-ui/icons'
 import { fitBounds } from 'viewport-mercator-project'
 import bbox from '@turf/bbox'
 
 import ReactMapGL, { Popup, Source, Layer, NavigationControl } from 'react-map-gl'
 
-import { composterType } from '~/types'
 import Sidebar from '~/components/Sidebar'
-import DefaultImage from '~/components/DefaultImage'
-import { getComposterColor } from '~/utils/utils'
-
 import api from '~/utils/api'
 import UserButton from '~/components/UserButton'
-import palette from '~/variables'
+import ComposterInfoWindow from '~/components/ComposterInfoWindow'
 
 const useStyles = makeStyles(({ spacing }) => ({
   mapContainer: {
@@ -29,36 +22,10 @@ const useStyles = makeStyles(({ spacing }) => ({
     right: spacing(4),
     zIndex: 150
   },
-
-  listItem: {
-    padding: 0
-  },
-  infoIcone: {
-    padding: 0,
-    margin: 0,
-    minWidth: 10
-  },
-  containerInfo: {
-    alignItems: 'center',
-    padding: 0,
-    backgroundColor: palette.greyExtraLight,
-    display: 'flex',
-    justifyContent: 'space-around',
-    marginLeft: '2%',
-    minWidth: 'max-content'
-  },
-
-  titre: {
-    fontSize: '1.3em',
-    color: 'grey',
-    fontWeight: 700,
-    justifySelf: 'center'
-  },
-  buttonTitre: {
-    alignSelf: 'center'
-  },
-  infoImg: {
-    display: 'flex'
+  popup: {
+    '& > .mapboxgl-popup-content': {
+      padding: 0
+    }
   },
   navigationControl: {
     position: 'absolute',
@@ -66,62 +33,6 @@ const useStyles = makeStyles(({ spacing }) => ({
     bottom: spacing(5)
   }
 }))
-const propTypes = { composter: composterType.isRequired }
-const PopupContent = ({ composter }) => {
-  const classes = useStyles()
-  const composterColor = getComposterColor(composter)
-
-  return (
-    <>
-      <Link href="/composter/[slug]" as={`/composter/${composter.slug}`} passHref>
-        <Button className={classes.buttonTitre}>
-          <Typography paragraph className={classes.titre}>
-            {composter.name}
-          </Typography>
-        </Button>
-      </Link>
-      <div className={classes.infoImg}>
-        {composter.image ? (
-          <Box>
-            <img src={composter.image} alt="Composteur" id="imgComposter" />
-          </Box>
-        ) : (
-          <DefaultImage composter={composter} />
-        )}
-        <Paper className={classes.containerInfo}>
-          <List>
-            <div>
-              <ListItem className={classes.listItem}>
-                <ListItemIcon className={classes.infoIcone}>
-                  <Room style={{ color: composterColor }} />
-                </ListItemIcon>
-                <ListItemText>{composter.commune.name}</ListItemText>
-              </ListItem>
-            </div>
-            <div>
-              <ListItem className={classes.listItem}>
-                <ListItemIcon className={classes.infoIcone}>
-                  <RadioButtonChecked style={{ color: composterColor }} />
-                </ListItemIcon>
-                <ListItemText>{composter.categorieName}</ListItemText>
-              </ListItem>
-            </div>
-            <div className={classes.InfoImg}>
-              <ListItem className={classes.listItem}>
-                <ListItemIcon className={classes.infoIcone}>
-                  <Person style={{ color: composterColor }} />
-                </ListItemIcon>
-                <ListItemText>{composter.acceptNewMembers ? 'Accepte' : "N'accepte pas"} de nouveau adhérents</ListItemText>
-              </ListItem>
-            </div>
-          </List>
-        </Paper>
-      </div>
-    </>
-  )
-}
-
-PopupContent.propTypes = propTypes
 
 const Home = ({ allCommunes, allCategories }) => {
   const classes = useStyles()
@@ -250,12 +161,13 @@ const Home = ({ allCommunes, allCategories }) => {
             <Popup
               latitude={mapPopup.lat}
               longitude={mapPopup.lng}
-              closeButton={() => setMapPopup(false)}
+              closeButton={false}
               closeOnClick={false}
+              className={classes.popup}
               onClose={() => setMapPopup(false)}
               offsetTop={-8}
             >
-              <PopupContent composter={mapPopup} />
+              <ComposterInfoWindow composter={mapPopup} />
             </Popup>
           )}
           <div className={classes.navigationControl}>

@@ -108,6 +108,8 @@ class MNApi {
 
   postConsumers = ({ username, email, composterId }) => this.$withPromiseHandling(this.post, '/consumers', { username, email, composters: [composterId] })
 
+  sendComposterNewsletter = values => this.post('/composter_newsletters', values)
+
   // Media
   uploadMedia = formData => this.post('/media_objects', formData)
 

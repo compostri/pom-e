@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import { Paper, Typography, InputBase, IconButton, Modal, TextField, Button, Switch, FormControlLabel, FormGroup } from '@material-ui/core'
-import { Add, Clear } from '@material-ui/icons'
+import { Add, Clear, Search } from '@material-ui/icons'
 import PropTypes from 'prop-types'
 import * as Yup from 'yup'
-import { Formik, Form, Field } from 'formik'
+import { Formik, Form } from 'formik'
 import api from '~/utils/api'
 import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
 import { composterType, consumerType } from '~/types'
 import withFormikField from '~/utils/hoc/withFormikField'
 import { useToasts, TOAST } from '~/components/Snackbar'
+import ComposterNewsletterForm from '~/components/forms/composter/ComposterNewsletterForm'
 
 const useStyles = makeStyles(theme => ({
   newsletterContainer: {
@@ -36,16 +37,28 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexGrow: '1'
   },
-
-  searchInput: {
-    flexGrow: 1,
-    backgroundColor: palette.greenPrimary,
+  searchBar: {
+    backgroundColor: '#c2d97c',
+    borderTop: '1px solid #fff',
+    borderBottom: '1px solid #fff',
+    borderRadius: 2,
+    '&:before, &:after': { content: 'none' },
+    '&::placeholder': { color: 'white' }
+  },
+  searchBarInput: {
+    fontSize: theme.typography.pxToRem(16),
+    fontWeight: '700',
+    letterSpacing: 0.5,
     color: 'white'
+  },
+  searchIcon: {
+    color: 'white',
+    marginRight: theme.spacing(2)
   },
   searchBtn: {
     color: 'white',
-    backgroundColor: palette.greenPrimary,
-    borderRadius: 0,
+    backgroundColor: '#c2d97c',
+    borderRadius: 2,
     marginLeft: 1
   },
   addBtn: {
@@ -57,15 +70,6 @@ const useStyles = makeStyles(theme => ({
     color: palette.greyMedium,
     fontSize: 14,
     marginTop: theme.spacing(1)
-  },
-  submit: {
-    marginTop: theme.spacing(2),
-    maxWidth: 150,
-    display: 'block',
-    margin: '0 auto'
-  },
-  field: {
-    marginTop: 0
   },
   modal: {
     backgroundColor: 'white',
@@ -104,11 +108,6 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const NewsletterSchema = Yup.object().shape({
-  titreNewsletter: Yup.string(),
-  messageNewsletter: Yup.string()
-})
-
 const UserSchema = Yup.object({
   username: Yup.string().required(),
   email: Yup.string()
@@ -146,7 +145,7 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
 
   const mayRenderUsers = userList => {
     if (!userList.length) {
-      return <strong>Aucun destinataires</strong>
+      return <Typography className={classes.searchResult}>Aucun destinataire</Typography>
     }
     return userList.map(user => (
       <Typography key={user['@id']} value={user['@id']} className={classes.searchResult}>
@@ -186,7 +185,15 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
           </Typography>
 
           <div className={classes.search}>
-            <InputBase type="search" className={classes.searchInput} placeholder="Rechercher un utilisateur" onChange={handleConsumerSearching} />
+            <InputBase
+              type="search"
+              fullWidth
+              className={classes.searchBar}
+              classes={{ input: classes.searchBarInput }}
+              placeholder="Rechercher un utilisateur"
+              endAdornment={<Search className={classes.searchIcon} />}
+              onChange={handleConsumerSearching}
+            />
 
             <IconButton className={[classes.searchBtn, classes.addBtn].join(' ')} type="submit" aria-label="add" onClick={setModalVisibilityTo(true)}>
               <Add />
@@ -204,8 +211,27 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
                       </div>
 
                       <div className={classes.info}>
-                        <FormikTextField className={classes.textField} fullWidth name="username" label="Pseudo" placeholder="Entrez le pseudo ici" />
-                        <FormikTextField className={classes.textField} fullWidth name="email" type="email" label="E-mail" placeholder="Entrez l'e-mail ici" />
+                        <FormikTextField
+                          InputLabelProps={{
+                            shrink: true
+                          }}
+                          className={classes.textField}
+                          fullWidth
+                          name="username"
+                          label="Pseudo"
+                          placeholder="Entrez le pseudo ici"
+                        />
+                        <FormikTextField
+                          InputLabelProps={{
+                            shrink: true
+                          }}
+                          className={classes.textField}
+                          fullWidth
+                          name="email"
+                          type="email"
+                          label="E-mail"
+                          placeholder="Entrez l'e-mail ici"
+                        />
                       </div>
 
                       <FormGroup>
@@ -216,7 +242,7 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
                         />
                       </FormGroup>
 
-                      <Button type="submit" variant="contained" color="secondary" className={[classes.btnAdd, classes.btnNew].join(' ')}>
+                      <Button type="submit" variant="contained" color="secondary" className={classes.btnAdd}>
                         Valider
                       </Button>
                     </Form>
@@ -232,49 +258,7 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
           <Typography variant="h2" className={classes.title}>
             Envoyer la newsletter du {composter.name}
           </Typography>
-          <Formik initialValues={{ titreNewsletter: '', messageNewsletter: '' }} validationSchema={NewsletterSchema} onSubmit={async values => {}}>
-            {({ values, handleChange, field }) => (
-              <Form>
-                <Field
-                  className={classes.field}
-                  component={TextField}
-                  margin="normal"
-                  fullWidth
-                  id="titreNewsletter"
-                  label="Titre de la newsletter"
-                  name="titreNewsletter"
-                  value={values.titreNewsletter}
-                  onChange={handleChange}
-                  type="titreNewsletter"
-                  autoComplete="titreNewsletter"
-                  autoFocus
-                  autoOk
-                  {...field}
-                />
-                <Field
-                  className={classes.field}
-                  component={TextField}
-                  margin="normal"
-                  fullWidth
-                  multiline
-                  rows="15"
-                  id="messageNewsletter"
-                  label="Message de la newsletter"
-                  name="messageNewsletter"
-                  value={values.messageNewsletter}
-                  onChange={handleChange}
-                  type="messageNewsletter"
-                  autoComplete="messageNewsletter"
-                  autoFocus
-                  autoOk
-                  {...field}
-                />
-                <Button className={classes.submit} type="submit" variant="contained" color="secondary">
-                  Envoyer
-                </Button>
-              </Form>
-            )}
-          </Formik>
+          <ComposterNewsletterForm />
         </Paper>
       </div>
     </ComposterContainer>
