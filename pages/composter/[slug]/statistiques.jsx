@@ -1,89 +1,146 @@
-import React, { useEffect, useContext } from 'react'
+import React, { useMemo } from 'react'
 import { Line } from 'react-chartjs-2'
+import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/styles'
 import { Paper, Typography } from '@material-ui/core'
+import dayjs from 'dayjs'
 
 import api from '~/utils/api'
 import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
-import { ComposterContext } from '~/context/ComposterContext'
-import { composterType } from '~/types'
+import { composterType, permanenceType } from '~/types'
 
 const useStyles = makeStyles(theme => ({
   graphContainer: {
     padding: theme.spacing(2)
   }
 }))
-const data = {
-  labels: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
-  datasets: [
-    {
-      label: "Nombre d'utilisateurs",
-      fill: false,
-      lineTension: 0.1,
-      backgroundColor: 'rgb(245,245,245)',
-      borderColor: palette.greenPrimary,
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: palette.greenPrimary,
-      pointBackgroundColor: '#fff',
-      pointBorderWidth: 4,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-      pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [0, 10, 50, 41, 23, 18, 11, 22, 44, 39, 25, 35]
-    },
-    {
-      label: 'Nombre de sceaux',
-      fill: false,
-      lineTension: 0.1,
-      backgroundColor: 'rgb(245,222,245)',
-      borderColor: palette.orangePrimary,
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: palette.orangePrimary,
-      pointBackgroundColor: '#fff',
-      pointBorderWidth: 4,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-      pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [1, 11, 21, 41, 27, 18, 1, 12, 22, 39, 8, 35]
-    }
-  ]
+
+const commonGraphStyle = {
+  fill: false,
+  lineTension: 0.1,
+  backgroundColor: 'rgb(245,222,245)',
+  borderColor: palette.orangePrimary,
+  borderCapStyle: 'butt',
+  borderDash: [],
+  borderDashOffset: 0.0,
+  borderJoinStyle: 'miter',
+  pointBorderColor: palette.orangePrimary,
+  pointBackgroundColor: '#fff',
+  pointBorderWidth: 4,
+  pointHoverRadius: 5,
+  pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+  pointHoverBorderColor: 'rgba(220,220,220,1)',
+  pointHoverBorderWidth: 2,
+  pointRadius: 1,
+  pointHitRadius: 10
 }
 
-const ComposterStatistiques = ({ composter }) => {
+const lineNbBucketsStyle = {
+  ...commonGraphStyle,
+  borderColor: palette.orangePrimary,
+  pointBorderColor: palette.orangePrimary
+}
+const lineNbUsersStyle = {
+  ...commonGraphStyle,
+  borderColor: palette.greenPrimary,
+  pointBorderColor: palette.greenPrimary
+}
+
+const propTypes = {
+  permanences: PropTypes.arrayOf(permanenceType).isRequired,
+  composter: composterType.isRequired
+}
+
+const zeroIfNull = val => (val === null ? 0 : val)
+const orderedByDate = perms => perms.sort((a, b) => dayjs(a.date).diff(dayjs(b.date)))
+
+const withOnePermanenceByDate = perms =>
+  perms.reduce((acc, curr) => {
+    const sameDatePermanence = acc.find(({ date }) => dayjs(date).isSame(dayjs(curr.date), 'date'))
+
+    if (sameDatePermanence) {
+      return [
+        ...acc.filter(perm => perm['@id'] !== sameDatePermanence['@id']),
+        {
+          ...curr,
+          nbUsers: zeroIfNull(curr.nbUsers) + zeroIfNull(sameDatePermanence.nbUsers),
+          nbBuckets: zeroIfNull(curr.nbBuckets) + zeroIfNull(sameDatePermanence.nbBuckets)
+        }
+      ]
+    }
+
+    return [...acc, curr]
+  }, [])
+
+const ComposterStatistiques = ({ composter, permanences }) => {
   const classes = useStyles()
+
+  const permanencesData = useMemo(() => orderedByDate(withOnePermanenceByDate(permanences)), [permanences])
+
+  const { nbBucketsData, nbUsersData, days } = permanencesData.reduce(
+    (acc, { nbBuckets, nbUsers, date }) => {
+      return {
+        ...acc,
+        nbBucketsData: [...acc.nbBucketsData, zeroIfNull(nbBuckets)],
+        nbUsersData: [...acc.nbUsersData, zeroIfNull(nbUsers)],
+        days: [...acc.days, date]
+      }
+    },
+    { nbBucketsData: [], nbUsersData: [], days: [] }
+  )
+
+  const data = {
+    labels: days,
+    datasets: [
+      {
+        ...lineNbUsersStyle,
+        label: "Nombre d'utilisateurs",
+        data: nbUsersData
+      },
+      {
+        ...lineNbBucketsStyle,
+        label: 'Nombre de sceaux',
+        data: nbBucketsData
+      }
+    ]
+  }
 
   return (
     <ComposterContainer composter={composter}>
       <Paper className={classes.graphContainer}>
         <Typography variant="h2">Nombre d'utilisateurs et de sceaux par date</Typography>
-        <Line data={data} width={50} height={300} options={{ maintainAspectRatio: false }} />
+        <Line
+          data={data}
+          width={50}
+          height={300}
+          options={{
+            maintainAspectRatio: false,
+            scales: {
+              yAxes: [{ ticks: { beginAtZero: true } }],
+              xAxes: [{ type: 'time' }]
+            }
+          }}
+        />
       </Paper>
     </ComposterContainer>
   )
 }
 
-ComposterStatistiques.propTypes = {
-  composter: composterType.isRequired
-}
+ComposterStatistiques.propTypes = propTypes
 
 ComposterStatistiques.getInitialProps = async ({ query }) => {
-  const composter = await api.getComposter(query.slug)
+  const { data: composter } = await api.getComposter(query.slug)
+
+  const before = dayjs().toISOString()
+  const after = dayjs()
+    .subtract(30, 'day')
+    .toISOString()
+  const permanences = (await api.getPermanences({ composterId: composter.rid, before, after }))['hydra:member']
 
   return {
-    composter: composter.data
+    composter,
+    permanences
   }
 }
 
