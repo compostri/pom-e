@@ -194,6 +194,7 @@ const Home = ({ allCommunes, allCategories }) => {
               latitude={mapPopup.lat}
               longitude={mapPopup.lng}
               closeButton={false}
+              closeOnClick={false}
               className={classes.popup}
               onClose={() => setMapPopup(false)}
               offsetTop={-8}

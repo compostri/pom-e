@@ -153,7 +153,8 @@ const theme = createMuiTheme({
     },
     MuiListItemText: {
       root: {
-        fontSize: defaultTheme.typography.pxToRem(14)
+        fontSize: defaultTheme.typography.pxToRem(14),
+        margin: 0
       },
       primary: {
         fontSize: defaultTheme.typography.pxToRem(14)
