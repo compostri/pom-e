@@ -68,7 +68,6 @@ const InformationsForm = () => {
                   shrink: true
                 }}
                 component={TextField}
-                margin="normal"
                 fullWidth
                 id="openingProcedures"
                 label="procédure d'ouverture"

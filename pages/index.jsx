@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { makeStyles } from '@material-ui/styles'
-import { Room, Person, RadioButtonChecked } from '@material-ui/icons'
 import { fitBounds } from 'viewport-mercator-project'
 import bbox from '@turf/bbox'
 
@@ -11,7 +10,6 @@ import ReactMapGL, { Popup, Source, Layer, NavigationControl } from 'react-map-g
 import Sidebar from '~/components/Sidebar'
 import api from '~/utils/api'
 import UserButton from '~/components/UserButton'
-import palette from '~/variables'
 import ComposterInfoWindow from '~/components/ComposterInfoWindow'
 
 const useStyles = makeStyles(({ spacing }) => ({
@@ -27,37 +25,7 @@ const useStyles = makeStyles(({ spacing }) => ({
   popup: {
     '& > .mapboxgl-popup-content': {
       padding: 0
-    },
-
-  listItem: {
-    padding: 0
-  },
-  infoIcone: {
-    padding: 0,
-    margin: 0,
-    minWidth: 10
-  },
-  containerInfo: {
-    alignItems: 'center',
-    padding: 0,
-    backgroundColor: palette.greyExtraLight,
-    display: 'flex',
-    justifyContent: 'space-around',
-    marginLeft: '2%',
-    minWidth: 'max-content'
-  },
-
-  titre: {
-    fontSize: '1.3em',
-    color: 'grey',
-    fontWeight: 700,
-    justifySelf: 'center'
-  },
-  buttonTitre: {
-    alignSelf: 'center'
-  },
-  infoImg: {
-    display: 'flex'
+    }
   },
   navigationControl: {
     position: 'absolute',
