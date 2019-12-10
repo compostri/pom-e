@@ -105,7 +105,6 @@ const Content = () => {
           <Paper className={classes.info}>
             <div className={classes.infoLeft}>
               {composter.image && composter.image.contentUrl ? (
-                // eslint-disable-next-line react/jsx-props-no-spreading
                 <img
                   src={composter.image.contentUrl}
                   alt={composter.name}
