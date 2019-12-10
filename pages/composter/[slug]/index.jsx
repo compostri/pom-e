@@ -22,7 +22,24 @@ const useStyles = makeStyles(theme => ({
   info: {
     display: 'flex',
     padding: theme.spacing(2, 2, 2, 2),
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(2),
+    [theme.breakpoints.down('xs')]: {
+      flexWrap: 'wrap'
+    }
+  },
+  infoLeft: {
+    textAlign: 'left',
+    [theme.breakpoints.down('xs')]: {
+      textAlign: 'center',
+      flexGrow: 1
+    }
+  },
+  infoRight: {
+    marginLeft: theme.spacing(2),
+    flexGrow: 1,
+    [theme.breakpoints.down('xs')]: {
+      marginLeft: 0
+    }
   },
   infoTitle: {
     display: 'flex',
@@ -32,10 +49,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(1)
   },
   editIcon: { width: 15 },
-  infoRight: {
-    marginLeft: theme.spacing(2),
-    flexGrow: 1
-  },
+
   titleSectionSecondary: {
     paddingBottom: theme.spacing(2)
   },

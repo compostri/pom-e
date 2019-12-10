@@ -67,6 +67,11 @@ const theme = createMuiTheme({
         backgroundColor: palette.orangePrimary
       }
     },
+    MuiContainer: {
+      root: {
+        padding: defaultTheme.spacing(0, 2)
+      }
+    },
     MuiFab: {
       root: {
         boxShadow: 'none'
@@ -237,7 +242,10 @@ const theme = createMuiTheme({
       h1: {
         color: palette.greyDark,
         fontSize: 20,
-        fontWeight: '700'
+        fontWeight: '700',
+        [defaultTheme.breakpoints.down('md')]: {
+          fontSize: 18
+        }
       },
       h2: {
         color: palette.greyDark,
