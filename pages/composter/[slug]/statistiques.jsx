@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { Line } from 'react-chartjs-2'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/styles'
-import { Paper, Typography } from '@material-ui/core'
+import { Paper, Typography, Box } from '@material-ui/core'
 import dayjs from 'dayjs'
 
 import api from '~/utils/api'
@@ -12,7 +12,27 @@ import { composterType, permanenceType } from '~/types'
 
 const useStyles = makeStyles(theme => ({
   graphContainer: {
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    height: 400,
+    position: 'relative'
+  },
+  inner: {
+    position: 'static'
+  },
+  blur: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  noData: {
+    backgroundColor: 'white',
+    padding: theme.spacing(1)
   }
 }))
 
@@ -109,19 +129,28 @@ const ComposterStatistiques = ({ composter, permanences }) => {
   return (
     <ComposterContainer composter={composter}>
       <Paper className={classes.graphContainer}>
-        <Typography variant="h2">Nombre d'utilisateurs et de sceaux par date</Typography>
-        <Line
-          data={data}
-          width={50}
-          height={300}
-          options={{
-            maintainAspectRatio: false,
-            scales: {
-              yAxes: [{ ticks: { beginAtZero: true } }],
-              xAxes: [{ type: 'time' }]
-            }
-          }}
-        />
+        <Box className={classes.inner}>
+          <Typography variant="h2">Nombre d'utilisateurs et de sceaux par date</Typography>
+          <Line
+            data={data}
+            width={50}
+            height={300}
+            options={{
+              maintainAspectRatio: false,
+              scales: {
+                yAxes: [{ ticks: { beginAtZero: true } }],
+                xAxes: [{ type: 'time' }]
+              }
+            }}
+          />
+          {permanencesData.length === 0 && (
+            <Box className={classes.blur}>
+              <Box className={classes.noData}>
+                <Typography>Aucune donnée pour le moment</Typography>
+              </Box>
+            </Box>
+          )}
+        </Box>
       </Paper>
     </ComposterContainer>
   )
