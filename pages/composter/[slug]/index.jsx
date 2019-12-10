@@ -107,7 +107,7 @@ const Content = () => {
               {composter.image && composter.image.contentUrl ? (
                 <img
                   src={composter.image.contentUrl}
-                  alt={composter.name}
+                  alt={`Le composteur ${composter.name}`}
                   width={composter.image.imageDimensions[0]}
                   height={composter.image.imageDimensions[1]}
                   className={classes.image}
