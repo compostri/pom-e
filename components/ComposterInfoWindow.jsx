@@ -48,7 +48,7 @@ const ComposterInfoWindow = ({ composter }) => {
         <Grid container spacing={2}>
           <Grid item xs={4}>
             {composter.image && composter.image !== 'null' ? (
-              <img src={composter.image} alt={composter.name} className={classes.image} />
+              <img src={composter.image} alt={`Le composteur ${composter.name}`} className={classes.image} />
             ) : (
               <DefaultImage composter={composter} />
             )}
