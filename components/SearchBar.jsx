@@ -14,9 +14,8 @@ const useStyles = makeStyles(theme => ({
     borderBottom: `1px solid ${palette.greyDark}`,
     zIndex: 110
   },
-  searchBarContainer: {},
   searchBar: {
-    padding: theme.spacing(1.75, 4, 1.75, 3),
+    padding: theme.spacing(1.75, 4, 1.75, 3.75),
     backgroundColor: '#c2d97c',
     borderTop: '1px solid #fff',
     borderBottom: '1px solid #fff',
@@ -83,7 +82,7 @@ const SearchBar = () => {
       id="searchcomposter"
       loading={loading}
       loadingText="Recherche en cours"
-      noOptionsText="Aucun composteur correspondant"
+      noOptionsText={search.length === 0 ? 'Entrez un nom de composteur' : 'Aucun composteur correspondant'}
       getOptionLabel={option => option.name}
       options={listComposter}
       onInputChange={onInputChange}

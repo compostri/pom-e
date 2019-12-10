@@ -151,7 +151,7 @@ const Home = ({ allCommunes, allCategories }) => {
                     ['in', 'commune', ...selectedCommune],
                     ['in', 'categorie', ...selectedCategories],
                     ['in', 'status', ...selectedStatus],
-                    ['==', 'acceptNewMembers', acceptNewMembers]
+                    acceptNewMembers ? ['==', 'acceptNewMembers', acceptNewMembers] : ['>=', 'acceptNewMembers', acceptNewMembers]
                   ]
                 }}
               />
