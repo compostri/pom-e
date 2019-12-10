@@ -18,7 +18,7 @@ import {
   Box
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import { MenuOpen, Eco, Search, Close, ColorLens } from '@material-ui/icons'
+import { MenuOpen, Eco, Search, Close } from '@material-ui/icons'
 import classNames from 'classnames'
 import SearchBar from './SearchBar'
 import palette from '~/variables'
