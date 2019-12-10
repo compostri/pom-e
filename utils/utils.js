@@ -25,7 +25,8 @@ export const getCategoryColor = category => {
 }
 
 export const getComposterColor = composter => {
-  return getCategoryColor(composter.category)
+  const cat = typeof composter.categorie === 'object' ? composter.categorie : { id: composter.categorie }
+  return getCategoryColor(cat)
 }
 
 export const getInitial = name => {

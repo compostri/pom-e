@@ -49,7 +49,8 @@ const useStyles = makeStyles(theme => ({
   },
   infoList: {
     backgroundColor: palette.greyExtraLight,
-    padding: theme.spacing(2, 2, 2, 2)
+    padding: theme.spacing(2, 2, 2, 2),
+    marginTop: theme.spacing(1)
   },
   contactezNous: {
     padding: theme.spacing(2, 2, 2, 2)
@@ -101,6 +102,7 @@ const Content = () => {
                   </Link>
                 </Can>
               </div>
+              <Typography>{composter.publicDescription}</Typography>
               <List className={classes.infoList}>
                 <ListItem className={classes.listItem}>
                   <ListItemIcon>

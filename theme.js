@@ -113,7 +113,8 @@ const theme = createMuiTheme({
         padding: defaultTheme.spacing(1.75)
       },
       input: {
-        borderRadius: 2
+        borderRadius: 2,
+        padding: 0
       },
       multiline: {
         padding: 'inherit'
