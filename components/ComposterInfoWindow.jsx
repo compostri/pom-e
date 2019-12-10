@@ -1,32 +1,25 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Link from 'next/link'
-import Head from 'next/head'
-import { Button, Typography, Paper, List, ListItem, ListItemText, ListItemIcon, Box, Grid } from '@material-ui/core'
+import { Typography, List, ListItem, ListItemText, ListItemIcon, Box, Grid } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import { Room, Person, RadioButtonChecked } from '@material-ui/icons'
 
-import ReactMapGL, { Popup, Source, Layer, NavigationControl } from 'react-map-gl'
-
 import { composterType } from '~/types'
-import Sidebar from '~/components/Sidebar'
 import DefaultImage from '~/components/DefaultImage'
 import { getComposterColor } from '~/utils/utils'
 
-import api from '~/utils/api'
-import UserButton from '~/components/UserButton'
 import palette from '~/variables'
-import theme from '~/theme'
 
 const useStyles = makeStyles(({ spacing }) => ({
   container: {
     maxWidth: 400,
     display: 'block',
     textDecoration: 'none',
-    padding: theme.spacing(2)
+    padding: spacing(2)
   },
   containerInfo: {
-    padding: theme.spacing(1),
-    marginTop: theme.spacing(1),
+    padding: spacing(1),
+    marginTop: spacing(1),
     backgroundColor: palette.greyExtraLight
   },
   listItem: {
@@ -34,7 +27,7 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
   infoIcone: {
     padding: 0,
-    marginRight: theme.spacing(1),
+    marginRight: spacing(1),
     minWidth: 10
   }
 }))

@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/styles'
 import { composterType } from '~/types'
 
 import { Can, Action, Subject } from '~/context/AbilityContext'
-
+import DefaultImage from '~/components/DefaultImage'
 import api from '~/utils/api'
 import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
@@ -72,6 +72,10 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
     height: '100%',
     minHeight: 200
+  },
+  image: {
+    maxWidth: 200,
+    height: 'auto'
   }
 }))
 
@@ -86,8 +90,18 @@ const Content = () => {
         <Grid item md={composter.lat && composter.lng ? 8 : 12} xs={12}>
           <Paper className={classes.info}>
             <div>
-              {' '}
-              <img src="https://via.placeholder.com/150" alt={composter.name} />
+              {composter.image && composter.image.contentUrl ? (
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                <img
+                  src={composter.image.contentUrl}
+                  alt={composter.name}
+                  width={composter.image.imageDimensions[0]}
+                  height={composter.image.imageDimensions[1]}
+                  className={classes.image}
+                />
+              ) : (
+                <DefaultImage composter={composter} />
+              )}
             </div>
             <div className={classes.infoRight}>
               <div className={classes.infoTitle}>

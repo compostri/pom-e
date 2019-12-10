@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import RoomIcon from '@material-ui/icons/Room'
 import ReactMapGL, { Marker, NavigationControl } from 'react-map-gl'
 import { makeStyles } from '@material-ui/styles'
 import MNMarker from '~/components/Marker'
@@ -28,7 +27,6 @@ const MapField = ({ record }) => {
   })
   const classes = useStyles()
 
-  console.log('TCL: MapField -> categorie', categorie)
   return (
     <ReactMapGL
       // eslint-disable-next-line react/jsx-props-no-spreading
