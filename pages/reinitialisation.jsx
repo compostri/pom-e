@@ -1,7 +1,7 @@
 import React from 'react'
 import { Container, Paper, Typography, Box } from '@material-ui/core'
 import { useRouter } from 'next/router'
-import { Head } from 'next/head'
+import Head from 'next/head'
 import { makeStyles } from '@material-ui/core/styles'
 
 import PasswordChange from '~/components/forms/PasswordChange'

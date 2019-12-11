@@ -1,7 +1,7 @@
 import React from 'react'
 import { Paper, Tabs, Tab, Container, Box } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import { Head } from 'next/head'
+import Head from 'next/head'
 
 import palette from '../variables'
 import ProfileForm from '~/components/forms/ProfileForm'
