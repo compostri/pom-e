@@ -38,7 +38,7 @@ const Reinit = () => {
   return (
     <Container component="main" maxWidth="sm" className={classes.container}>
       <Head>
-        <title>Réinitialisation du mot de passe - Compstri</title>
+        <title>Réinitialisation du mot de passe - Compostri</title>
       </Head>
       <Paper className={classes.paper}>
         <Box mb={2}>
