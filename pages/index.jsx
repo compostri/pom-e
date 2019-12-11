@@ -109,7 +109,7 @@ const Home = ({ allCommunes, allCategories }) => {
   return (
     <div>
       <Head>
-        <title>Les composteurs de compostri</title>
+        <title>Les composteurs de Compostri</title>
       </Head>
 
       <Sidebar
