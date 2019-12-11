@@ -82,7 +82,7 @@ const ComposterEdit = ({ composter }) => {
   return (
     <ComposterContainer composter={composter} maxWidth="md">
       <Head>
-        <title>{composter.name} modifications - un composteur géré par Compstri</title>
+        <title>Modifier {composter.name} - un composteur géré par Compostri</title>
       </Head>
       <Paper>
         <div className={classes.header}>
