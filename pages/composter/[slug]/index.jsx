@@ -194,7 +194,7 @@ const ComposterDetail = ({ composter }) => {
   return (
     <ComposterContainer composter={composter}>
       <Head>
-        <title>{composter.name} - un composteur géré par Compstri</title>
+        <title>{composter.name} - un composteur géré par Compostri</title>
       </Head>
       <Content />
     </ComposterContainer>
