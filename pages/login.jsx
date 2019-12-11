@@ -62,7 +62,7 @@ const LogIn = () => {
   return (
     <Container component="main" maxWidth="sm" className={classes.container}>
       <Head>
-        <title>Se connecter - Compstri</title>
+        <title>Se connecter - Compostri</title>
       </Head>
       <Paper className={classes.paper}>
         <Typography className={classes.h1} component="h1" variant="h5">
