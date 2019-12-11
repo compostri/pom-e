@@ -197,7 +197,7 @@ const ComposterOuvreurs = ({ composter }) => {
   return (
     <ComposterContainer composter={composter}>
       <Head>
-        <title>{composter.name} les ouvreurs - un composteur géré par Compstri</title>
+        <title>Les ouvreurs de {composter.name} - un composteur géré par Compostri</title>
       </Head>
       <Content composter={composter} users={users} />
     </ComposterContainer>
