@@ -267,7 +267,7 @@ const Sidebar = ({
           <div className={classes.categorie}>
             {allCategories &&
               allCategories.map(c => (
-                <Field selectedCategories={selectedCategories} toggleCategories={toggleCategories} category={c} color={getCategoryColor(c)} />
+                <Field key={`cat-${c.id}`} selectedCategories={selectedCategories} toggleCategories={toggleCategories} category={c} color={getCategoryColor(c)} />
               ))}
           </div>
         </FormGroup>

@@ -2,10 +2,10 @@ import React, { useContext } from 'react'
 import { Container, TextField, Paper, Typography, Button } from '@material-ui/core'
 import Link from 'next/link'
 import Router from 'next/router'
+import Head from 'next/head'
 import { makeStyles } from '@material-ui/core/styles'
 import { Formik, Form, Field } from 'formik'
 import * as Yup from 'yup'
-import { Head } from 'next/head'
 
 import { UserContext } from '~/context/UserContext'
 import palette from '../variables'
@@ -60,81 +60,83 @@ const LogIn = () => {
   const { addToast } = useToasts()
 
   return (
-    <Container component="main" maxWidth="sm" className={classes.container}>
+    <>
       <Head>
         <title>Se connecter - Compostri</title>
       </Head>
-      <Paper className={classes.paper}>
-        <Typography className={classes.h1} component="h1" variant="h5">
-          Se connecter
-        </Typography>
-        <Formik
-          initialValues={{ email: '', password: '' }}
-          validationSchema={LogInSchema}
-          onSubmit={async values => {
-            try {
-              const response = await userContext.login(values)
-              if (response.status === 200 && response.data.token) {
-                const route = Router.query.ref || '/'
-                Router.replace(route)
-              } else {
-                addToast('Une erreur est survenue', TOAST.ERROR)
+      <Container component="main" maxWidth="sm" className={classes.container}>
+        <Paper className={classes.paper}>
+          <Typography className={classes.h1} component="h1" variant="h5">
+            Se connecter
+          </Typography>
+          <Formik
+            initialValues={{ email: '', password: '' }}
+            validationSchema={LogInSchema}
+            onSubmit={async values => {
+              try {
+                const response = await userContext.login(values)
+                if (response.status === 200 && response.data.token) {
+                  const route = Router.query.ref || '/'
+                  Router.replace(route)
+                } else {
+                  addToast('Une erreur est survenue', TOAST.ERROR)
+                }
+              } catch (e) {
+                addToast('Combinaison d‘email et mot de passe incorrect', TOAST.ERROR)
               }
-            } catch (e) {
-              addToast('Combinaison d‘email et mot de passe incorrect', TOAST.ERROR)
-            }
-          }}
-        >
-          {({ values, errors, touched, handleChange }) => (
-            <Form className={classes.form}>
-              <Field
-                component={TextField}
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="E-mail"
-                name="email"
-                value={values.email}
-                onChange={handleChange}
-                type="email"
-                autoComplete="email"
-                autoFocus
-                InputLabelProps={{
-                  shrink: true
-                }}
-                error={errors.email && touched.email}
-                helperText={errors.email && touched.email ? errors.email : undefined}
-              />
-              <Field
-                component={TextField}
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                value={values.password}
-                onChange={handleChange}
-                InputLabelProps={{
-                  shrink: true
-                }}
-                error={errors.password && touched.password}
-                helperText={errors.password && touched.password ? errors.password : undefined}
-              />
-              <Button type="submit" fullWidth variant="contained" color="secondary" className={classes.submit}>
-                Connexion
-              </Button>
-            </Form>
-          )}
-        </Formik>
-        <Link href="/reinitialisation" passHref>
-          <Button className={classes.forgotMdp}>Mot de passe oublié ?</Button>
-        </Link>
-      </Paper>
-    </Container>
+            }}
+          >
+            {({ values, errors, touched, handleChange }) => (
+              <Form className={classes.form}>
+                <Field
+                  component={TextField}
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="E-mail"
+                  name="email"
+                  value={values.email}
+                  onChange={handleChange}
+                  type="email"
+                  autoComplete="email"
+                  autoFocus
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                  error={errors.email && touched.email}
+                  helperText={errors.email && touched.email ? errors.email : undefined}
+                />
+                <Field
+                  component={TextField}
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  value={values.password}
+                  onChange={handleChange}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                  error={errors.password && touched.password}
+                  helperText={errors.password && touched.password ? errors.password : undefined}
+                />
+                <Button type="submit" fullWidth variant="contained" color="secondary" className={classes.submit}>
+                  Connexion
+                </Button>
+              </Form>
+            )}
+          </Formik>
+          <Link href="/reinitialisation" passHref>
+            <Button className={classes.forgotMdp}>Mot de passe oublié ?</Button>
+          </Link>
+        </Paper>
+      </Container>
+    </>
   )
 }
 
