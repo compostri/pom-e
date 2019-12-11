@@ -14,7 +14,7 @@ const ComposterPermanences = ({ composter, permanences }) => {
   return (
     <ComposterContainer composter={composter}>
       <Head>
-        <title>{composter.name} les permanences - un composteur géré par Compstri</title>
+        <title>Les permanences de {composter.name} - un composteur géré par Compostri</title>
       </Head>
       <PermanencesProvider permanences={permanences} composterId={composter.rid} composterAtId={composter['@id']}>
         <ComposterPermanancesContainer permanencesRule={composter.permanencesRule} />
