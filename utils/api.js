@@ -106,7 +106,8 @@ class MNApi {
 
   getConsumers = params => this.$withPromiseHandling(this.get, '/consumers', { params })
 
-  postConsumers = ({ username, email, composterId }) => this.$withPromiseHandling(this.post, '/consumers', { username, email, composters: [composterId] })
+  postConsumers = ({ username, email, composterId, subscribeToCompostriNewsletter }) =>
+    this.$withPromiseHandling(this.post, '/consumers', { username, email, composters: [composterId], subscribeToCompostriNewsletter })
 
   sendComposterNewsletter = values => this.post('/composter_newsletters', values)
 

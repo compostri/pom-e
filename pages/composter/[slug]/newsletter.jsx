@@ -114,14 +114,17 @@ const UserSchema = Yup.object({
   username: Yup.string().required(),
   email: Yup.string()
     .email()
-    .required()
+    .required(),
+  subscribeToCompostriNewsletter: Yup.bool().required()
 })
 const UserInitialValues = {
   username: '',
-  email: ''
+  email: '',
+  subscribeToCompostriNewsletter: false
 }
 
 const FormikTextField = withFormikField(TextField)
+const FormikSwitch = withFormikField(Switch)
 
 const ComposterNewsletter = ({ composter, consumers, slug }) => {
   const classes = useStyles()
@@ -164,9 +167,9 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
     }
   }
 
-  const handleConsumerAdding = async ({ username, email }) => {
+  const handleConsumerAdding = async ({ username, email, subscribeToCompostriNewsletter }) => {
     const handleError = () => displayErrorToast("Une erreur est survenue lors de l'ajout du destinataire")
-    const data = await api.postConsumers({ username, email, composterId: composter['@id'] }).catch(handleError)
+    const data = await api.postConsumers({ username, email, composterId: composter['@id'], subscribeToCompostriNewsletter }).catch(handleError)
     if (data) {
       displaySuccessToast('Le destinataire a bien été ajouté')
       retrievesConsumers()
@@ -206,7 +209,7 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
             <Modal BackdropProps={{ style: { background: '#faf9f8' } }} className={classes.modal} open={openModal} onClose={setModalVisibilityTo(false)}>
               <Paper elevation={1} className={classes.modalPaper}>
                 <Formik initialValues={UserInitialValues} validationSchema={UserSchema} onSubmit={handleConsumerAdding}>
-                  {() => (
+                  {({ values }) => (
                     <Form>
                       <div className={classes.modalHeader}>
                         <Typography variant="h2">Ajouter un nouveau destinataire pour la newsletter de {composter.name}</Typography>
@@ -241,7 +244,7 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
 
                       <FormGroup>
                         <FormControlLabel
-                          control={<Switch />}
+                          control={<FormikSwitch name="subscribeToCompostriNewsletter" checked={values.subscribeToCompostriNewsletter} />}
                           label="Ce destinataire recevra également la newsletter de Compostri"
                           className={classes.switchLabel}
                         />
