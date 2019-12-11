@@ -34,7 +34,7 @@ const Confirmation = () => {
   return (
     <Container component="main" maxWidth="sm" className={classes.container}>
       <Head>
-        <title>Comfirmation de compte - Compstri</title>
+        <title>Confirmation de compte - Compostri</title>
       </Head>
       <Paper className={classes.paper}>
         <Box mb={2}>
