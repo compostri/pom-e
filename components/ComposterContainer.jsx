@@ -57,7 +57,7 @@ const ComposterContainer = ({ composter, maxWidth = 'lg', children }) => {
                 <Button
                   disableRipple
                   className={classnames(classes.button, {
-                    [classes.activeButton]: ['/composter/[slug]', '/composter/[slug]/modifications'].indexOf(router.pathname) >= 0
+                    [classes.activeButton]: ['/composter/[slug]', '/composter/[slug]/modifications'].includes(router.pathname)
                   })}
                 >
                   Informations
