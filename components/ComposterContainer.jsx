@@ -81,7 +81,7 @@ const ComposterContainer = ({ composter, maxWidth, children }) => {
               <Can I={READ} this={COMPOSTER_LISTES_OUVREURS}>
                 <Link href="/composter/[slug]/ouvreurs" as={`/composter/${slug}/ouvreurs`} passHref>
                   <Button disableRipple className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/ouvreurs' })}>
-                    Listes d‘ouvreurs
+                    Listes d'ouvreurs
                   </Button>
                 </Link>
               </Can>
