@@ -25,17 +25,9 @@ const compress = (targetWidth, targetHeight) => async file => {
         let height
 
         if (img.width > img.height) {
-          if (!targetWidth) {
-            const error = 'A `targetWidth` is required to determine the ratio'
-            throw error
-          }
           width = targetWidth
           height = Math.round((img.height / img.width) * width)
         } else {
-          if (!targetHeight) {
-            const error = 'A `targetHeight` is required to determine the ratio'
-            throw error
-          }
           height = targetHeight
           width = Math.round((img.width / img.height) * height)
         }
@@ -76,7 +68,7 @@ const propTypes = {
 
 const defaultProps = {
   targetWidth: 300,
-  targetHeight: undefined
+  targetHeight: 300
 }
 
 const MNFile = ({ input, children, label, targetWidth, targetHeight }) => {

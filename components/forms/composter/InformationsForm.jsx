@@ -19,11 +19,12 @@ const InformationsForm = () => {
     image: composter.image
   }
 
-  const submit = async ({ image, openingProcedures, acceptNewMembers }, { setSubmitting }) => {
+  const submit = async ({ image, openingProcedures, acceptNewMembers }, { setSubmitting, setFieldValue }) => {
     const response = await api.updateComposter(composter.slug, { image: image['@id'], openingProcedures, acceptNewMembers })
 
     if (response) {
       addToast('Votre modification a bien été prise en compte', TOAST.SUCCESS)
+      setFieldValue('image', null)
     } else {
       addToast('Une erreur est survenue', TOAST.ERROR)
     }
@@ -43,7 +44,7 @@ const InformationsForm = () => {
         <Form>
           <Grid container spacing={2}>
             <Grid item xs={2}>
-              <ImageInput label="Photo" width={100} name="image" onLoadEnd={handleImageChange(setFieldValue)} value={values.image} />
+              <ImageInput label="Photo" name="image" onLoadEnd={handleImageChange(setFieldValue)} value={values.image} />
             </Grid>
             <Grid item xs={10}>
               <FormikTextField fullWidth label="procédure d'ouverture" name="openingProcedures" />

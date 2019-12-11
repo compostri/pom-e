@@ -45,7 +45,6 @@ const FormikInputFile = withFormikField(InputFileElement)
 const propTypes = {
   label: PropTypes.string.isRequired,
   onLoadEnd: PropTypes.func.isRequired,
-  width: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   id: PropTypes.string,
   value: mediaObjectType
@@ -56,7 +55,7 @@ const defaultProps = {
   value: null
 }
 
-const ImageInput = ({ width, label, onLoadEnd, name: inputName, id, value: media }) => {
+const ImageInput = ({ label, onLoadEnd, name: inputName, id, value: media }) => {
   const classes = useStyles()
 
   const handleChange = async (s, files) => {
@@ -76,7 +75,6 @@ const ImageInput = ({ width, label, onLoadEnd, name: inputName, id, value: media
 
   return (
     <MNFile
-      width={width}
       label={
         <Button variant="outlined" color="primary" size="small" component="span">
           <Add className={classes.icon} />
