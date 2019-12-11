@@ -150,7 +150,7 @@ const Content = () => {
                   <ListItemIcon>
                     <Person className={classes.infoIcone} />
                   </ListItemIcon>
-                  <ListItemText>{composter.acceptNewMembers ? 'Accepte' : "N'accepte pas"} de nouveau adhérents</ListItemText>
+                  <ListItemText>{composter.acceptNewMembers ? 'Accepte' : "N'accepte pas"} de nouveaux adhérents</ListItemText>
                 </ListItem>
 
                 <ListItem className={classes.listItem}>
