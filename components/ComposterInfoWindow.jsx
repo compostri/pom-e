@@ -29,6 +29,10 @@ const useStyles = makeStyles(({ spacing }) => ({
     padding: 0,
     marginRight: spacing(1),
     minWidth: 10
+  },
+  image: {
+    height: 'auto',
+    width: '100%'
   }
 }))
 
@@ -43,7 +47,11 @@ const ComposterInfoWindow = ({ composter }) => {
       <a className={classes.container}>
         <Grid container spacing={2}>
           <Grid item xs={4}>
-            {composter.image ? <img src={composter.image} alt="Composteur" id="imgComposter" /> : <DefaultImage composter={composter} />}
+            {composter.image && composter.image !== 'null' ? (
+              <img src={composter.image} alt={`Le composteur ${composter.name}`} className={classes.image} />
+            ) : (
+              <DefaultImage composter={composter} />
+            )}
           </Grid>
           <Grid item xs={8}>
             <Typography variant="h2" component="h2">
