@@ -81,7 +81,7 @@ const ImageInput = ({ label, onLoadEnd, name: inputName, id, value: media }) => 
           {label}
         </Button>
       }
-      input={<FormikInputFile accept="images/*" name={inputName} id={id} onChange={handleChange} />}
+      input={<FormikInputFile accept="image/*" name={inputName} id={id} onChange={handleChange} />}
     >
       {(images, removePreview) => {
         return (
