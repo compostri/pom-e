@@ -130,7 +130,7 @@ const ComposterStatistiques = ({ composter, permanences }) => {
   return (
     <ComposterContainer composter={composter}>
       <Head>
-        <title>{composter.name} les statistique - un composteur géré par Compstri</title>
+        <title>Les statistiques de {composter.name} - un composteur géré par Compostri</title>
       </Head>
       <Paper className={classes.graphContainer}>
         <Box className={classes.inner}>
