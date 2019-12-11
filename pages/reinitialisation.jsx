@@ -51,7 +51,7 @@ const Reinit = () => {
       <Paper className={classes.paper}>
         <Box mb={2}>
           <Typography className={classes.h1} component="h1" variant="h5">
-            Se connecter
+            Réinitialisation du mot de passe
           </Typography>
           {token ? <Typography>Veuillez définir un nouveau mot de passe</Typography> : <Typography>Veuillez renseigner votre adresse email</Typography>}
         </Box>
