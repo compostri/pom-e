@@ -54,7 +54,7 @@ const Profil = () => {
   return (
     <>
       <Head>
-        <title>Mon profil - Compstri</title>
+        <title>Mon profil - Compostri</title>
       </Head>
       <Header title="Mon profil" />
       <Container maxWidth="lg">
