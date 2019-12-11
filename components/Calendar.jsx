@@ -13,7 +13,7 @@ const renderWeekWithKey = renderFn => (data, i) => {
   const key = `week-${i}`
   return <Fragment key={key}>{renderFn(data)}</Fragment>
 }
-const renderDayWithKey = renderFn => (day, i) => {
+const renderDayWithKey = renderFn => day => {
   const key = `day-${day ||
     Math.random()
       .toString(36)

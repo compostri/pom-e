@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { TextField, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import { Search } from '@material-ui/icons'
@@ -89,6 +89,7 @@ const SearchBar = () => {
       onChange={onChange}
       renderInput={params => (
         <TextField
+          // eslint-disable-next-line react/jsx-props-no-spreading
           {...params}
           fullWidth
           variant="standard"

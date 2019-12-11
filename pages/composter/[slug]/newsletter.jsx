@@ -5,6 +5,8 @@ import { Add, Clear, Search } from '@material-ui/icons'
 import PropTypes from 'prop-types'
 import * as Yup from 'yup'
 import { Formik, Form } from 'formik'
+import Head from 'next/head'
+
 import api from '~/utils/api'
 import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
@@ -178,6 +180,9 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
 
   return (
     <ComposterContainer composter={composter}>
+      <Head>
+        <title>{composter.name} Newsletter - un composteur géré par Compstri</title>
+      </Head>
       <div className={classes.newsletterContainer}>
         <Paper elevation={1} className={classes.sectionLeft}>
           <Typography variant="h2" className={classes.title}>

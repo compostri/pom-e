@@ -1,6 +1,7 @@
 import React from 'react'
 import { Container, Paper, Typography, Box } from '@material-ui/core'
 import { useRouter } from 'next/router'
+import Head from 'next/head'
 
 import { makeStyles } from '@material-ui/core/styles'
 import PasswordChange from '~/components/forms/PasswordChange'
@@ -32,6 +33,9 @@ const Confirmation = () => {
 
   return (
     <Container component="main" maxWidth="sm" className={classes.container}>
+      <Head>
+        <title>Comfirmation de compte - Compstri</title>
+      </Head>
       <Paper className={classes.paper}>
         <Box mb={2}>
           <Typography className={classes.h1} component="h1" variant="h5">

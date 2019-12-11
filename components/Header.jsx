@@ -70,7 +70,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const Header = props => {
+const Header = ({ title, children }) => {
   const classes = useStyles()
 
   return (
@@ -92,14 +92,14 @@ const Header = props => {
                 </Link>
               </Hidden>
               <Typography variant="h1" className={classes.title}>
-                {props.title}
+                {title}
               </Typography>
             </div>
 
             <UserButton />
           </Box>
 
-          <div className={classes.children}>{props.children}</div>
+          <div className={classes.children}>{children}</div>
         </div>
       </Toolbar>
     </AppBar>

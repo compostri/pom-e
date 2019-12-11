@@ -1,6 +1,7 @@
 import React from 'react'
 import dayjs from 'dayjs'
 import PropTypes from 'prop-types'
+import Head from 'next/head'
 
 import PermanencesProvider from '~/context/ComposterPermamencesContext'
 import api from '~/utils/api'
@@ -12,6 +13,9 @@ import { withAccessAbility, Subject } from '~/context/AbilityContext'
 const ComposterPermanences = ({ composter, permanences }) => {
   return (
     <ComposterContainer composter={composter}>
+      <Head>
+        <title>{composter.name} les permanences - un composteur géré par Compstri</title>
+      </Head>
       <PermanencesProvider permanences={permanences} composterId={composter.rid} composterAtId={composter['@id']}>
         <ComposterPermanancesContainer permanencesRule={composter.permanencesRule} />
       </PermanencesProvider>
