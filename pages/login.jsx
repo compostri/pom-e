@@ -5,6 +5,8 @@ import Router from 'next/router'
 import { makeStyles } from '@material-ui/core/styles'
 import { Formik, Form, Field } from 'formik'
 import * as Yup from 'yup'
+import { Head } from 'next/head'
+
 import { UserContext } from '~/context/UserContext'
 import palette from '../variables'
 import { useToasts, TOAST } from '~/components/Snackbar'
@@ -59,6 +61,9 @@ const LogIn = () => {
 
   return (
     <Container component="main" maxWidth="sm" className={classes.container}>
+      <Head>
+        <title>Se connecter - Compostri</title>
+      </Head>
       <Paper className={classes.paper}>
         <Typography className={classes.h1} component="h1" variant="h5">
           Se connecter

@@ -2,13 +2,14 @@ import React from 'react'
 import { Paper, Tabs, Tab, IconButton, Box } from '@material-ui/core'
 import { Clear } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
-import palette from '~/variables'
 import Link from 'next/link'
+import Head from 'next/head'
 import dayjs from 'dayjs'
 import 'dayjs/locale/fr'
+
+import palette from '~/variables'
 import InformationsForm from '~/components/forms/composter/InformationsForm'
 import PermanencesRulesForm from '~/components/forms/composter/PermanencesRulesForm'
-
 import api from '~/utils/api'
 import { withAccessAbility, Subject } from '~/context/AbilityContext'
 import ComposterContainer from '~/components/ComposterContainer'
@@ -80,6 +81,9 @@ const ComposterEdit = ({ composter }) => {
 
   return (
     <ComposterContainer composter={composter} maxWidth="md">
+      <Head>
+        <title>Modifier {composter.name} - un composteur géré par Compostri</title>
+      </Head>
       <Paper>
         <div className={classes.header}>
           <Tabs

@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { Typography, IconButton, Button, Modal, Tabs, Tab, Paper, CircularProgress, Grid, Box } from '@material-ui/core'
 import { Clear } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
+import Head from 'next/head'
+import PropTypes from 'prop-types'
+
 import api from '~/utils/api'
 import ComposterContainer from '~/components/ComposterContainer'
 import OuvreurCard from '~/components/OuvreurCard'
 import palette from '~/variables'
 import RegisterForm from '~/components/forms/RegisterForm'
 import AddUserComposterForm from '~/components/forms/AddUserComposterForm'
-import { composterType } from '~/types'
+import { composterType, userType } from '~/types'
 
 const useStyles = makeStyles(theme => ({
   btnAdd: {
@@ -110,9 +113,9 @@ const Content = ({ composter, users }) => {
           <Box my={2}>
             <Grid container spacing={2}>
               {users.length > 0 ? (
-                users.map((o, index) => (
+                users.map(o => (
                   <Grid item md={3} xs={6}>
-                    <OuvreurCard uc={o} key={`ouvr-${index}`} />
+                    <OuvreurCard uc={o} key={`ouvr-${o.id}`} />
                   </Grid>
                 ))
               ) : (
@@ -193,9 +196,17 @@ const ComposterOuvreurs = ({ composter }) => {
 
   return (
     <ComposterContainer composter={composter}>
+      <Head>
+        <title>Les ouvreurs de {composter.name} - un composteur géré par Compostri</title>
+      </Head>
       <Content composter={composter} users={users} />
     </ComposterContainer>
   )
+}
+
+Content.propTypes = {
+  composter: composterType.isRequired,
+  users: PropTypes.arrayOf(userType).isRequired
 }
 
 ComposterOuvreurs.propTypes = {

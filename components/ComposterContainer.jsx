@@ -4,10 +4,13 @@ import { Container, Button, Box } from '@material-ui/core'
 import Link from 'next/link'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
+import PropTypes from 'prop-types'
+
 import Header from '~/components/Header'
 import ComposterProvider from '~/context/ComposterContext'
 import AbilityProvider, { Can, Action, Subject } from '~/context/AbilityContext'
 import palette from '~/variables'
+import { composterType } from '~/types'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -41,7 +44,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const ComposterContainer = ({ composter, maxWidth = 'lg', children }) => {
+const ComposterContainer = ({ composter, maxWidth, children }) => {
   const classes = useStyles()
   const { READ } = Action
   const router = useRouter()
@@ -78,7 +81,7 @@ const ComposterContainer = ({ composter, maxWidth = 'lg', children }) => {
               <Can I={READ} this={COMPOSTER_LISTES_OUVREURS}>
                 <Link href="/composter/[slug]/ouvreurs" as={`/composter/${slug}/ouvreurs`} passHref>
                   <Button disableRipple className={classnames(classes.button, { [classes.activeButton]: router.pathname === '/composter/[slug]/ouvreurs' })}>
-                    Listes d'ouvreurs
+                    Listes d‘ouvreurs
                   </Button>
                 </Link>
               </Can>
@@ -98,6 +101,16 @@ const ComposterContainer = ({ composter, maxWidth = 'lg', children }) => {
       </div>
     </ComposterProvider>
   )
+}
+
+ComposterContainer.defaultProps = {
+  maxWidth: 'lg'
+}
+
+ComposterContainer.propTypes = {
+  composter: composterType.isRequired,
+  maxWidth: PropTypes.string,
+  children: PropTypes.node.isRequired
 }
 
 export default ComposterContainer

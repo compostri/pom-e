@@ -3,17 +3,18 @@ import Link from 'next/link'
 import { Paper, Typography, List, ListItem, ListItemText, ListItemIcon, Fab, Grid } from '@material-ui/core'
 import { Room, Person, RadioButtonChecked, Lock, WatchLater, Edit } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
+import Head from 'next/head'
 
 import { composterType } from '~/types'
 
 import { Can, Action, Subject } from '~/context/AbilityContext'
-import DefaultImage from '~/components/DefaultImage'
 import api from '~/utils/api'
 import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
 import MapField from '~/components/MapField'
 import ComposterContactForm from '~/components/forms/composter/ComposterContactForm'
 import { ComposterContext } from '~/context/ComposterContext'
+import DefaultImage from '~/components/DefaultImage'
 
 const { MODIFY } = Action
 const { COMPOSTER_INFORMATION } = Subject
@@ -192,6 +193,9 @@ const Content = () => {
 const ComposterDetail = ({ composter }) => {
   return (
     <ComposterContainer composter={composter}>
+      <Head>
+        <title>{composter.name} - un composteur géré par Compostri</title>
+      </Head>
       <Content />
     </ComposterContainer>
   )

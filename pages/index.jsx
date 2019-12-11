@@ -4,9 +4,11 @@ import Head from 'next/head'
 import { makeStyles } from '@material-ui/styles'
 import { fitBounds } from 'viewport-mercator-project'
 import bbox from '@turf/bbox'
+import PropTypes from 'prop-types'
 
 import ReactMapGL, { Popup, Source, Layer, NavigationControl } from 'react-map-gl'
 
+import { communeType, categorieType } from '~/types'
 import Sidebar from '~/components/Sidebar'
 import api from '~/utils/api'
 import UserButton from '~/components/UserButton'
@@ -65,8 +67,10 @@ const Home = ({ allCommunes, allCategories }) => {
       const [minLng, minLat, maxLng, maxLat] = bbox(geojson.data)
 
       const { longitude, latitude, zoom } = fitBounds({
-        width: window && window.innerWidth,
-        height: window && window.innerHeight,
+        // eslint-disable-next-line no-undef
+        width: window.innerWidth,
+        // eslint-disable-next-line no-undef
+        height: window.innerHeight,
         bounds: [
           [minLng, minLat],
           [maxLng, maxLat]
@@ -84,6 +88,7 @@ const Home = ({ allCommunes, allCategories }) => {
 
   useEffect(() => {
     fetchComposters()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const onMapClick = event => {
@@ -104,8 +109,7 @@ const Home = ({ allCommunes, allCategories }) => {
   return (
     <div>
       <Head>
-        <title>Home</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Les composteurs de Compostri</title>
       </Head>
 
       <Sidebar
@@ -180,6 +184,11 @@ const Home = ({ allCommunes, allCategories }) => {
       </section>
     </div>
   )
+}
+
+Home.propTypes = {
+  allCommunes: PropTypes.arrayOf(communeType).isRequired,
+  allCategories: PropTypes.arrayOf(categorieType).isRequired
 }
 
 Home.getInitialProps = async () => {

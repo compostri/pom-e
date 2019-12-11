@@ -1,21 +1,11 @@
 import React from 'react'
-import { Container, TextField, Paper, Typography, Button, CircularProgress, Grid, Box } from '@material-ui/core'
-
+import { Container, Paper, Typography, Box } from '@material-ui/core'
 import { useRouter } from 'next/router'
+import { Head } from 'next/head'
 import { makeStyles } from '@material-ui/core/styles'
-import { Formik, Form } from 'formik'
-import * as Yup from 'yup'
-import api from '~/utils/api'
-import { useToasts, TOAST } from '../components/Snackbar'
+
 import PasswordChange from '~/components/forms/PasswordChange'
 import ReinitPassword from '~/components/forms/ReinitPassword'
-
-const ReinitSchema = Yup.object().shape({
-  newPassword: Yup.string().required('Nouveau mot de passe requis'),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref('plainPassword'), null], 'Les deux mots de passe doivent être identiques')
-    .required('Confirmation du mot de passe requise')
-})
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -44,10 +34,12 @@ const Reinit = () => {
   const classes = useStyles()
   const router = useRouter()
   const { token } = router.query
-  const { addToast } = useToasts()
 
   return (
     <Container component="main" maxWidth="sm" className={classes.container}>
+      <Head>
+        <title>Réinitialisation du mot de passe - Compostri</title>
+      </Head>
       <Paper className={classes.paper}>
         <Box mb={2}>
           <Typography className={classes.h1} component="h1" variant="h5">

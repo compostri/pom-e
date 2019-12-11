@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/styles'
 import { Paper, Typography, Box } from '@material-ui/core'
 import dayjs from 'dayjs'
+import Head from 'next/head'
 
 import api from '~/utils/api'
 import palette from '~/variables'
@@ -128,9 +129,12 @@ const ComposterStatistiques = ({ composter, permanences }) => {
 
   return (
     <ComposterContainer composter={composter}>
+      <Head>
+        <title>Les statistiques de {composter.name} - un composteur géré par Compostri</title>
+      </Head>
       <Paper className={classes.graphContainer}>
         <Box className={classes.inner}>
-          <Typography variant="h2">Nombre d'utilisateurs et de sceaux par date</Typography>
+          <Typography variant="h2">Nombre d‘utilisateurs et de sceaux par date</Typography>
           <Line
             data={data}
             width={50}

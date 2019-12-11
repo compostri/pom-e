@@ -50,3 +50,13 @@ export const consumerType = PropTypes.shape({
   mailjetId: PropTypes.number,
   username: PropTypes.string
 })
+
+export const communeType = PropTypes.shape({
+  id: PropTypes.number,
+  name: PropTypes.string
+})
+
+export const categorieType = PropTypes.shape({
+  id: PropTypes.number,
+  name: PropTypes.string
+})

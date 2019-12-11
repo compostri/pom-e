@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react'
 import App from 'next/app'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -12,6 +13,7 @@ import AppToastContainer from '~/components/AppToastContainer'
 class MyApp extends App {
   componentDidMount() {
     // Remove the server-side injected CSS.
+    // eslint-disable-next-line no-undef
     const jssStyles = document.querySelector('#jss-server-side')
     if (jssStyles) {
       jssStyles.parentNode.removeChild(jssStyles)
