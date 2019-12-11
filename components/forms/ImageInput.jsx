@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
-import { InputLabel, Button, Box, IconButton, CircularProgress } from '@material-ui/core'
+import React from 'react'
+import { Button, Box, IconButton } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import { Add, Close } from '@material-ui/icons'
 
 import PropTypes from 'prop-types'
-import api from '~utils/api'
+import MNFile from '../MNFile'
+import withFormikField from '~/utils/hoc/withFormikField'
+import api from '~/utils/api'
+import { mediaObjectType } from '~/types'
 
 const useStyles = makeStyles(theme => ({
   icon: {
@@ -35,86 +38,68 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function ImageInput({ value, name, label, onUpdate }) {
+// eslint-disable-next-line react/jsx-props-no-spreading
+const InputFileElement = (...props) => <input {...props} type="file" />
+const FormikInputFile = withFormikField(InputFileElement)
+
+const propTypes = {
+  label: PropTypes.string.isRequired,
+  onLoadEnd: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  id: PropTypes.string,
+  value: mediaObjectType
+}
+
+const defaultProps = {
+  id: 'image',
+  value: null
+}
+
+const ImageInput = ({ label, onLoadEnd, name: inputName, id, value: media }) => {
   const classes = useStyles()
-  const [isLoading, setLoading] = useState()
 
-  const upload = async e => {
-    setLoading(true)
-    const formData = new FormData()
-    formData.append('file', e.target.files[0])
-    const res = await api.uploadMedia(formData)
-    if (res.status === 201) {
-      onUpdate(res.data)
+  const handleChange = async (s, files) => {
+    const { name: imageName, url: data } = files[0]
+    const res = await api.uploadMedia({ imageName, data })
+
+    onLoadEnd(res || media)
+  }
+
+  const handleRemove = removePreview => name => async event => {
+    const success = await api.removeMedia(media.id)
+    if (success) {
+      removePreview(name)(event)
+      onLoadEnd(null)
     }
-    setLoading(false)
-  }
-
-  const remove = async id => {
-    setLoading(true)
-    const res = await api.removeMedia(id)
-    if (res.status === 204) {
-      onUpdate(null)
-    }
-    setLoading(false)
-  }
-
-  const renderPreview = () => {
-    return (
-      value && (
-        <Box>
-          <Box boxShadow={1} className={classes.imgContainer}>
-            <img src={`${process.env.NEXT_STATIC_API_URL}/${value.contentUrl}`} alt="Composteur" className={classes.img} />
-            <IconButton size="small" className={classes.imgClose} onClick={() => remove(value.id)}>
-              <Close />
-            </IconButton>
-          </Box>
-        </Box>
-      )
-    )
-  }
-
-  const displayUploadBtn = () => {
-    return (
-      <Button variant="outlined" color="primary" size="small" component="span">
-        <Add className={classes.icon} />
-        Ajouter un fichier
-      </Button>
-    )
   }
 
   return (
-    <>
-      <InputLabel shrink htmlFor={name}>
-        {label}
-      </InputLabel>
-
-      {!isLoading && renderPreview()}
-
-      <div>
-        <input id={name} type="file" accept="image/*" style={{ display: 'none' }} onChange={upload} />
-        <label htmlFor={name}>
-          <Box mt={1}>
-            {isLoading && <CircularProgress />}
-            {!value && !isLoading && displayUploadBtn()}
-          </Box>
-        </label>
-      </div>
-    </>
+    <MNFile
+      label={
+        <Button variant="outlined" color="primary" size="small" component="span">
+          <Add className={classes.icon} />
+          {label}
+        </Button>
+      }
+      input={<FormikInputFile accept="image/*" name={inputName} id={id} onChange={handleChange} />}
+    >
+      {(images, removePreview) => {
+        return (
+          media &&
+          images.map(({ name, url }) => (
+            <Box boxShadow={1} key={name} className={classes.imgContainer}>
+              <img src={url} alt="fichier téléchargé" className={classes.img} />
+              <IconButton size="small" className={classes.imgClose} onClick={handleRemove(removePreview)(name)}>
+                <Close />
+              </IconButton>
+            </Box>
+          ))
+        )
+      }}
+    </MNFile>
   )
 }
 
-ImageInput.propTypes = {
-  value: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    contentUrl: PropTypes.string.isRequired
-  }),
-  name: PropTypes.string.isRequired,
-  label: PropTypes.string,
-  onUpdate: PropTypes.func.isRequired
-}
-
-ImageInput.defaultProps = {
-  label: 'Image',
-  value: null
-}
+ImageInput.propTypes = propTypes
+ImageInput.defaultProps = defaultProps
+export default ImageInput

@@ -60,3 +60,13 @@ export const categorieType = PropTypes.shape({
   id: PropTypes.number,
   name: PropTypes.string
 })
+
+export const mediaObjectType = PropTypes.shape({
+  id: PropTypes.number,
+  updatedAt: PropTypes.string,
+  imageName: PropTypes.string,
+  imageSize: PropTypes.number,
+  imageDimensions: PropTypes.arrayOf(PropTypes.string),
+  imageMimeType: PropTypes.string,
+  contentUrl: PropTypes.string
+})

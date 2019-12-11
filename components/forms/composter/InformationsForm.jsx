@@ -1,99 +1,59 @@
 import React, { useContext } from 'react'
-import * as Yup from 'yup'
-import { Formik, Form, Field } from 'formik'
-import { Box, FormGroup, FormControlLabel, Switch, Button, TextField, Grid, CircularProgress } from '@material-ui/core'
-import { makeStyles } from '@material-ui/styles'
+import { Formik, Form } from 'formik'
+import { Box, FormControlLabel, Switch, Button, TextField, Grid, CircularProgress } from '@material-ui/core'
 import api from '~/utils/api'
+
+import withFormikField from '~/utils/hoc/withFormikField'
 import ImageInput from '~/components/forms/ImageInput'
 import { ComposterContext } from '~/context/ComposterContext'
 import { useToasts, TOAST } from '~/components/Snackbar'
 
-const useStyles = makeStyles(theme => ({}))
-
-const LogInSchema = Yup.object().shape({
-  openingProcedures: Yup.string(),
-  acceptNewMembers: Yup.boolean()
-})
-
 const InformationsForm = () => {
-  const classes = useStyles()
   const { composterContext } = useContext(ComposterContext)
   const { composter } = composterContext
   const { addToast } = useToasts()
 
-  const submit = async (values, { resetForm, setSubmitting }) => {
-    const newValues = { ...values }
-    if (values.image) {
-      newValues.image = values.image['@id']
-    } else {
-      delete newValues.image
-    }
+  const initialValues = {
+    openingProcedures: composter.openingProcedures,
+    acceptNewMembers: !!composter.acceptNewMembers,
+    image: composter.image
+  }
 
-    const response = await api.updateComposter(composter.slug, newValues)
+  const submit = async ({ image, openingProcedures, acceptNewMembers }, { setSubmitting, setFieldValue }) => {
+    const response = await api.updateComposter(composter.slug, { image: image['@id'], openingProcedures, acceptNewMembers })
 
-    if (response.status === 200) {
+    if (response) {
       addToast('Votre modification a bien été prise en compte', TOAST.SUCCESS)
+      setFieldValue('image', null)
     } else {
       addToast('Une erreur est survenue', TOAST.ERROR)
     }
     setSubmitting(false)
   }
 
+  const FormikTextField = withFormikField(TextField)
+  const FormikSwitch = withFormikField(Switch)
+
+  const handleImageChange = setFieldValue => image => {
+    setFieldValue('image', image)
+  }
+
   return (
-    <Formik
-      initialValues={{
-        openingProcedures: composter.openingProcedures,
-        acceptNewMembers: !!composter.acceptNewMembers,
-        image: composter.image
-      }}
-      validationSchema={LogInSchema}
-      onSubmit={submit}
-    >
-      {({ values, handleChange, field, setFieldValue, isSubmitting }) => (
-        <Form className={classes.form}>
+    <Formik initialValues={initialValues} onSubmit={submit}>
+      {({ values, isSubmitting, setFieldValue }) => (
+        <Form>
           <Grid container spacing={2}>
             <Grid item xs={2}>
-              <ImageInput
-                label="Image"
-                name="image"
-                value={values.image}
-                onUpdate={images => {
-                  setFieldValue('image', images, false)
-                }}
-              />
+              <ImageInput label="Photo" name="image" onLoadEnd={handleImageChange(setFieldValue)} value={values.image} />
             </Grid>
             <Grid item xs={10}>
-              <Field
-                InputLabelProps={{
-                  shrink: true
-                }}
-                component={TextField}
-                fullWidth
-                id="openingProcedures"
-                label="procédure d'ouverture"
-                name="openingProcedures"
-                value={values.openingProcedures}
-                onChange={handleChange}
-                type="openingProcedures"
-                autoComplete="openingProcedures"
-                autoFocus
-                {...field}
-              />
-              <FormGroup>
-                <FormControlLabel
-                  control={<Switch value={values.acceptNewMembers} checked={values.acceptNewMembers} onChange={handleChange} />}
-                  label="Accepte de nouveaux adhérents"
-                  id="acceptNewMembers"
-                  name="acceptNewMembers"
-                  type="acceptNewMembers"
-                  className={classes.switchLabel}
-                />
-              </FormGroup>
+              <FormikTextField fullWidth label="procédure d'ouverture" name="openingProcedures" />
+              <FormControlLabel label="Accepte de nouveaux adhérents" control={<FormikSwitch name="acceptNewMembers" checked={values.acceptNewMembers} />} />
             </Grid>
           </Grid>
 
           <Box align="center" mt={2}>
-            <Button className={classes.valider} type="submit" variant="contained" color="secondary">
+            <Button type="submit" variant="contained" color="secondary">
               {isSubmitting ? <CircularProgress /> : 'Enregistrer les modifications'}
             </Button>
           </Box>
