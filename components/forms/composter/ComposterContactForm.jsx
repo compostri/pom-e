@@ -45,7 +45,7 @@ const ComposterContactForm = () => {
         {({ values, handleChange, handleBlur, errors, touched, isSubmitting }) => (
           <Form>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   required
                   fullWidth

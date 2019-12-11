@@ -58,7 +58,7 @@ const PasswordChange = () => {
       {({ values, handleChange, handleBlur, errors, touched, isSubmitting }) => (
         <Form className={classes.form}>
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               <TextField
                 required
                 fullWidth
@@ -75,7 +75,7 @@ const PasswordChange = () => {
                 helperText={errors.newPassword && touched.newPassword ? errors.newPassword : null}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               <TextField
                 required
                 fullWidth

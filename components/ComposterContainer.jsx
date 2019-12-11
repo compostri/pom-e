@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/styles'
-import { Container, Button } from '@material-ui/core'
+import { Container, Button, Box } from '@material-ui/core'
 import Link from 'next/link'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
@@ -10,12 +10,6 @@ import AbilityProvider, { Can, Action, Subject } from '~/context/AbilityContext'
 import palette from '~/variables'
 
 const useStyles = makeStyles(theme => ({
-  wrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    minHeight: '100vh'
-  },
   container: {
     padding: theme.spacing(2, 5, 2, 10)
   },
@@ -63,7 +57,7 @@ const ComposterContainer = ({ composter, maxWidth = 'lg', children }) => {
                 <Button
                   disableRipple
                   className={classnames(classes.button, {
-                    [classes.activeButton]: ['/composter/[slug]', '/composter/[slug]/modifications'].indexOf(router.pathname) === 1
+                    [classes.activeButton]: ['/composter/[slug]', '/composter/[slug]/modifications'].includes(router.pathname)
                   })}
                 >
                   Informations
@@ -97,9 +91,9 @@ const ComposterContainer = ({ composter, maxWidth = 'lg', children }) => {
               </Can>
             </div>
           </Header>
-          <Container maxWidth={maxWidth} className={classnames(classes.container, { [classes.containerCenter]: maxWidth })}>
-            {children}
-          </Container>
+          <Box my={4}>
+            <Container>{children}</Container>
+          </Box>
         </AbilityProvider>
       </div>
     </ComposterProvider>

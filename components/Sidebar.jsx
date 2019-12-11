@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import {
   Paper,
@@ -18,7 +18,7 @@ import {
   Box
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
-import { MenuOpen, Eco, Search, Close } from '@material-ui/icons'
+import { MenuOpen, Search, Close } from '@material-ui/icons'
 import classNames from 'classnames'
 import SearchBar from './SearchBar'
 import palette from '~/variables'
@@ -30,13 +30,17 @@ const useStyles = makeStyles(theme => ({
     top: 0,
     left: 0,
     bottom: 0,
-    width: '420px',
+    maxWidth: 420,
+    width: '90%',
     backgroundColor: 'white',
-    zIndex: 100,
+    zIndex: theme.zIndex.mobileStepper,
     transition: 'all .3s'
   },
   sidebarContainerClosed: {
-    width: '80px'
+    width: '80px',
+    [theme.breakpoints.down('sm')]: {
+      width: 40
+    }
   },
   innerSidebar: {
     position: 'absolute',
@@ -48,9 +52,13 @@ const useStyles = makeStyles(theme => ({
   },
   sidebarHeader: {
     textAlign: 'center',
-    padding: theme.spacing(3.75),
+    padding: theme.spacing(3.75, 1),
     color: 'white',
     backgroundColor: palette.greenPrimary
+  },
+  miniLogo: {
+    padding: theme.spacing(2, 0),
+    width: '100%'
   },
   sidebarContent: {
     padding: theme.spacing(3.75)
@@ -101,20 +109,12 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 700,
     letterSpacing: 1
   },
-
   buttonMenu: {
     position: 'absolute',
     top: '50%',
     right: 0,
     transform: 'translate(50%, -50%)',
     zindex: 110
-  },
-  iconLogo: {
-    right: '10px'
-  },
-  iconButton: {
-    left: 15,
-    top: 20
   },
   slogan: {
     fontStyle: 'italic',
@@ -123,6 +123,12 @@ const useStyles = makeStyles(theme => ({
     color: palette.white
   },
   categorie: { marginTop: theme.spacing(2) },
+  button: {
+    marginRight: 5
+  }
+}))
+
+const useFieldStyles = makeStyles(theme => ({
   catFilter: {
     display: 'flex',
     alignItems: 'center',
@@ -139,39 +145,33 @@ const useStyles = makeStyles(theme => ({
       borderColor: 'white',
       borderRadius: 50,
       marginLeft: 'auto',
-      boxShadow: '1px 2px 1px #e5E5E5'
+      boxShadow: '1px 2px 1px #e5E5E5',
+      backgroundColor: props => (props.color ? props.color : '#e5E5E5')
     }
   },
   catFilterLabel: {
     color: palette.greyMedium,
     fontSize: 14,
     fontWeight: 700
-  },
-  catFilterQuartier: {
-    '&:after': {
-      backgroundColor: '#7bced1'
-    }
-  },
-  catFilterPrive: {
-    '&:after': {
-      backgroundColor: '#e86034'
-    }
-  },
-  catFilterScolaire: {
-    '&:after': {
-      backgroundColor: '#6c3727'
-    }
-  },
-  catFilterJardin: {
-    '&:after': {
-      backgroundColor: '#a3c538'
-    }
-  },
-  button: {
-    marginRight: 5
   }
 }))
 
+const Field = props => {
+  const classes = useFieldStyles(props)
+  const { selectedCategories, toggleCategories, category } = props
+
+  return (
+    <FormControlLabel
+      control={
+        <Checkbox color="primary" checked={selectedCategories.includes(category.id)} onChange={() => toggleCategories(category.id)} value={category.id} />
+      }
+      label={category.name}
+      className={classes.formControlLabel}
+      classes={{ root: classes.catFilter, label: classes.catFilterLabel }}
+      key={`checkbox-cat-${category.id}`}
+    />
+  )
+}
 const Sidebar = ({
   allCommunes,
   allCategories,
@@ -218,23 +218,6 @@ const Sidebar = ({
     setAcceptNewMembers(true)
   }
 
-  function getLabelColor(c) {
-    const color = getCategoryColor(c)
-
-    switch (color) {
-      case '#7bced1':
-        return classes.catFilterQuartier
-      case '#e86034':
-        return classes.catFilterPrive
-      case '#6c3727':
-        return classes.catFilterScolaire
-      case '#a3c538':
-        return classes.catFilterJardin
-      default:
-        return classes.catFilterQuartier
-    }
-  }
-
   const renderHeader = () => {
     return (
       <header className={classes.sidebarHeader}>
@@ -246,8 +229,8 @@ const Sidebar = ({
           </Link>
         )}
         {!openSidebar && (
-          <IconButton size="medium" className={classes.iconLogo}>
-            <Eco />
+          <IconButton size="medium">
+            <img src="/static/logo-mini.svg" className={classes.miniLogo} alt="Logo de Compostri" />
           </IconButton>
         )}
         {openSidebar && (
@@ -263,7 +246,7 @@ const Sidebar = ({
     return openSidebar ? (
       <SearchBar />
     ) : (
-      <IconButton size="medium" className={classes.iconButton} onClick={() => handleClick() && focusMethod()}>
+      <IconButton size="medium" className={classes.miniLogo} onClick={() => handleClick() && focusMethod()}>
         <Search />
       </IconButton>
     )
@@ -284,15 +267,7 @@ const Sidebar = ({
           <div className={classes.categorie}>
             {allCategories &&
               allCategories.map(c => (
-                <>
-                  <FormControlLabel
-                    control={<Checkbox color="primary" checked={selectedCategories.includes(c.id)} onChange={() => toggleCategories(c.id)} value={c.id} />}
-                    label={c.name}
-                    className={classNames(classes.formControlLabel, getLabelColor(c))}
-                    classes={{ root: classes.catFilter, label: classes.catFilterLabel }}
-                    key={`checkbox-cat-${c.id}`}
-                  />
-                </>
+                <Field selectedCategories={selectedCategories} toggleCategories={toggleCategories} category={c} color={getCategoryColor(c)} />
               ))}
           </div>
         </FormGroup>
@@ -360,7 +335,7 @@ const Sidebar = ({
 
   return (
     <div className={classNames(classes.sidebarContainer, { [classes.sidebarContainerClosed]: !openSidebar })}>
-      <Paper component="section" elevation={2} className={classes.innerSidebar}>
+      <Paper square component="section" elevation={2} className={classes.innerSidebar}>
         {renderHeader()}
         {renderSearchBar()}
         <Collapse in={openSidebar} timeout={100}>

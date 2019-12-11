@@ -2,8 +2,8 @@ import React, { useState, useRef, useContext } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Button, Popper, List, ListItem, ListItemText, ListItemIcon, Collapse, Fade, Box, Grow } from '@material-ui/core'
-import { Lens, ExpandMore, ExpandLess } from '@material-ui/icons'
+import { Button, Popper, List, ListItem, ListItemText, ListItemIcon, Collapse, Fade, Box, Grow, Hidden, IconButton } from '@material-ui/core'
+import { Lens, ExpandMore, ExpandLess, AccountCircle } from '@material-ui/icons'
 import { UserContext } from '~/context/UserContext'
 import palette from '~/variables'
 
@@ -83,16 +83,23 @@ const UserButton = () => {
 
   return userContext.isLoggedIn() ? (
     <>
-      <Button
-        onClick={handleToggle}
-        color="secondary"
-        ref={anchorRef}
-        variant="contained"
-        className={classes.UserButtonLog}
-        endIcon={open ? <ExpandLess /> : <ExpandMore />}
-      >
-        Mon compte
-      </Button>
+      <Hidden xsDown>
+        <Button
+          onClick={handleToggle}
+          color="secondary"
+          ref={anchorRef}
+          variant="contained"
+          className={classes.UserButtonLog}
+          endIcon={open ? <ExpandLess /> : <ExpandMore />}
+        >
+          Mon compte
+        </Button>
+      </Hidden>
+      <Hidden smUp>
+        <IconButton onClick={handleToggle} color="secondary" ref={anchorRef}>
+          <AccountCircle />
+        </IconButton>
+      </Hidden>
 
       <Popper open={open} anchorEl={anchorRef.current} placement="bottom-end" transition disablePortal>
         {({ TransitionProps }) => (
@@ -139,11 +146,22 @@ const UserButton = () => {
       </Popper>
     </>
   ) : (
-    <Link href={{ pathname: '/login', query: { ref: router.asPath } }} passHref>
-      <Button color="secondary" variant="contained" className={classes.UserButtonLog}>
-        Se connecter
-      </Button>
-    </Link>
+    <>
+      <Hidden xsDown>
+        <Link href={{ pathname: '/login', query: { ref: router.asPath } }} passHref>
+          <Button color="secondary" variant="contained" className={classes.UserButtonLog}>
+            Se connecter
+          </Button>
+        </Link>
+      </Hidden>
+      <Hidden smUp>
+        <Link href={{ pathname: '/login', query: { ref: router.asPath } }} passHref>
+          <IconButton onClick={handleToggle} color="secondary" ref={anchorRef}>
+            <AccountCircle />
+          </IconButton>
+        </Link>
+      </Hidden>
+    </>
   )
 }
 
