@@ -1,13 +1,13 @@
 import React, { useContext } from 'react'
-import { InputLabel, FormControl, Select, MenuItem, Button, Box } from '@material-ui/core'
-import { Add, Delete, Clear } from '@material-ui/icons'
+import { InputLabel, FormControl, Select, MenuItem, Button } from '@material-ui/core'
+import { Add, Delete } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
-import palette from '~/variables'
 import { DatePicker, TimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 import DaysJSUtils from '@date-io/dayjs'
 import { Formik, Form, Field, FieldArray } from 'formik'
 import dayjs from 'dayjs'
 import { RRule, RRuleSet, rrulestr } from 'rrule'
+import palette from '~/variables'
 import 'dayjs/locale/fr'
 import api from '~/utils/api'
 import { ComposterContext } from '~/context/ComposterContext'
@@ -188,7 +188,7 @@ const PermanencesRulesForm = () => {
       onSubmit={async values => {
         const rrulesSring = getRrulesFromObject(values.rules)
         const response = await api.updateComposter(composter.slug, { permanencesRule: rrulesSring })
-        if (response.status === 200) {
+        if (response) {
           addToast('Votre modification a bien été prise en compte !', TOAST.SUCCESS)
         } else {
           addToast('Une erreur est survenue', TOAST.ERROR)

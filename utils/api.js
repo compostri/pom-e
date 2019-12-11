@@ -64,7 +64,7 @@ class MNApi {
     const errorMessage = 'Une erreur est survenue'
     const { status, data } = await apiCall(...params)
 
-    if ([200, 201].includes(status)) {
+    if (status < 300) {
       return data || 'success'
     }
     throw errorMessage
@@ -77,7 +77,7 @@ class MNApi {
 
   getUserComposter = args => this.$withPromiseHandling(this.get, `/user_composters`, { params: args })
 
-  updateComposter = (slug, args) => this.put(`/composters/${slug}`, args)
+  updateComposter = (slug, args) => this.$withPromiseHandling(this.put, `/composters/${slug}`, args)
 
   createUserComposter = args => this.post(`/user_composters`, args)
 
@@ -111,9 +111,9 @@ class MNApi {
   sendComposterNewsletter = values => this.post('/composter_newsletters', values)
 
   // Media
-  uploadMedia = formData => this.post('/media_objects', formData)
+  uploadMedia = formData => this.$withPromiseHandling(this.post, '/media_objects', formData)
 
-  removeMedia = id => this.delete(`/media_objects/${id}`)
+  removeMedia = id => this.$withPromiseHandling(this.delete, `/media_objects/${id}`)
 
   // User
   login = args => this.post('/login_check', args)
