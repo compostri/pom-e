@@ -181,7 +181,7 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
   return (
     <ComposterContainer composter={composter}>
       <Head>
-        <title>{composter.name} Newsletter - un composteur géré par Compstri</title>
+        <title>Newsletter {composter.name} - un composteur géré par Compostri</title>
       </Head>
       <div className={classes.newsletterContainer}>
         <Paper elevation={1} className={classes.sectionLeft}>
