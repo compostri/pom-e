@@ -1,6 +1,7 @@
+/* eslint-disable react/no-unused-state */
 import React, { createContext, Component } from 'react'
-import api from '~/utils/api'
 import cookie from 'js-cookie'
+import api from '~/utils/api'
 import { getUserInfosFromToken, isValid } from '../utils/auth'
 
 export const UserContext = createContext({})
@@ -9,7 +10,6 @@ class UserProvider extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      isLoggedIn: false,
       token: props.token || null,
       user: getUserInfosFromToken(props.token) || null,
       login: async values => {
@@ -33,25 +33,8 @@ class UserProvider extends Component {
       updateUser: async values => {
         const res = await api.updateUser(this.state.user.userId, values)
         return res
-      },
-      getUser: async values => {
-        const { data, status } = await api.getUser(this.state.user.userId, values)
-        if (status === 200) {
-          return data
-        }
-        throw 'Une erreur est survenue'
       }
     }
-  }
-
-  populateUser = token => {
-    const user = getUserInfosFromToken(token)
-    this.setState({ user, token })
-  }
-
-  cookiechange = () => {
-    const token = cookie.get('token')
-    this.setState({ token, user: getUserInfosFromToken(token) })
   }
 
   componentDidMount = () => {
@@ -67,6 +50,16 @@ class UserProvider extends Component {
     if (typeof browser !== 'undefined') {
       browser.cookies.onChanged.removeListener(this.cookieListener)
     }
+  }
+
+  populateUser = token => {
+    const user = getUserInfosFromToken(token)
+    this.setState({ user, token })
+  }
+
+  cookiechange = () => {
+    const token = cookie.get('token')
+    this.setState({ token, user: getUserInfosFromToken(token) })
   }
 
   render = () => <UserContext.Provider value={{ userContext: this.state }}>{this.props.children}</UserContext.Provider>
