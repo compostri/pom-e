@@ -104,8 +104,6 @@ const MNFile = ({ input, children, label, targetWidth, targetHeight }) => {
     }
   }
 
-  const mayRenderPreviews = (prvws, removeFn) => prvws.length > 0 && children(prvws, removeFn)
-
   return (
     <>
       <input
@@ -117,7 +115,7 @@ const MNFile = ({ input, children, label, targetWidth, targetHeight }) => {
         style={{ display: 'none' }}
       />
       <label htmlFor={inputProps.name}>{label}</label>
-      {mayRenderPreviews(previews, remove)}
+      {children(previews, remove)}
     </>
   )
 }
