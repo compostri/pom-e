@@ -102,9 +102,7 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
         return null
       }
 
-      const rulesDates = rrulestr(permanencesRule, { forceset: true })
-        .between(startOfMonth.toDate(), endOfMonth.toDate())
-        .map(d => dayjs(d).get('date'))
+      const rulesDates = rrulestr(permanencesRule, { forceset: true }).between(startOfMonth.toDate(), endOfMonth.toDate())
 
       const renderPermanence = pos => perm => {
         return (
@@ -114,9 +112,9 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
         )
       }
 
-      const renderDefaultPermanenceDay = pos => {
+      const renderDefaultPermanenceDay = (pos, currentDateRule) => {
         const perm = {
-          date: date.date(day).toISOString(),
+          date: currentDateRule.toISOString(),
           openers: []
         }
         return renderPermanence(pos)(perm)
@@ -128,12 +126,13 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
         return permanencesOfTheDay.map(renderWithKey(renderPermanence(position)))
       }
 
-      if (rulesDates.includes(day)) {
-        return renderDefaultPermanenceDay(position)
+      const currentDateRule = rulesDates.find(d => d.getDate() === day)
+      if (currentDateRule) {
+        return renderDefaultPermanenceDay(position, currentDateRule)
       }
       return null
     },
-    [classes.permanence, classes.permanenceRoot, permanencesRule, date, endOfMonth, handleClick, permanences, startOfMonth]
+    [classes.permanence, classes.permanenceRoot, permanencesRule, endOfMonth, handleClick, permanences, startOfMonth]
   )
 
   const maybeRenderPopover = ({ $popover, ...details }) => {
