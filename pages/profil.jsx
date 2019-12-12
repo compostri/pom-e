@@ -26,22 +26,8 @@ const useStyle = makeStyles(theme => ({
   }
 }))
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props
-
-  return (
-    <Box role="tabpanel" hidden={value !== index} id={`tabpanel-${index}`} aria-labelledby={`tab-${index}`} {...other}>
-      <Box p={3}>{children}</Box>
-    </Box>
-  )
-}
-
-function a11yProps(index) {
-  return {
-    id: `tab-${index}`,
-    'aria-controls': `tabpanel-${index}`
-  }
-}
+const tabLabels = ['Informations personnelles', 'Mot de passe', 'Notifications']
+const tabPanels = [ProfileForm, PasswordForm, NotificationsForm]
 
 const Profil = () => {
   const classes = useStyle()
@@ -49,6 +35,22 @@ const Profil = () => {
 
   function handleChange(e, targetValue) {
     setValue(targetValue)
+  }
+
+  const renderTabs = tabs => {
+    const renderTab = (label, index) => <Tab key={label} className={classes.tab} label={label} id={`tab-${index}`} aria-controls={`tabpanel-${index}`} />
+    return tabs.map(renderTab)
+  }
+
+  const renderTabPanels = (panels, currentPanelValue) => {
+    const renderTabPanel = (Panel, index) => (
+      <Box key={Panel.name} role="tabpanel" hidden={currentPanelValue !== index} id={`tabpanel-${index}`} aria-labelledby={`tab-${index}`}>
+        <Box p={3}>
+          <Panel />
+        </Box>
+      </Box>
+    )
+    return panels.map(renderTabPanel)
   }
 
   return (
@@ -60,19 +62,9 @@ const Profil = () => {
       <Container maxWidth="lg">
         <Paper className={classes.sectionProfil}>
           <Tabs value={value} onChange={handleChange} className={classes.appBar} indicatorColor="primary">
-            <Tab className={classes.tab} label="Informations personnelles" {...a11yProps(0)} />
-            <Tab className={classes.tab} label="Mot de passe" {...a11yProps(1)} />
-            <Tab className={classes.tab} label="Notifications" {...a11yProps(2)} />
+            {renderTabs(tabLabels)}
           </Tabs>
-          <TabPanel value={value} index={0}>
-            <ProfileForm />
-          </TabPanel>
-          <TabPanel value={value} index={1}>
-            <PasswordForm />
-          </TabPanel>
-          <TabPanel value={value} index={2}>
-            <NotificationsForm />
-          </TabPanel>
+          {renderTabPanels(tabPanels, value)}
         </Paper>
       </Container>
     </>
