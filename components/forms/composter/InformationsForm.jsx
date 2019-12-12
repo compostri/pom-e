@@ -38,7 +38,7 @@ const InformationsForm = () => {
   const initialValues = {
     openingProcedures,
     acceptNewMembers,
-    image,
+    image: { name: image.imageName, url: image.contentUrl },
     publicDescription,
     permanencesDescription,
     broyatLevel
@@ -57,7 +57,7 @@ const InformationsForm = () => {
   }
 
   const handleImageChange = setFieldValue => newImage => {
-    setFieldValue(Name.image, newImage)
+    setFieldValue(Name.image, newImage || initialValues.image)
   }
 
   const renderBroyatlevelOptions = options => {

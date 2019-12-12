@@ -86,13 +86,17 @@ const ImageInput = ({ label, onLoadEnd, name: inputName, id, value: media }) => 
       {(images, removePreview) => {
         return (
           media &&
-          images.map(({ name, url }) => (
-            <Box boxShadow={1} key={name} className={classes.imgContainer}>
-              <img src={url} alt="fichier téléchargé" className={classes.img} />
-              <IconButton size="small" className={classes.imgClose} onClick={handleRemove(removePreview)(name)}>
-                <Close />
-              </IconButton>
-            </Box>
+          (images.length > 0 ? (
+            images.map(({ name, url }) => (
+              <Box boxShadow={1} key={name} className={classes.imgContainer}>
+                <img src={url} alt="fichier téléchargé" className={classes.img} />
+                <IconButton size="small" className={classes.imgClose} onClick={handleRemove(removePreview)(name)}>
+                  <Close />
+                </IconButton>
+              </Box>
+            ))
+          ) : (
+            <img src={media.url} alt="fichier téléchargé" className={classes.img} />
           ))
         )
       }}
