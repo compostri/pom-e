@@ -103,7 +103,7 @@ const ComposterEdit = ({ composter }) => {
             />
             <Tab
               className={classes.tab}
-              label="Formulaires de contact"
+              label="Formulaire de contact"
               id="contact-composteur"
               value="contact-composteur"
               aria-controls="contact-composteur-content"
