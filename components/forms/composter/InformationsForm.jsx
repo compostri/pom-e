@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { Formik, Form } from 'formik'
-import { Box, FormControlLabel, Switch, Button, TextField, Grid, CircularProgress } from '@material-ui/core'
+import { Box, FormControlLabel, Switch, Button, TextField, Grid, CircularProgress, Select, FormControl, MenuItem, InputLabel } from '@material-ui/core'
 import api from '~/utils/api'
 
 import withFormikField from '~/utils/hoc/withFormikField'
@@ -8,19 +8,44 @@ import ImageInput from '~/components/forms/ImageInput'
 import { ComposterContext } from '~/context/ComposterContext'
 import { useToasts, TOAST } from '~/components/Snackbar'
 
+const FormikTextField = withFormikField(TextField)
+const FormikSwitch = withFormikField(Switch)
+const FormikSelect = withFormikField(Select)
+
+const broyatLevels = { Empty: 'Vide', Reserve: 'Sur la réserve', Full: 'Plein' }
+
+const InputLabelProps = {
+  shrink: true
+}
+
 const InformationsForm = () => {
   const { composterContext } = useContext(ComposterContext)
-  const { composter } = composterContext
+  const {
+    composter: { openingProcedures, slug, acceptNewMembers, image, publicDescription, permanencesDescription, broyatLevel }
+  } = composterContext
+
   const { addToast } = useToasts()
 
-  const initialValues = {
-    openingProcedures: composter.openingProcedures,
-    acceptNewMembers: !!composter.acceptNewMembers,
-    image: composter.image
+  const Name = {
+    openingProcedures: 'openingProcedures',
+    acceptNewMembers: 'acceptNewMembers',
+    image: 'image',
+    publicDescription: 'publicDescription',
+    permanencesDescription: 'permanencesDescription',
+    broyatLevel: 'broyatLevel'
   }
 
-  const submit = async ({ image, openingProcedures, acceptNewMembers }, { setSubmitting, setFieldValue }) => {
-    const response = await api.updateComposter(composter.slug, { image: image['@id'], openingProcedures, acceptNewMembers })
+  const initialValues = {
+    openingProcedures,
+    acceptNewMembers,
+    image,
+    publicDescription,
+    permanencesDescription,
+    broyatLevel
+  }
+
+  const submit = async ({ image: newImage, ...otherValues }, { setSubmitting, setFieldValue }) => {
+    const response = await api.updateComposter(slug, { image: newImage['@id'], ...otherValues })
 
     if (response) {
       addToast('Votre modification a bien été prise en compte', TOAST.SUCCESS)
@@ -31,11 +56,13 @@ const InformationsForm = () => {
     setSubmitting(false)
   }
 
-  const FormikTextField = withFormikField(TextField)
-  const FormikSwitch = withFormikField(Switch)
+  const handleImageChange = setFieldValue => newImage => {
+    setFieldValue(Name.image, newImage)
+  }
 
-  const handleImageChange = setFieldValue => image => {
-    setFieldValue('image', image)
+  const renderBroyatlevelOptions = options => {
+    const renderOption = ([value, label]) => <MenuItem value={value}>{label}</MenuItem>
+    return options.map(renderOption)
   }
 
   return (
@@ -44,11 +71,24 @@ const InformationsForm = () => {
         <Form>
           <Grid container spacing={2}>
             <Grid item xs={2}>
-              <ImageInput label="Photo" name="image" onLoadEnd={handleImageChange(setFieldValue)} value={values.image} />
+              <ImageInput label="Photo" name={Name.image} onLoadEnd={handleImageChange(setFieldValue)} value={values.image} />
             </Grid>
-            <Grid item xs={10}>
-              <FormikTextField fullWidth label="procédure d'ouverture" name="openingProcedures" />
-              <FormControlLabel label="Accepte de nouveaux adhérents" control={<FormikSwitch name="acceptNewMembers" checked={values.acceptNewMembers} />} />
+            <Grid container xs={10} direction="column">
+              <FormikTextField InputLabelProps={InputLabelProps} multiline rows="4" label="Description publique" name={Name.publicDescription} />
+              <FormikTextField InputLabelProps={InputLabelProps} label="Procédure d'ouverture" name={Name.openingProcedures} />
+              <FormikTextField InputLabelProps={InputLabelProps} label="Description des permanences" name={Name.permanencesDescription} />
+              <FormControl>
+                <InputLabel id="broyat-label" InputLabelProps={InputLabelProps}>
+                  Niveau de broyat
+                </InputLabel>
+                <FormikSelect label="Description des permanences" name={Name.broyatLevel}>
+                  {renderBroyatlevelOptions(Object.entries(broyatLevels))}
+                </FormikSelect>
+              </FormControl>
+              <FormControlLabel
+                label="Accepte de nouveaux adhérents"
+                control={<FormikSwitch name={Name.acceptNewMembers} checked={values.acceptNewMembers} />}
+              />
             </Grid>
           </Grid>
 
