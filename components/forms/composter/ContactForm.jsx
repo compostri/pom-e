@@ -40,7 +40,7 @@ const ContactForm = () => {
     <>
       <Box my={2}>
         <Typography>
-          Pour recevoir le formulaire de contact, activez l‘option dans l‘onglet <strong>notifications</strong> de votre
+          Pour recevoir le formulaire de contact, activez l&apos;option dans l‘onglet <strong>notifications</strong> de votre
           <Link href="/profil" passHref>
             <MatLink> Profil</MatLink>
           </Link>
