@@ -13,8 +13,10 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: palette.orangeOpacity
     }
   },
+  popper: {
+    zIndex: theme.zIndex.appBar
+  },
   menu: {
-    zIndex: '100',
     borderRadius: 2,
     overflow: 'hidden',
     width: 222,
@@ -101,7 +103,7 @@ const UserButton = () => {
         </IconButton>
       </Hidden>
 
-      <Popper open={open} anchorEl={anchorRef.current} placement="bottom-end" transition disablePortal>
+      <Popper className={classes.popper} open={open} anchorEl={anchorRef.current} placement="bottom-end" transition disablePortal>
         {({ TransitionProps }) => (
           <Grow {...TransitionProps} style={{ transformOrigin: 'center top' }} timeout={350}>
             <Box className={classes.menu}>

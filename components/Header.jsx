@@ -9,7 +9,9 @@ import UserButton from './UserButton'
 const useStyles = makeStyles(theme => ({
   appBar: {
     backgroundColor: 'white',
-    marginBottom: theme.typography.pxToRem(36)
+    marginBottom: theme.typography.pxToRem(36),
+    position: 'relative',
+    zIndex: theme.zIndex.appBar
   },
   logo: {
     width: 80,
