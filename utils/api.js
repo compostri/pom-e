@@ -22,7 +22,7 @@ api.interceptors.request.use(
           headers: {
             'Cache-Control': 'no-cache'
           },
-          url: 'api/token/refresh',
+          url: 'token/refresh',
           timeout: 10000,
           method: 'post',
           data: {
