@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useContext } from 'react'
 import { InputLabel, FormControl, Select, MenuItem, Button } from '@material-ui/core'
 import { Add, Delete } from '@material-ui/icons'
@@ -7,6 +8,8 @@ import DaysJSUtils from '@date-io/dayjs'
 import { Formik, Form, Field, FieldArray } from 'formik'
 import dayjs from 'dayjs'
 import { RRule, RRuleSet, rrulestr } from 'rrule'
+import PropTypes from 'prop-types'
+
 import palette from '~/variables'
 import 'dayjs/locale/fr'
 import api from '~/utils/api'
@@ -77,7 +80,7 @@ const RuleForm = ({ index }) => {
       <FormControl className={classes.permForm}>
         <InputLabel id="week-day-label">Jour </InputLabel>
         <Field name={`rules.${index}.day`}>
-          {({ field, form, meta }) => (
+          {({ field }) => (
             <Select className={classes.permDay} ampm={false} labelId="week-day-label" id="week-day" {...field}>
               <MenuItem value={RRule.MO}>Lundi</MenuItem>
               <MenuItem value={RRule.TU}>Mardi</MenuItem>
@@ -142,7 +145,7 @@ const getRrulesFromObject = rObject => {
       new RRule({
         freq: RRule.WEEKLY,
         byweekday: rule.day,
-        byhour: rule.timeStart.hour(),
+        byhour: rule.timeStart.hour() - 1,
         byminute: rule.timeStart.minute(),
         dtstart: rule.startDate ? rule.startDate.toDate() : undefined,
         until: rule.endDate ? rule.endDate.toDate() : undefined
@@ -156,10 +159,11 @@ const getRulesFormFromString = RRuleSetString => {
   const rruleSet = rrulestr(RRuleSetString, { forceset: true })
 
   return rruleSet.rrules().map(rrule => {
+    // On enregistre les date a GTM +0
     return {
       day: rrule.origOptions.byweekday[0],
       timeStart: dayjs()
-        .hour(rrule.origOptions.byhour)
+        .hour(rrule.origOptions.byhour + 1)
         .minute(rrule.origOptions.byminute),
       startDate: rrule.origOptions.dtstart ? dayjs(rrule.origOptions.dtstart) : null,
       endDate: rrule.origOptions.until ? dayjs(rrule.origOptions.until) : null
@@ -178,10 +182,10 @@ const PermanencesRulesForm = () => {
   const { composterContext } = useContext(ComposterContext)
   const { composter } = composterContext
   const { addToast } = useToasts()
+  const classes = useStyles()
 
   if (!composter) return null
   const initialRules = composter.permanencesRule ? getRulesFormFromString(composter.permanencesRule) : [defaultRule]
-  const classes = useStyles()
   return (
     <Formik
       initialValues={{ rules: initialRules }}
@@ -202,8 +206,8 @@ const PermanencesRulesForm = () => {
               <div>
                 {values.rules &&
                   values.rules.map((rule, index) => (
-                    <div key={`rule-${index}`}>
-                      <RuleForm key={index} index={index} {...rule} />
+                    <div key={`rule-${rule.timeStart.valueOf()}`}>
+                      <RuleForm index={index} {...rule} />
 
                       <Button type="button" onClick={() => remove(index)} className={classes.permBtnSuppr}>
                         <Delete />
@@ -224,6 +228,10 @@ const PermanencesRulesForm = () => {
       )}
     </Formik>
   )
+}
+
+RuleForm.propTypes = {
+  index: PropTypes.number.isRequired
 }
 
 export default PermanencesRulesForm

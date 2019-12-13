@@ -112,12 +112,12 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
         )
       }
 
-      const renderDefaultPermanenceDay = (pos, currentDateRule) => {
+      const renderDefaultPermanenceDay = currentDateRule => {
         const perm = {
-          date: currentDateRule.toISOString(),
+          date: currentDateRule,
           openers: []
         }
-        return renderPermanence(pos)(perm)
+        return renderPermanence(currentDateRule.getDate())(perm)
       }
 
       const permanencesOfTheDay = permanences.data.filter(isThereAnyPermanences(day))
@@ -126,9 +126,10 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
         return permanencesOfTheDay.map(renderWithKey(renderPermanence(position)))
       }
 
+      // Si il n'y a aucune permanence pour ce jour, on regard si il n'y a pas une permanence issue d'une régle a afficher
       const currentDateRule = rulesDates.find(d => d.getDate() === day)
       if (currentDateRule) {
-        return renderDefaultPermanenceDay(position, currentDateRule)
+        return renderDefaultPermanenceDay(currentDateRule)
       }
       return null
     },
