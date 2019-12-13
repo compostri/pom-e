@@ -33,7 +33,6 @@ const PermanceCard = ({ permanence }) => {
     if (!isPermDatePassed) return null
     const { nbUsers, nbBuckets, temperature, openers } = permanence
     const openersIds = openers.map(o => o.id)
-    console.log('TCL: renderIcon -> openersIds', openersIds)
     const canEdit = userContext.user && openersIds.includes(userContext.user.userId)
     console.log('TCL: renderIcon -> userContext.user.id', userContext.user.userId)
 
