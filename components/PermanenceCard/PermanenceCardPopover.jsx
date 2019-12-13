@@ -474,7 +474,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
   )
 
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+    <Formik initialValues={initialValues} onSubmit={handleSubmit} enableReinitialize>
       {({ values, setFieldValue, setValues, dirty }) => {
         const handleOpenerRemoval = id => () => {
           setFieldValue(
