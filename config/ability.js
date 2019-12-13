@@ -36,7 +36,6 @@ export const Referent = AbilityBuilder.define({ subjectName }, can => {
   can(MODIFY, Subject.COMPOSTER_STATISTIQUES)
   can(READ, Subject.COMPOSTER_PERMANENCES, { permanencesRule: { $ne: null } })
   can(MODIFY, Subject.COMPOSTER_LISTES_OUVREURS, { isPermanencePassed: { $eq: false } })
-  can(MODIFY, Subject.COMPOSTER_STATISTIQUES)
 })
 
 export const Action = {
