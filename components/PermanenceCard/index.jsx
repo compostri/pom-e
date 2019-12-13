@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import classNames from 'classnames'
 import { Card, CardContent, CardHeader, Typography, Avatar } from '@material-ui/core'
-import { ShowChart, AddCircleOutline, Timeline } from '@material-ui/icons'
+import { AddCircleOutline, Timeline } from '@material-ui/icons'
 import dayjs from 'dayjs'
 import 'dayjs/locale/fr'
 
@@ -12,6 +12,8 @@ import { useTheme, usePermanenceStatus } from './hooks'
 import PermanenceCardPopover from './PermanenceCardPopover'
 import { Can, Action, Subject } from '~/context/AbilityContext'
 
+import { UserContext } from '~/context/UserContext'
+
 const dateDuJour = dayjs()
 
 const propTypes = { permanence: permanenceType.isRequired }
@@ -21,6 +23,7 @@ const PermanceCard = ({ permanence }) => {
   const { COMPOSTER_STATISTIQUES } = Subject
   const theme = useTheme(permanence)
   const baseStyle = useBaseStyle()
+  const { userContext } = useContext(UserContext)
 
   const isPermDatePassed = dateDuJour.isAfter(permanence.date)
 
@@ -28,11 +31,16 @@ const PermanceCard = ({ permanence }) => {
 
   const renderIcon = () => {
     if (!isPermDatePassed) return null
-    const { nbUsers, nbBuckets, temperature } = permanence
+    const { nbUsers, nbBuckets, temperature, openers } = permanence
+    const openersIds = openers.map(o => o.id)
+    console.log('TCL: renderIcon -> openersIds', openersIds)
+    const canEdit = userContext.user && openersIds.includes(userContext.user.userId)
+    console.log('TCL: renderIcon -> userContext.user.id', userContext.user.userId)
+
     return nbUsers > 0 || nbBuckets > 0 || temperature > 0 ? (
       <Timeline fontSize="small" />
     ) : (
-      <Can I={MODIFY} this={{ $type: COMPOSTER_STATISTIQUES }}>
+      <Can I={MODIFY} this={{ $type: COMPOSTER_STATISTIQUES, self: canEdit }}>
         <AddCircleOutline color="secondary" fontSize="small" />
       </Can>
     )
