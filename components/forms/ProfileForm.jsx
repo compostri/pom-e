@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
+import PropTypes from 'prop-types'
 import { Button, TextField, Grid, CircularProgress, Box } from '@material-ui/core'
 import * as Yup from 'yup'
 import { Formik, Form } from 'formik'
 import { UserContext } from '~/context/UserContext'
-import { useToasts, TOAST } from '../Snackbar'
 
 const profile = Yup.object().shape({
   lastname: Yup.string().required('Nom requis'),
@@ -14,21 +14,15 @@ const profile = Yup.object().shape({
   username: Yup.string().required('Pseudo requis')
 })
 
-const ProfileForm = () => {
-  const { userContext } = useContext(UserContext)
-  const { addToast } = useToasts()
-
-  const handleSubmit = async (values, { setSubmitting }) => {
-    const res = await userContext.updateUser(values)
-    if (res.status === 200) {
-      setSubmitting(false)
-      addToast('Les modifications ont bien été prise en compte.', TOAST.SUCCESS)
-    } else {
-      addToast('Une erreur a eu lieu', TOAST.ERROR)
-    }
+const propTypes = {
+  onUserInformationUpdate: PropTypes.func.isRequired
+}
+const ProfileForm = ({ onUserInformationUpdate, user }) => {
+  const handleSubmit = (values, { setSubmitting }) => {
+    onUserInformationUpdate(values).finally(() => setSubmitting(false))
   }
   return (
-    <Formik enableReinitialize initialValues={userContext.user} validationSchema={profile} onSubmit={handleSubmit}>
+    <Formik enableReinitialize initialValues={user} validationSchema={profile} onSubmit={handleSubmit}>
       {({ values, handleChange, handleBlur, errors, touched, isSubmitting }) => (
         <Form>
           <Grid container spacing={2}>
@@ -107,5 +101,7 @@ const ProfileForm = () => {
     </Formik>
   )
 }
+
+ProfileForm.propTypes = propTypes
 
 export default ProfileForm

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Paper, Tabs, Tab, Container, Box } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import Head from 'next/head'
@@ -8,6 +8,11 @@ import ProfileForm from '~/components/forms/ProfileForm'
 import NotificationsForm from '~/components/forms/NotificationsForm'
 import PasswordForm from '~/components/forms/PasswordForm'
 import Header from '~/components/Header'
+import withAuthGuard from '~/utils/hoc/withAuthGuard'
+import { UserContext } from '~/context/UserContext'
+import { TOAST, useToasts } from '~/components/Snackbar'
+import WithUserPersistence from '~/utils/hoc/withUserPersistence'
+import { userType } from '~/types'
 
 const useStyle = makeStyles(theme => ({
   sectionProfil: {
@@ -27,10 +32,19 @@ const useStyle = makeStyles(theme => ({
 }))
 
 const tabLabels = ['Informations personnelles', 'Mot de passe', 'Notifications']
-const tabPanels = [ProfileForm, PasswordForm, NotificationsForm]
 
-const Profil = () => {
+const propTypes = {
+  persitentUser: userType.isRequired
+}
+
+const Profil = ({ persitentUser }) => {
+  const { userId } = persitentUser
   const classes = useStyle()
+  const { addToast } = useToasts()
+  const {
+    userContext: { updateUser }
+  } = useContext(UserContext)
+
   const [value, setValue] = React.useState(0)
 
   function handleChange(e, targetValue) {
@@ -42,12 +56,30 @@ const Profil = () => {
     return tabs.map(renderTab)
   }
 
-  const renderTabPanels = (panels, currentPanelValue) => {
+  const handleUserUpdate = async values => {
+    const { status } = await updateUser(values)
+
+    return new Promise((resolve, reject) => {
+      if (status === 200) {
+        addToast('Les modifications ont bien été prise en compte.', TOAST.SUCCESS)
+        resolve()
+      } else {
+        addToast('Une erreur a eu lieu', TOAST.ERROR)
+        reject()
+      }
+    })
+  }
+
+  const renderTabPanels = (id, currentPanelValue) => {
+    const panels = [
+      <ProfileForm onUserInformationUpdate={handleUserUpdate} user={persitentUser} />,
+      <PasswordForm onPasswordUpdate={handleUserUpdate} />,
+      <NotificationsForm userId={id} />
+    ]
+
     const renderTabPanel = (Panel, index) => (
-      <Box key={Panel.name} role="tabpanel" hidden={currentPanelValue !== index} id={`tabpanel-${index}`} aria-labelledby={`tab-${index}`}>
-        <Box p={3}>
-          <Panel />
-        </Box>
+      <Box key={Panel.type.name} role="tabpanel" hidden={currentPanelValue !== index} id={`tabpanel-${index}`} aria-labelledby={`tab-${index}`}>
+        <Box p={3}>{Panel}</Box>
       </Box>
     )
     return panels.map(renderTabPanel)
@@ -64,11 +96,13 @@ const Profil = () => {
           <Tabs value={value} onChange={handleChange} className={classes.appBar} indicatorColor="primary">
             {renderTabs(tabLabels)}
           </Tabs>
-          {renderTabPanels(tabPanels, value)}
+          {renderTabPanels(userId, value)}
         </Paper>
       </Container>
     </>
   )
 }
 
-export default Profil
+Profil.propTypes = propTypes
+
+export default withAuthGuard(WithUserPersistence(Profil))

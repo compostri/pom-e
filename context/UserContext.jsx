@@ -24,10 +24,10 @@ class UserProvider extends Component {
         return res
       },
       logout: () => {
+        Router.replace('/')
         this.setState({ token: null, user: null })
         cookie.remove('token')
         cookie.remove('refresh_token')
-        Router.push('/')
       },
       isLoggedIn: () => {
         return !!this.state.token

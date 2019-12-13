@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useCallback } from 'react'
+import React, { useEffect } from 'react'
 import { Paper, FormControlLabel, Switch, Typography, Grid } from '@material-ui/core'
+import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/styles'
 import { useToasts, TOAST } from '~/components/Snackbar'
-import { UserContext } from '~/context/UserContext'
 import api from '~/utils/api'
 import palette from '~/variables'
 
@@ -35,20 +35,15 @@ const useStyle = makeStyles(theme => ({
   }
 }))
 
-const NotificationsForm = () => {
+const propTypes = {
+  userId: PropTypes.number.isRequired
+}
+
+const NotificationsForm = ({ userId }) => {
   const classes = useStyle()
   const { addToast } = useToasts()
 
-  const { userContext } = useContext(UserContext)
   const [userComposter, setUserComposter] = React.useState([])
-
-  /* Notifications */
-  const getUserComposter = useCallback(async () => {
-    const data = await api.getUserComposter({ user: userContext.user.userId }).catch(console.error)
-    if (data) {
-      setUserComposter(data['hydra:member'])
-    }
-  }, [userContext.user.userId])
 
   const updateNotif = (uc, field) => {
     const newUCs = userComposter.map(oldUC => {
@@ -61,8 +56,17 @@ const NotificationsForm = () => {
   }
 
   useEffect(() => {
-    getUserComposter()
-  }, [getUserComposter])
+    const getUserComposter = async () => {
+      const data = await api.getUserComposter({ user: userId }).catch(console.error)
+      if (data) {
+        setUserComposter(data['hydra:member'])
+      }
+    }
+
+    if (userId) {
+      getUserComposter()
+    }
+  }, [userId])
 
   /* Update Notifications */
   const updateUC = async (uc, field) => {
@@ -92,7 +96,7 @@ const NotificationsForm = () => {
 
       <Grid container spacing={2}>
         {userComposter.length > 0 &&
-          userComposter.map((uc, index) => {
+          userComposter.map(uc => {
             return (
               <Grid item xs={6} key={`uc-${uc.id}`}>
                 <Paper className={classes.composterUc}>
@@ -132,5 +136,7 @@ const NotificationsForm = () => {
     </>
   )
 }
+
+NotificationsForm.propTypes = propTypes
 
 export default NotificationsForm
