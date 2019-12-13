@@ -21,7 +21,9 @@ const useBaseStyle = makeStyles(({ typography }) => ({
   },
   cardSubHeader: {
     fontSize: typography.pxToRem(10),
-    textAlign: 'left'
+    textAlign: 'left',
+    display: 'flex',
+    justifyContent: 'space-between'
   },
   cardContent: {
     padding: typography.pxToRem(7)
