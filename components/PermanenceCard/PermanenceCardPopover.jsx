@@ -188,51 +188,48 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
     [isPermanencePassed]
   )
 
-  const mayRenderCurrentOpeners = useCallback(
-    (openerList, onRemoval) => {
-      const renderOpener = (opener, i) => {
-        const { username } = opener
-        const openerId = getId(opener)
-        return (
-          <li className={css.openerListItem} key={`edit-opener-${username}-${i}`}>
-            <div className={css.openerListItemLeftContent}>
-              <Avatar aria-label={username} className={classNames(baseStyle.cardAvatar, theme.cardAvatar, css.avatar)}>
-                {username[0]}
-              </Avatar>
-              {username}
-            </div>
-            <Can I={MODIFY} this={{ $type: COMPOSTER_LISTES_OUVREURS, isPermanencePassed }}>
-              <IconButton aria-label="remove" onClick={onRemoval(openerId)} className={css.openerListItemDeleteIcon}>
-                <DeleteIcon />
-              </IconButton>
-            </Can>
-            <Can I={DELETE} this={{ $type: COMPOSTER_OUVREUR, self: user && getId(opener) === `/users/${user.userId}`, isPermanencePassed }}>
-              <IconButton aria-label="remove" onClick={onRemoval(openerId)} className={css.openerListItemDeleteIcon}>
-                <DeleteIcon />
-              </IconButton>
-            </Can>
-          </li>
-        )
-      }
-
+  const mayRenderCurrentOpeners = (openerList, onRemoval) => {
+    const renderOpener = (opener, i) => {
+      const { username } = opener
+      const openerId = getId(opener)
       return (
-        <>
-          <h3 className={css.contentTitle}>Liste des ouvreurs</h3>
-          <ul className={css.openerList}>
-            {openerList.length > 0 ? (
-              openerList.map(renderOpener)
-            ) : (
-              <li className={classNames(css.openerListItem, css.noOpenerListItem)}>
-                <Avatar className={classNames(classNames(baseStyle.cardAvatar, css.avatar, css.avatarQuestionMark))}>?</Avatar>
-                Attention ! Pas d'ouvreur
-              </li>
-            )}
-          </ul>
-        </>
+        <li className={css.openerListItem} key={`edit-opener-${username}-${i}`}>
+          <div className={css.openerListItemLeftContent}>
+            <Avatar aria-label={username} className={classNames(baseStyle.cardAvatar, theme.cardAvatar, css.avatar)}>
+              {username[0]}
+            </Avatar>
+            {username}
+          </div>
+          <Can I={MODIFY} this={{ $type: COMPOSTER_LISTES_OUVREURS, isPermanencePassed }}>
+            <IconButton aria-label="remove" onClick={onRemoval(openerId)} className={css.openerListItemDeleteIcon}>
+              <DeleteIcon />
+            </IconButton>
+          </Can>
+          <Can I={DELETE} this={{ $type: COMPOSTER_OUVREUR, self: user && getId(opener) === `/users/${user.userId}`, isPermanencePassed }}>
+            <IconButton aria-label="remove" onClick={onRemoval(openerId)} className={css.openerListItemDeleteIcon}>
+              <DeleteIcon />
+            </IconButton>
+          </Can>
+        </li>
       )
-    },
-    [user, permanence.date]
-  )
+    }
+
+    return (
+      <>
+        <h3 className={css.contentTitle}>Liste des ouvreurs</h3>
+        <ul className={css.openerList}>
+          {openerList.length > 0 ? (
+            openerList.map(renderOpener)
+          ) : (
+            <li className={classNames(css.openerListItem, css.noOpenerListItem)}>
+              <Avatar className={classNames(classNames(baseStyle.cardAvatar, css.avatar, css.avatarQuestionMark))}>?</Avatar>
+              Attention ! Pas d'ouvreur
+            </li>
+          )}
+        </ul>
+      </>
+    )
+  }
 
   const mayRenderOpenerCapabilityFooter = useCallback(
     (openers, openersAvailable, handleAddingOpener, handleCancel) => {
