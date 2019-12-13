@@ -25,10 +25,12 @@ const AddUserComposterForm = () => {
   const [inputValue, setInputValue] = React.useState('')
   const [selectedUser, setSelectedUser] = React.useState({})
   const [options, setOptions] = React.useState([])
+  const [loading, setLoading] = React.useState(false)
 
   const fetch = React.useMemo(
     () =>
       throttle((input, cb) => {
+        setLoading(true)
         api.getUsers({ email: input }).then(cb)
       }, 200),
     []
@@ -43,6 +45,7 @@ const AddUserComposterForm = () => {
     }
 
     fetch(inputValue, results => {
+      setLoading(false)
       if (active) {
         setOptions(results.data['hydra:member'] || [])
       }
@@ -82,7 +85,9 @@ const AddUserComposterForm = () => {
         <Autocomplete
           className={classes.autocomplete}
           id="searchuc"
-          noOptionsText="Aucun utilisateur correspondant"
+          loading={loading}
+          loadingText="Recherche en cours"
+          noOptionsText={inputValue.length === 0 ? "Tapez le nom d'un utilisateur" : 'Aucun utilisateur correspondant'}
           getOptionLabel={option => option.email}
           options={options}
           onInputChange={onInputChange}
