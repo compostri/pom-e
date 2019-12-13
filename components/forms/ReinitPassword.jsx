@@ -40,7 +40,8 @@ const ReinitPassword = () => {
         addToast('Une erreur a eu lieu', TOAST.ERROR)
       }
     } catch (error) {
-      addToast('Une erreur a eu lieu', TOAST.ERROR)
+      const err = error.response.data ? error.response.data['hydra:description'] : 'Une erreur a eu lieu'
+      addToast(err, TOAST.ERROR)
     }
     setSubmitting(false)
   }
