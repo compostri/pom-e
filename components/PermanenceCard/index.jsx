@@ -34,7 +34,6 @@ const PermanceCard = ({ permanence }) => {
     const { nbUsers, nbBuckets, temperature, openers } = permanence
     const openersIds = openers.map(o => o.id)
     const canEdit = userContext.user && openersIds.includes(userContext.user.userId)
-    console.log('TCL: renderIcon -> userContext.user.id', userContext.user.userId)
 
     return nbUsers > 0 || nbBuckets > 0 || temperature > 0 ? (
       <Timeline fontSize="small" />
