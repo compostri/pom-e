@@ -1,9 +1,8 @@
-import React, { useContext } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { Button, TextField, Grid, CircularProgress, Box } from '@material-ui/core'
 import * as Yup from 'yup'
 import { Formik, Form } from 'formik'
-import { UserContext } from '~/context/UserContext'
-import { useToasts, TOAST } from '../Snackbar'
 
 const validationSchema = Yup.object({
   oldPassword: Yup.string().required('Ancien mot de passe requis'),
@@ -19,23 +18,15 @@ const initialValues = {
   confirmPassword: ''
 }
 
-/**
- * Permet de changer le mot de passe dans le profil
- */
+const propTypes = {
+  onPasswordUpdate: PropTypes.func.isRequired
+}
 
-const PasswordForm = () => {
-  const { userContext } = useContext(UserContext)
-  const { addToast } = useToasts()
-
-  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    const res = await userContext.updateUser(values)
-    if (res.status === 200) {
-      setSubmitting(false)
-      resetForm(initialValues)
-      addToast('Les modifications ont bien été prise en compte.', TOAST.SUCCESS)
-    } else {
-      addToast('Une erreur a eu lieu', TOAST.ERROR)
-    }
+const PasswordForm = ({ onPasswordUpdate }) => {
+  const handleSubmit = (values, { setSubmitting, resetForm }) => {
+    onPasswordUpdate(values)
+      .then(() => resetForm(resetForm))
+      .finally(() => setSubmitting(false))
   }
   return (
     <Formik enableReinitialize initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
@@ -108,4 +99,5 @@ const PasswordForm = () => {
   )
 }
 
+PasswordForm.propTypes = propTypes
 export default PasswordForm

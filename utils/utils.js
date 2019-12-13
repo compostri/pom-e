@@ -32,3 +32,17 @@ export const getComposterColor = composter => {
 export const getInitial = name => {
   return name.charAt(0).toUpperCase()
 }
+
+export const redirect = ({ Router: router, ctx, location, status = 302 }) => {
+  if (ctx.res) {
+    ctx.res.writeHead(status, {
+      Location: location,
+      // Add the content-type for SEO considerations
+      'Content-Type': 'text/html; charset=utf-8'
+    })
+    ctx.res.end()
+    return
+  }
+
+  router.replace(location)
+}

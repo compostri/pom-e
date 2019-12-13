@@ -17,6 +17,12 @@ module.exports = {
         specialLink: ['hrefLeft', 'hrefRight'],
         aspects: ['invalidHref', 'preferButton']
       }
+    ],
+    'react/jsx-props-no-spreading': [
+      'error',
+      {
+        exceptions: ['WrappedPage', 'WrappedComponent']
+      }
     ]
   }
 }

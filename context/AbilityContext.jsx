@@ -7,25 +7,12 @@ import PropTypes from 'prop-types'
 import { Ability, Action, Subject } from '~/config/ability'
 import { UserContext } from '~/context/UserContext'
 import { getUserInfosFromToken } from '~/utils/auth'
+import { redirect } from '~/utils/utils'
 
 const AbilityContext = createContext()
 
 const Referent = 'Referent'
 const Opener = 'Opener'
-
-function redirect({ Router: router, ctx, location, status = 302 }) {
-  if (ctx.res) {
-    ctx.res.writeHead(status, {
-      Location: location,
-      // Add the content-type for SEO considerations
-      'Content-Type': 'text/html; charset=utf-8'
-    })
-    ctx.res.end()
-    return
-  }
-
-  router.replace(location)
-}
 
 const getAbilityBuilder = ({ user, composterSlug }) => {
   if (!user) {

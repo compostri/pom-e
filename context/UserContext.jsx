@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unused-state */
 import React, { createContext, Component } from 'react'
+import Router from 'next/router'
 import cookie from 'js-cookie'
 import api from '~/utils/api'
 import { getUserInfosFromToken, isValid } from '../utils/auth'
@@ -23,6 +24,7 @@ class UserProvider extends Component {
         return res
       },
       logout: () => {
+        Router.replace('/')
         this.setState({ token: null, user: null })
         cookie.remove('token')
         cookie.remove('refresh_token')
