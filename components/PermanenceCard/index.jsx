@@ -1,6 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { Card, CardContent, CardHeader, Typography, Avatar } from '@material-ui/core'
+import { ShowChart, AddCircleOutline, Timeline } from '@material-ui/icons'
 import dayjs from 'dayjs'
 import 'dayjs/locale/fr'
 
@@ -9,18 +10,33 @@ import { permanenceType } from '~/types'
 import useBaseStyle from './PermanenceCard.theme'
 import { useTheme, usePermanenceStatus } from './hooks'
 import PermanenceCardPopover from './PermanenceCardPopover'
+import { Can, Action, Subject } from '~/context/AbilityContext'
 
 const dateDuJour = dayjs()
 
 const propTypes = { permanence: permanenceType.isRequired }
 
 const PermanceCard = ({ permanence }) => {
+  const { MODIFY } = Action
+  const { COMPOSTER_STATISTIQUES } = Subject
   const theme = useTheme(permanence)
   const baseStyle = useBaseStyle()
 
   const isPermDatePassed = dateDuJour.isAfter(permanence.date)
 
   const { status } = usePermanenceStatus(permanence, dateDuJour)
+
+  const renderIcon = () => {
+    if (!isPermDatePassed) return null
+    const { nbUsers, nbBuckets, temperature } = permanence
+    return nbUsers > 0 || nbBuckets > 0 || temperature > 0 ? (
+      <Timeline fontSize="small" />
+    ) : (
+      <Can I={MODIFY} this={{ $type: COMPOSTER_STATISTIQUES }}>
+        <AddCircleOutline color="secondary" fontSize="small" />
+      </Can>
+    )
+  }
 
   const renderCardFooter = openers => {
     return (
@@ -47,7 +63,10 @@ const PermanceCard = ({ permanence }) => {
   const cardTitle = (
     <>
       <h3 className={classNames(baseStyle.cardTitle, theme.cardTitle)}>{permanence.eventTitle}</h3>
-      <h2 className={classNames(baseStyle.cardSubHeader, theme.cardSubHeader)}>{status}</h2>
+      <h2 className={classNames(baseStyle.cardSubHeader, theme.cardSubHeader)}>
+        {status}
+        {renderIcon()}
+      </h2>
     </>
   )
 
