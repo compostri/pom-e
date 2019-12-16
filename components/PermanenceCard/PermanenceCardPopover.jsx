@@ -143,11 +143,12 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
 
   const initialValues = useMemo(() => {
     const emptyIfNull = value => (value === null ? '' : value)
-    const { openers, eventTitle, eventMessage, nbUsers, nbBuckets, temperature } = permanence
+    const { openers, eventTitle, eventMessage, nbUsers, nbBuckets, temperature, canceled } = permanence
     return {
       openers,
       eventTitle,
       eventMessage,
+      canceled,
       nbUsers: emptyIfNull(nbUsers),
       nbBuckets: emptyIfNull(nbBuckets),
       temperature: emptyIfNull(temperature),
@@ -164,7 +165,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
   const theme = useTheme(permanence)
   const css = usePermanenceToComeWithOpenersStyle()
 
-  const handleSubmit = useCallback(({ openers, eventTitle, eventMessage, nbUsers, nbBuckets, temperature, isPermanenceAnEvent }, actions) => {
+  const handleSubmit = useCallback(({ openers, eventTitle, eventMessage, nbUsers, nbBuckets, temperature, isPermanenceAnEvent, canceled }, actions) => {
     const mayBeEmptyValue = value => (isPermanenceAnEvent ? value : '')
     const nullIfEmpty = value => (value === '' ? null : value)
 
@@ -173,7 +174,8 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
         ? {
             openers: openers.map(getId),
             eventTitle: mayBeEmptyValue(eventTitle),
-            eventMessage: mayBeEmptyValue(eventMessage)
+            eventMessage: mayBeEmptyValue(eventMessage),
+            canceled
           }
         : { nbUsers: nullIfEmpty(nbUsers), nbBuckets: nullIfEmpty(nbBuckets), temperature: nullIfEmpty(temperature) }
     )
@@ -264,7 +266,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
     }
     const {
       values: { openers },
-      initialValues: { openers: openersAvailable },
+      initialValues: { openers: openersAvailable, canceled },
       setFieldValue,
       dirty
     } = formikProps
@@ -285,6 +287,10 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
         ...user,
         '@id': `/users/${user.userId}`
       })
+    }
+
+    if (canceled) {
+      return ''
     }
 
     if (isUserSelfEdited) {
@@ -389,10 +395,11 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
 
   const mayRenderRefentInnerForm = formikProps => {
     const {
-      values: { openers, isPermanenceAnEvent },
+      values: { openers, isPermanenceAnEvent, canceled },
       setFieldValue,
       dirty
     } = formikProps
+
     const mayRenderOpenersSelect = (openersAvailable, openerList) => {
       const hasTobeRendered = openersAvailable.length && openersAvailable > openerList
       if (!hasTobeRendered) {
@@ -434,16 +441,15 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
         <p className={css.noOpenerMsg}>S’il y a aucun ouvreur d’inscrit, la permanence ne pourra pas être assurée. Inscrivez-vous vite ! </p>
       )
 
-    const renderSwitch = isEvent => {
-      return (
-        <FormControlLabel
-          className={css.switchRoot}
-          classes={{ label: css.switchLabel }}
-          control={<FormikSwitch name="isPermanenceAnEvent" checked={isEvent} />}
-          label="Cette permanence est un événement"
-        />
-      )
+    const renderSwitch = (label, SwitchComponent) => {
+      return <FormControlLabel className={css.switchRoot} classes={{ label: css.switchLabel }} control={SwitchComponent} label={label} />
     }
+
+    const renderPermanenceEventStatusSwitch = isOn => {
+      return renderSwitch('Cette permanence est un événement', <FormikSwitch name="isPermanenceAnEvent" checked={isOn} />)
+    }
+
+    const renderCancelingStatusSwitch = isOn => renderSwitch('Annulé cette permanence', <FormikSwitch name="canceled" checked={isOn} />)
 
     const mayRenderEventFields = hasTobeRendered =>
       hasTobeRendered && (
@@ -475,7 +481,8 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
         {[
           mayRenderOpenersSelect(permanence.$openersAvailable, openers),
           mayRenderNoOpenersWarning(openers),
-          renderSwitch(isPermanenceAnEvent),
+          renderCancelingStatusSwitch(canceled),
+          renderPermanenceEventStatusSwitch(isPermanenceAnEvent),
           mayRenderEventFields(isPermanenceAnEvent),
           renderSubmitCancelButtons(dirty, handleCancel)
         ]}
