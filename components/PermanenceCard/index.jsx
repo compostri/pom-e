@@ -45,7 +45,8 @@ const PermanceCard = ({ permanence, highlighted }) => {
     )
   }
 
-  const renderCardFooter = openers => {
+  const mayRenderCardFooter = (isCanceled, openers) => {
+    if (isCanceled) return null
     return (
       <div className={baseStyle.cardAvatarList}>
         {openers.length > 0 ? (
@@ -67,28 +68,42 @@ const PermanceCard = ({ permanence, highlighted }) => {
     )
   }
 
-  const cardTitle = (
-    <>
-      <h3 className={classNames(baseStyle.cardTitle, theme.cardTitle)}>{permanence.eventTitle}</h3>
-      <h2 className={classNames(baseStyle.cardSubHeader, theme.cardSubHeader)}>
-        {status}
-        {renderIcon()}
-      </h2>
-    </>
-  )
+  const renderCardTitle = isCanceled => {
+    if (isCanceled) {
+      return <h3 className={classNames(baseStyle.cardTitle, theme.cardTitle)}>Permanence annulée</h3>
+    }
+
+    return (
+      <>
+        <h3 className={classNames(baseStyle.cardTitle, theme.cardTitle)}>{permanence.eventTitle}</h3>
+        <h2 className={classNames(baseStyle.cardSubHeader, theme.cardSubHeader)}>
+          {status}
+          {renderIcon()}
+        </h2>
+      </>
+    )
+  }
+
+  const mayRenderHour = isCanceled => {
+    if (isCanceled) {
+      return null
+    }
+
+    return dayjs(permanence.date).format('HH:mm')
+  }
 
   return (
     <Card className={classNames(baseStyle.card, theme.card, { [theme.cardHightlighted]: highlighted })}>
       <CardHeader
         className={classNames(baseStyle.cardHeader, theme.cardHeader)}
-        title={cardTitle}
-        subheader={dayjs(permanence.date).format('HH:mm')}
+        title={renderCardTitle(permanence.canceled)}
+        subheader={mayRenderHour(permanence.canceled)}
         classes={{
           subheader: classNames(baseStyle.cardSubHeader, theme.cardSubHeader)
         }}
       />
       <CardContent className={classNames(baseStyle.cardContent, theme.cardContent)} classes={{ root: baseStyle.cardContentRoot }}>
-        {!isPermDatePassed && renderCardFooter(permanence.openers)}
+        {!isPermDatePassed && mayRenderCardFooter(permanence.canceled, permanence.openers)}
       </CardContent>
     </Card>
   )
