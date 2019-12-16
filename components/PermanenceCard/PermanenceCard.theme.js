@@ -37,7 +37,7 @@ const useBaseStyle = makeStyles(({ typography }) => ({
   },
   noOpenerMsg: {
     fontSize: typography.pxToRem(8),
-    color: palette.orangePrimary,
+    color: palette.redPrimary,
     marginLeft: '2%'
   },
   cardAvatarList: {
@@ -127,55 +127,9 @@ const useGreyTheme = makeStyles(() => ({
   }
 }))
 
-/* Grey Dark theme */
+/* Orange theme */
 
-const useGreyDarkTheme = makeStyles(() => ({
-  card: {
-    '&:hover': {
-      borderBottomColor: palette.greyDark
-    }
-  },
-  cardHightlighted: {
-    borderBottomColor: palette.greyDark
-  },
-  cardHeader: {
-    backgroundColor: palette.greyDark
-  },
-  cardTitle: {
-    color: palette.white
-  },
-  cardSubHeader: {
-    color: palette.white
-  },
-  cardContent: {
-    backgroundColor: palette.greyDark
-  },
-  cardAvatar: {
-    backgroundColor: palette.white,
-    color: palette.greyDark,
-    border: `1px solid ${palette.greyDark}`
-  },
-  popoverHeader: {
-    color: palette.white,
-    backgroundColor: palette.greyDark
-  },
-  popoverCloseIcon: {
-    color: palette.white
-  },
-  popoverTitle: {
-    color: palette.white
-  },
-  popoverSubHeader: {
-    color: palette.white
-  },
-  popoverAvatar: {
-    backgroundColor: palette.white
-  }
-}))
-
-/* Red theme */
-
-const useRedTheme = makeStyles(() => ({
+const useOrangeTheme = makeStyles(() => ({
   card: {
     borderBottomColor: palette.orangeExtraLight,
     '&:hover': {
@@ -198,7 +152,9 @@ const useRedTheme = makeStyles(() => ({
     backgroundColor: palette.orangeExtraLight
   },
   cardAvatar: {
-    backgroundColor: palette.orangePrimary
+    backgroundColor: palette.orangePrimary,
+    color: palette.white,
+    border: `1px solid ${palette.orangePrimary}`
   },
   popoverHeader: {
     color: palette.orangePrimary,
@@ -212,6 +168,51 @@ const useRedTheme = makeStyles(() => ({
   },
   popoverSubHeader: {
     color: palette.orangePrimary
+  },
+  popoverAvatar: {
+    backgroundColor: palette.orangePrimary
+  }
+}))
+
+/* Red theme */
+
+const useRedTheme = makeStyles(() => ({
+  card: {
+    borderBottomColor: palette.redExtraLight,
+    '&:hover': {
+      borderBottomColor: palette.redPrimary
+    }
+  },
+  cardHightlighted: {
+    borderBottomColor: palette.redPrimary
+  },
+  cardHeader: {
+    backgroundColor: palette.redExtraLight
+  },
+  cardTitle: {
+    color: palette.redPrimary
+  },
+  cardSubHeader: {
+    color: palette.redPrimary
+  },
+  cardContent: {
+    backgroundColor: palette.redExtraLight
+  },
+  cardAvatar: {
+    backgroundColor: palette.redPrimary
+  },
+  popoverHeader: {
+    color: palette.redPrimary,
+    backgroundColor: palette.redExtraLight
+  },
+  popoverCloseIcon: {
+    color: palette.redPrimary
+  },
+  popoverTitle: {
+    color: palette.redPrimary
+  },
+  popoverSubHeader: {
+    color: palette.redPrimary
   }
 }))
 
@@ -299,6 +300,6 @@ const useGreenTheme = makeStyles(() => ({
   }
 }))
 
-export { useGreenTheme, useRedTheme, useGreyTheme, useBlueTheme, useGreyDarkTheme }
+export { useGreenTheme, useRedTheme, useGreyTheme, useBlueTheme, useOrangeTheme }
 
 export default useBaseStyle

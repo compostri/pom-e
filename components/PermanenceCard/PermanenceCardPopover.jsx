@@ -46,7 +46,7 @@ const usePermanenceToComeWithOpenersStyle = makeStyles(({ typography }) => ({
     marginRight: typography.pxToRem(5)
   },
   avatarQuestionMark: {
-    backgroundColor: palette.orangePrimary
+    backgroundColor: palette.redPrimary
   },
   openerList: {
     padding: 0,

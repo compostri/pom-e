@@ -10,7 +10,7 @@ export const getCategoryColor = category => {
       color = palette.blue
       break
     case 2:
-      color = palette.orangePrimary
+      color = palette.redPrimary
       break
     case 3:
       color = palette.brown
