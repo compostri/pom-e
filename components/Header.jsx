@@ -65,10 +65,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     display: 'flex',
     flexWrap: 'wrap',
-    margin: theme.spacing(0, 2),
-    [theme.breakpoints.down('sm')]: {
-      display: 'none'
-    }
+    margin: theme.spacing(0, 2)
   }
 }))
 
