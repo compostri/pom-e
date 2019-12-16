@@ -107,7 +107,7 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
       const renderPermanence = pos => perm => {
         return (
           <Button className={classes.permanence} classes={{ root: classes.permanenceRoot }} onClick={handleClick(perm, pos)}>
-            <PermanceCard permanence={perm} />
+            <PermanceCard permanence={perm} highlighted={permanenceDetails.data && dayjs(permanenceDetails.data.date).isSame(perm.date)} />
           </Button>
         )
       }
@@ -133,7 +133,17 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
       }
       return null
     },
-    [classes.permanence, classes.permanenceRoot, permanencesRule, endOfMonth, handleClick, permanences, startOfMonth]
+    [
+      permanences.fetching,
+      permanences.data,
+      permanencesRule,
+      startOfMonth,
+      endOfMonth,
+      permanenceDetails,
+      classes.permanence,
+      classes.permanenceRoot,
+      handleClick
+    ]
   )
 
   const maybeRenderPopover = ({ $popover, ...details }) => {

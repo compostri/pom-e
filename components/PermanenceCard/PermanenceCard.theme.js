@@ -6,8 +6,12 @@ const useBaseStyle = makeStyles(({ typography }) => ({
   card: {
     backgroundColor: palette.greyExtraLight,
     width: '100%',
-    height: 'auto'
+    height: 'auto',
+    border: '0px solid transparent',
+    transition: 'border-color .3s',
+    borderBottomWidth: '3px'
   },
+
   cardHeader: {
     padding: typography.pxToRem(6),
     paddingBottom: typography.pxToRem(26)
@@ -81,6 +85,15 @@ const useBaseStyle = makeStyles(({ typography }) => ({
 /* Grey theme */
 
 const useGreyTheme = makeStyles(() => ({
+  card: {
+    borderBottomColor: palette.greyExtraLight,
+    '&:hover': {
+      borderBottomColor: palette.greyMedium
+    }
+  },
+  cardHightlighted: {
+    borderBottomColor: palette.greyMedium
+  },
   cardHeader: {
     backgroundColor: palette.greyExtraLight
   },
@@ -117,6 +130,14 @@ const useGreyTheme = makeStyles(() => ({
 /* Grey Dark theme */
 
 const useGreyDarkTheme = makeStyles(() => ({
+  card: {
+    '&:hover': {
+      borderBottomColor: palette.greyDark
+    }
+  },
+  cardHightlighted: {
+    borderBottomColor: palette.greyDark
+  },
   cardHeader: {
     backgroundColor: palette.greyDark
   },
@@ -155,6 +176,15 @@ const useGreyDarkTheme = makeStyles(() => ({
 /* Red theme */
 
 const useRedTheme = makeStyles(() => ({
+  card: {
+    borderBottomColor: palette.orangeExtraLight,
+    '&:hover': {
+      borderBottomColor: palette.orangePrimary
+    }
+  },
+  cardHightlighted: {
+    borderBottomColor: palette.orangePrimary
+  },
   cardHeader: {
     backgroundColor: palette.orangeExtraLight
   },
@@ -188,6 +218,15 @@ const useRedTheme = makeStyles(() => ({
 /* Blue theme */
 
 const useBlueTheme = makeStyles(() => ({
+  card: {
+    borderBottomColor: palette.blueExtraLight,
+    '&:hover': {
+      borderBottomColor: palette.blue
+    }
+  },
+  cardHightlighted: {
+    borderBottomColor: palette.blue
+  },
   cardHeader: {
     backgroundColor: palette.blueExtraLight
   },
@@ -221,6 +260,15 @@ const useBlueTheme = makeStyles(() => ({
 /* Green theme */
 
 const useGreenTheme = makeStyles(() => ({
+  card: {
+    borderBottomColor: palette.greenExtraLight,
+    '&:hover': {
+      borderBottomColor: palette.greenPrimary
+    }
+  },
+  cardHightlighted: {
+    borderBottomColor: palette.greenPrimary
+  },
   cardHeader: {
     backgroundColor: palette.greenExtraLight
   },
