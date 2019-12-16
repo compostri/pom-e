@@ -43,7 +43,7 @@ const useBaseStyle = makeStyles(({ typography }) => ({
     alignItems: 'center'
   },
   cardAvatar: {
-    color: 'white',
+    color: palette.white,
     fontSize: typography.pxToRem(10),
     marginRight: '2%',
     width: typography.pxToRem(16),
@@ -114,9 +114,47 @@ const useGreyTheme = makeStyles(() => ({
   }
 }))
 
+/* Grey Dark theme */
+
+const useGreyDarkTheme = makeStyles(() => ({
+  cardHeader: {
+    backgroundColor: palette.greyDark
+  },
+  cardTitle: {
+    color: palette.white
+  },
+  cardSubHeader: {
+    color: palette.white
+  },
+  cardContent: {
+    backgroundColor: palette.greyDark
+  },
+  cardAvatar: {
+    backgroundColor: palette.white,
+    color: palette.greyDark,
+    border: `1px solid ${palette.greyDark}`
+  },
+  popoverHeader: {
+    color: palette.white,
+    backgroundColor: palette.greyDark
+  },
+  popoverCloseIcon: {
+    color: palette.white
+  },
+  popoverTitle: {
+    color: palette.white
+  },
+  popoverSubHeader: {
+    color: palette.white
+  },
+  popoverAvatar: {
+    backgroundColor: palette.white
+  }
+}))
+
 /* Red theme */
 
-const useRedTheme = makeStyles(({ typography }) => ({
+const useRedTheme = makeStyles(() => ({
   cardHeader: {
     backgroundColor: palette.orangeExtraLight
   },
@@ -149,7 +187,7 @@ const useRedTheme = makeStyles(({ typography }) => ({
 
 /* Blue theme */
 
-const useBlueTheme = makeStyles(({ typography }) => ({
+const useBlueTheme = makeStyles(() => ({
   cardHeader: {
     backgroundColor: palette.blueExtraLight
   },
@@ -182,7 +220,7 @@ const useBlueTheme = makeStyles(({ typography }) => ({
 
 /* Green theme */
 
-const useGreenTheme = makeStyles(({ typography }) => ({
+const useGreenTheme = makeStyles(() => ({
   cardHeader: {
     backgroundColor: palette.greenExtraLight
   },
@@ -213,6 +251,6 @@ const useGreenTheme = makeStyles(({ typography }) => ({
   }
 }))
 
-export { useGreenTheme, useRedTheme, useGreyTheme, useBlueTheme }
+export { useGreenTheme, useRedTheme, useGreyTheme, useBlueTheme, useGreyDarkTheme }
 
 export default useBaseStyle
