@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import classNames from 'classnames'
+import PropTypes from 'prop-types'
 import { Card, CardContent, CardHeader, Typography, Avatar } from '@material-ui/core'
 import { AddCircleOutline, Timeline } from '@material-ui/icons'
 import dayjs from 'dayjs'
@@ -16,9 +17,9 @@ import { UserContext } from '~/context/UserContext'
 
 const dateDuJour = dayjs()
 
-const propTypes = { permanence: permanenceType.isRequired }
+const propTypes = { permanence: permanenceType.isRequired, highlighted: PropTypes.bool.isRequired }
 
-const PermanceCard = ({ permanence }) => {
+const PermanceCard = ({ permanence, highlighted }) => {
   const { MODIFY } = Action
   const { COMPOSTER_STATISTIQUES } = Subject
   const theme = useTheme(permanence)
@@ -77,7 +78,7 @@ const PermanceCard = ({ permanence }) => {
   )
 
   return (
-    <Card className={baseStyle.card}>
+    <Card className={classNames(baseStyle.card, theme.card, { [theme.cardHightlighted]: highlighted })}>
       <CardHeader
         className={classNames(baseStyle.cardHeader, theme.cardHeader)}
         title={cardTitle}
