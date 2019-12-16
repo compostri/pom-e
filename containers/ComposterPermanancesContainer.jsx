@@ -1,7 +1,7 @@
 import React, { useState, useMemo, Fragment, useCallback, useContext, useEffect, useRef } from 'react'
 import { rrulestr } from 'rrule'
 import PropTypes from 'prop-types'
-import { Typography, Button } from '@material-ui/core'
+import { Typography, Button, IconButton } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import { ChevronLeft, ChevronRight } from '@material-ui/icons'
 import dayjs from 'dayjs'
@@ -155,11 +155,15 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
   return (
     <>
       <div className={classes.nav}>
-        <Button onClick={goOneMonthBack} startIcon={<ChevronLeft />} />
+        <IconButton onClick={goOneMonthBack}>
+          <ChevronLeft />
+        </IconButton>
         <Typography variant="h1">
           <p className={classes.mois}>{date.format('MMMM YYYY')}</p>
         </Typography>
-        <Button onClick={goOneMonthForward} startIcon={<ChevronRight />} />
+        <IconButton onClick={goOneMonthForward}>
+          <ChevronRight />
+        </IconButton>
       </div>
       <Calendar date={date} renderDay={renderDay} />
       {maybeRenderPopover((permanenceDetails || {}).data || {})}
