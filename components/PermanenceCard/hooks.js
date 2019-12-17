@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { useBlueTheme, useRedTheme, useGreenTheme, useGreyTheme, useGreyDarkTheme } from './PermanenceCard.theme'
+import { useBlueTheme, useRedTheme, useGreenTheme, useGreyTheme, useOrangeTheme } from './PermanenceCard.theme'
 
 const today = dayjs()
 
@@ -21,7 +21,7 @@ const useTheme = ({ canceled, date, openers, eventTitle }) => {
   const greyTheme = useGreyTheme()
   const redTheme = useRedTheme()
   const blueTheme = useBlueTheme()
-  const greyDarkTheme = useGreyDarkTheme()
+  const orangeTheme = useOrangeTheme()
 
   const isPermDatePassed = today.isAfter(date)
   const hasAnyOpeners = openers.length > 0
@@ -40,6 +40,6 @@ const useTheme = ({ canceled, date, openers, eventTitle }) => {
     }
     return greenTheme
   }
-  return greyDarkTheme
+  return orangeTheme
 }
 export { usePermanenceStatus, useTheme }

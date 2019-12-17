@@ -10,7 +10,7 @@ import palette from '~/variables'
 const useStyles = makeStyles(theme => ({
   UserButtonLog: {
     '&:hover': {
-      backgroundColor: palette.orangeOpacity
+      backgroundColor: palette.redOpacity
     }
   },
   popper: {
@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
   },
   nested: {
     paddingLeft: theme.spacing(1),
-    backgroundColor: palette.orangePrimary,
+    backgroundColor: palette.redPrimary,
     color: 'white',
     borderBottomStyle: 'solid',
     borderBottomWidth: '1px',
@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
       border: 0
     },
     '&:hover, &:focus': {
-      backgroundColor: palette.orangeOpacity
+      backgroundColor: palette.redOpacity
     },
     '& span': {
       fontWeight: 700,
@@ -44,12 +44,12 @@ const useStyles = makeStyles(theme => ({
     borderBottomWidth: '.5px',
     borderBottomColor: 'rgba(255,255,255,.3)',
     borderBottomStyle: 'solid',
-    backgroundColor: palette.orangeOpacity,
+    backgroundColor: palette.redOpacity,
     fontWeight: 400,
     paddingLeft: theme.spacing(1),
     color: 'white',
     '&:hover': {
-      backgroundColor: palette.orangePrimary
+      backgroundColor: palette.redPrimary
     },
     '& span': {
       color: '#fff'

@@ -88,12 +88,12 @@ const useStyles = makeStyles(theme => ({
     fontSize: 16,
     fontWeight: '700',
     letterSpacing: 1,
-    backgroundColor: palette.orangePrimary,
+    backgroundColor: palette.redPrimary,
     margin: '0 auto',
     display: 'block',
     marginTop: theme.spacing(4),
     '&:hover': {
-      backgroundColor: palette.orangeOpacity
+      backgroundColor: palette.redOpacity
     }
   },
   modalUser: {

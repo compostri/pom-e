@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
     display: 'block',
     margin: '0 auto',
     '&:hover': {
-      backgroundColor: palette.orangeOpacity
+      backgroundColor: palette.redOpacity
     }
   },
   permBtnCreate: {

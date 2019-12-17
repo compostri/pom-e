@@ -10,7 +10,7 @@ const theme = createMuiTheme({
   },
   palette: {
     primary: { main: palette.greenPrimary },
-    secondary: { main: palette.orangePrimary }
+    secondary: { main: palette.redPrimary }
   },
   overrides: {
     MuiButton: {
@@ -37,12 +37,12 @@ const theme = createMuiTheme({
       },
       containedSecondary: {
         '&:hover': {
-          backgroundColor: palette.orangeOpacity
+          backgroundColor: palette.redOpacity
         }
       },
       containedPrimary: {
         color: 'white',
-        backgroundColor: palette.orangePrimary
+        backgroundColor: palette.redPrimary
       },
       outlined: {
         boxShadow: 'none',
@@ -64,7 +64,7 @@ const theme = createMuiTheme({
     },
     MuiBackdrop: {
       root: {
-        backgroundColor: palette.orangePrimary
+        backgroundColor: palette.redPrimary
       }
     },
     MuiContainer: {
@@ -82,7 +82,7 @@ const theme = createMuiTheme({
       },
       secondary: {
         '&:hover': {
-          backgroundColor: palette.orangeOpacity
+          backgroundColor: palette.redOpacity
         }
       }
     },

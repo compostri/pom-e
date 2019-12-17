@@ -73,7 +73,7 @@ const useStyles = makeStyles(theme => ({
   submit: {
     color: 'white',
     '&:hover': {
-      backgroundColor: palette.orangeOpacity
+      backgroundColor: palette.redOpacity
     }
   },
   inputGlobal: {

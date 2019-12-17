@@ -41,12 +41,12 @@ const commonGraphStyle = {
   fill: false,
   lineTension: 0.1,
   backgroundColor: 'rgb(245,222,245)',
-  borderColor: palette.orangePrimary,
+  borderColor: palette.redPrimary,
   borderCapStyle: 'butt',
   borderDash: [],
   borderDashOffset: 0.0,
   borderJoinStyle: 'miter',
-  pointBorderColor: palette.orangePrimary,
+  pointBorderColor: palette.redPrimary,
   pointBackgroundColor: '#fff',
   pointBorderWidth: 4,
   pointHoverRadius: 5,
@@ -59,8 +59,8 @@ const commonGraphStyle = {
 
 const lineNbBucketsStyle = {
   ...commonGraphStyle,
-  borderColor: palette.orangePrimary,
-  pointBorderColor: palette.orangePrimary
+  borderColor: palette.redPrimary,
+  pointBorderColor: palette.redPrimary
 }
 const lineNbUsersStyle = {
   ...commonGraphStyle,
