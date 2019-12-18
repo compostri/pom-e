@@ -116,9 +116,9 @@ const Content = ({ composter, users }) => {
           <Box my={2}>
             <Grid container spacing={2}>
               {users.length > 0 ? (
-                users.map(o => (
-                  <Grid item md={3} sm={4} xs={12}>
-                    <OuvreurCard uc={o} key={`ouvr-${o.id}`} />
+                users.map(({ id, user, ...info }) => (
+                  <Grid item md={3} xs={6} key={`ouvr-${id}`}>
+                    <OuvreurCard user={user} ucId={info['@id']} />
                   </Grid>
                 ))
               ) : (
