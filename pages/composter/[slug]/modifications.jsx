@@ -1,5 +1,5 @@
 import React from 'react'
-import { Paper, Tabs, Tab, IconButton, Box } from '@material-ui/core'
+import { Paper, Tabs, Tab, IconButton, Box, Hidden } from '@material-ui/core'
 import { Clear } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 import Link from 'next/link'
@@ -101,13 +101,9 @@ const ComposterEdit = ({ composter }) => {
               value="informations-composteur"
               aria-controls="informations-composteur-content"
             />
-            <Tab
-              className={classes.tab}
-              label="Formulaire de contact"
-              id="contact-composteur"
-              value="contact-composteur"
-              aria-controls="contact-composteur-content"
-            />
+            <Hidden smDown>
+              <Tab className={classes.tab} label="Formulaires" id="contact-composteur" value="contact-composteur" aria-controls="contact-composteur-content" />
+            </Hidden>
             <Tab className={classes.tab} label="Permanences" id="perm-composteur" value="perm-composteur" aria-controls="perm-composteur-content" />
           </Tabs>
           <Link href="/composter/[slug]" as={`/composter/${composter.slug}`} passHref>

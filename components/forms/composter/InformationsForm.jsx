@@ -38,7 +38,7 @@ const InformationsForm = () => {
   const initialValues = {
     openingProcedures,
     acceptNewMembers,
-    image: { name: image.imageName, url: image.contentUrl },
+    // image: { name: image.imageName, url: image.contentUrl },
     publicDescription,
     permanencesDescription,
     broyatLevel
@@ -70,10 +70,10 @@ const InformationsForm = () => {
       {({ values, isSubmitting, setFieldValue }) => (
         <Form>
           <Grid container spacing={2}>
-            <Grid item xs={2}>
+            <Grid item xs={2} sm={2}>
               <ImageInput label="Photo" name={Name.image} onLoadEnd={handleImageChange(setFieldValue)} value={values.image} />
             </Grid>
-            <Grid container xs={10} direction="column">
+            <Grid container xs={12} sm={10} direction="column">
               <FormikTextField InputLabelProps={InputLabelProps} multiline rows="4" label="Description publique" name={Name.publicDescription} />
               <FormikTextField InputLabelProps={InputLabelProps} label="Procédure d'ouverture" name={Name.openingProcedures} />
               <FormikTextField InputLabelProps={InputLabelProps} label="Description des permanences" name={Name.permanencesDescription} />

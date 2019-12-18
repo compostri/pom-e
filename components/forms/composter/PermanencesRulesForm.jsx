@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useContext } from 'react'
-import { InputLabel, FormControl, Select, MenuItem, Button } from '@material-ui/core'
+import { InputLabel, FormControl, Select, MenuItem, Button, Grid, Box, Hidden, IconButton } from '@material-ui/core'
 import { Add, Delete } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 import { DatePicker, TimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
@@ -30,8 +30,14 @@ const useStyles = makeStyles(theme => ({
   tabs: {
     flexGrow: '1'
   },
-  permForm: {
-    margin: theme.spacing(0, 2, 2, 0)
+  hourLine: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: theme.spacing(4),
+      flexWrap: 'wrap'
+    }
   },
   permDay: {
     minWidth: 130
@@ -61,7 +67,6 @@ const useStyles = makeStyles(theme => ({
   },
   permBtnSuppr: {
     color: palette.greenPrimary,
-    padding: theme.spacing(2.75, 0, 2.75, 0),
     '&:hover': {
       backgroundColor: palette.greenOpacity
     }
@@ -77,63 +82,80 @@ const RuleForm = ({ index }) => {
   const classes = useStyles()
   return (
     <MuiPickersUtilsProvider utils={DaysJSUtils}>
-      <FormControl className={classes.permForm}>
-        <InputLabel id="week-day-label">Jour </InputLabel>
-        <Field name={`rules.${index}.day`}>
-          {({ field }) => (
-            <Select className={classes.permDay} ampm={false} labelId="week-day-label" id="week-day" {...field}>
-              <MenuItem value={RRule.MO}>Lundi</MenuItem>
-              <MenuItem value={RRule.TU}>Mardi</MenuItem>
-              <MenuItem value={RRule.WE}>Mercredi</MenuItem>
-              <MenuItem value={RRule.TH}>Jeudi</MenuItem>
-              <MenuItem value={RRule.FR}>Vendredi</MenuItem>
-              <MenuItem value={RRule.SA}>Samedi</MenuItem>
-              <MenuItem value={RRule.SU}>Dimanche</MenuItem>
-            </Select>
-          )}
-        </Field>
-      </FormControl>
-      <FormControl className={classes.permForm}>
-        <Field name={`rules.${index}.timeStart`}>
-          {({ field, form }) => (
-            <TimePicker ampm={false} label="Heure d‘ouverture" variant="inline" autoOk {...field} onChange={value => form.setFieldValue(field.name, value)} />
-          )}
-        </Field>
-      </FormControl>
-      <FormControl className={classes.permForm}>
-        <Field name={`rules.${index}.startDate`}>
-          {({ field, form }) => (
-            <DatePicker
-              InputLabelProps={{
-                shrink: true
-              }}
-              ampm={false}
-              label="Date de début"
-              variant="inline"
-              autoOk
-              {...field}
-              onChange={value => form.setFieldValue(field.name, value)}
-            />
-          )}
-        </Field>
-      </FormControl>
-      <FormControl className={classes.permForm}>
-        <Field name={`rules.${index}.endDate`}>
-          {({ field, form }) => (
-            <DatePicker
-              InputLabelProps={{
-                shrink: true
-              }}
-              ampm={false}
-              label="Date de fin"
-              variant="inline"
-              autoOk
-              {...field}
-              onChange={value => form.setFieldValue(field.name, value)}
-            />
-          )}
-        </Field>
-      </FormControl>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={3}>
+          <FormControl fullWidth>
+            <InputLabel id="week-day-label">Jour </InputLabel>
+            <Field name={`rules.${index}.day`}>
+              {({ field }) => (
+                <Select className={classes.permDay} ampm={false} labelId="week-day-label" id="week-day" {...field}>
+                  <MenuItem value={RRule.MO}>Lundi</MenuItem>
+                  <MenuItem value={RRule.TU}>Mardi</MenuItem>
+                  <MenuItem value={RRule.WE}>Mercredi</MenuItem>
+                  <MenuItem value={RRule.TH}>Jeudi</MenuItem>
+                  <MenuItem value={RRule.FR}>Vendredi</MenuItem>
+                  <MenuItem value={RRule.SA}>Samedi</MenuItem>
+                  <MenuItem value={RRule.SU}>Dimanche</MenuItem>
+                </Select>
+              )}
+            </Field>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <FormControl fullWidth>
+            <Field name={`rules.${index}.timeStart`}>
+              {({ field, form }) => (
+                <TimePicker
+                  ampm={false}
+                  label="Heure d‘ouverture"
+                  variant="inline"
+                  autoOk
+                  {...field}
+                  onChange={value => form.setFieldValue(field.name, value)}
+                />
+              )}
+            </Field>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <FormControl fullWidth>
+            <Field name={`rules.${index}.startDate`}>
+              {({ field, form }) => (
+                <DatePicker
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                  ampm={false}
+                  label="Date de début"
+                  variant="inline"
+                  autoOk
+                  {...field}
+                  onChange={value => form.setFieldValue(field.name, value)}
+                />
+              )}
+            </Field>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <FormControl fullWidth>
+            <Field name={`rules.${index}.endDate`}>
+              {({ field, form }) => (
+                <DatePicker
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                  ampm={false}
+                  label="Date de fin"
+                  variant="inline"
+                  autoOk
+                  {...field}
+                  onChange={value => form.setFieldValue(field.name, value)}
+                />
+              )}
+            </Field>
+          </FormControl>
+        </Grid>
+      </Grid>
     </MuiPickersUtilsProvider>
   )
 }
@@ -207,13 +229,23 @@ const PermanencesRulesForm = () => {
                 {values.rules &&
                   values.rules.map((rule, index) => (
                     <div key={`rule-${rule.timeStart.valueOf()}`}>
-                      <RuleForm index={index} {...rule} />
+                      <Box className={classes.hourLine}>
+                        <RuleForm index={index} {...rule} />
 
-                      <Button type="button" onClick={() => remove(index)} className={classes.permBtnSuppr}>
-                        <Delete />
-                      </Button>
+                        <Hidden smDown>
+                          <IconButton type="button" onClick={() => remove(index)} className={classes.permBtnSuppr}>
+                            <Delete />
+                          </IconButton>
+                        </Hidden>
+                        <Hidden mdUp>
+                          <Button type="button" startIcon={<Delete />} onClick={() => remove(index)} variant="contained" color="primary">
+                            Supprimer
+                          </Button>
+                        </Hidden>
+                      </Box>
                     </div>
                   ))}
+
                 <Button type="button" onClick={() => push(defaultRule)} className={classes.permBtnCreate}>
                   <Add className={classes.permBtnCreateIcon} />
                   Nouveau créneau
