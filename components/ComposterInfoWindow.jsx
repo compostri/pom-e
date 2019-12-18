@@ -64,7 +64,7 @@ const ComposterInfoWindow = ({ composter }) => {
                     <ListItemIcon className={classes.infoIcone}>
                       <Room fontSize="small" style={{ color: composterColor }} />
                     </ListItemIcon>
-                    <ListItemText>{composter.commune.name}</ListItemText>
+                    <ListItemText>{composter.communeName}</ListItemText>
                   </ListItem>
                 </div>
                 <div>
