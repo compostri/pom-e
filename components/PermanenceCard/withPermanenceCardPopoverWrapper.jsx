@@ -67,7 +67,7 @@ const withPermanencePopoverWrapper = WrappedComponent => {
             }}
           />
           <CardContent className={baseStyle.popoverCardContent}>
-            <WrappedComponent permanence={permanence} composterId={composter.rid} onSubmit={onSubmit} />
+            <WrappedComponent permanence={permanence} composterId={composter.rid} onSubmit={onSubmit} onCancel={onClose} />
           </CardContent>
         </Card>
       </Popover>

@@ -135,7 +135,7 @@ const FormikTextField = withFormikField(TextField)
 const FormikSwitch = withFormikField(Switch)
 const FormikSelect = withFormikField(Select)
 
-const PermanenceCardPopover = ({ permanence, onSubmit }) => {
+const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
   const { MODIFY, DELETE } = Action
   const { COMPOSTER_LISTES_OUVREURS, COMPOSTER_OUVREUR, COMPOSTER_PERMANENCE_MESSAGE } = Subject
   const isPermanencePassed = today.isAfter(permanence.date)
@@ -260,7 +260,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
       </>
     )
 
-  const mayRenderOpenerInnerForm = formikProps => {
+  const mayRenderOpenerInnerForm = (formikProps, handleCancel) => {
     if (abilityContext.cannot(Action.CREATE, Subject.COMPOSTER_OUVREUR)) {
       return null
     }
@@ -273,9 +273,6 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
 
     const handleOpenerAdding = newOpener => {
       setFieldValue('openers', [...openers, newOpener])
-    }
-    const handleCancel = () => {
-      setFieldValue('openers', initialValues.openers)
     }
 
     const isUserSelfEdited = openersAvailable.length !== openers.length
@@ -320,8 +317,8 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
     )
   }, [])
 
-  const mayRenderInnerFormStats = formikProps => {
-    const { setValues, dirty } = formikProps
+  const mayRenderInnerFormStats = (formikProps, handleCancel) => {
+    const { dirty } = formikProps
     const hasUserBeenOpener = user && permanence.openers.map(getId).includes(`/users/${user.userId}`)
 
     const isEditable = abilityContext.can(Action.MODIFY, {
@@ -331,9 +328,6 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
 
     const disabled = isEditable === false
 
-    const handleCancel = () => {
-      setValues(initialValues)
-    }
     const InputLabelProps = {
       shrink: true
     }
@@ -393,10 +387,9 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
     )
   }
 
-  const mayRenderRefentInnerForm = formikProps => {
+  const mayRenderRefentInnerForm = (formikProps, handleCancel) => {
     const {
       values: { openers, isPermanenceAnEvent, canceled },
-      setFieldValue,
       dirty
     } = formikProps
 
@@ -474,8 +467,6 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
         </>
       )
 
-    const handleCancel = () => setFieldValue(initialValues)
-
     return (
       <Can I={MODIFY} this={COMPOSTER_LISTES_OUVREURS}>
         {[
@@ -496,12 +487,12 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
         return (
           <Form>
             {mayRenderCurrentOpeners(formikProps)}
-            {isPermanencePassed && mayRenderInnerFormStats(formikProps)}
-            {isPermanenceToCome && mayRenderRefentInnerForm(formikProps)}
+            {isPermanencePassed && mayRenderInnerFormStats(formikProps, onCancel)}
+            {isPermanenceToCome && mayRenderRefentInnerForm(formikProps, onCancel)}
             <Can not I={MODIFY} this={COMPOSTER_PERMANENCE_MESSAGE}>
               {mayRenderEventMessage(permanence.eventTitle, permanence.eventMessage)}
             </Can>
-            {isPermanenceToCome && mayRenderOpenerInnerForm(formikProps)}
+            {isPermanenceToCome && mayRenderOpenerInnerForm(formikProps, onCancel)}
           </Form>
         )
       }}
@@ -511,7 +502,8 @@ const PermanenceCardPopover = ({ permanence, onSubmit }) => {
 
 PermanenceCardPopover.propTypes = {
   permanence: permanenceType.isRequired,
-  onSubmit: PropTypes.func.isRequired
+  onSubmit: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired
 }
 
 const PopoverPermanenceToCome = withPermanancePopoverWrapper(PermanenceCardPopover)
