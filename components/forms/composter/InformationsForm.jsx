@@ -38,7 +38,7 @@ const InformationsForm = () => {
   const initialValues = {
     openingProcedures,
     acceptNewMembers,
-    // image: { name: image.imageName, url: image.contentUrl },
+    image: { name: image.imageName, url: image.contentUrl },
     publicDescription,
     permanencesDescription,
     broyatLevel
