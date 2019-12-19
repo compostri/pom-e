@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Typography, IconButton, Button, Modal, Tabs, Tab, Paper, CircularProgress, Grid, Box } from '@material-ui/core'
 import { Clear } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
@@ -6,6 +6,7 @@ import Head from 'next/head'
 import PropTypes from 'prop-types'
 
 import api from '~/utils/api'
+import { useToasts, TOAST } from '~/components/Snackbar'
 import ComposterContainer from '~/components/ComposterContainer'
 import OuvreurCard from '~/components/OuvreurCard'
 import palette from '~/variables'
@@ -92,10 +93,23 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const Content = ({ composter, users }) => {
+const ComposterOuvreurs = ({ composter }) => {
   const classes = useStyles()
   const [openModal, setOpenModal] = useState(false)
   const [activeTab, setActiveTab] = useState('creation-compte')
+  const [users, setUsers] = useState()
+  const { addToast } = useToasts()
+
+  const getUsers = useCallback(async () => {
+    const data = await api.getUserComposter({ composter: composter.rid }).catch(console.error)
+    if (data) {
+      setUsers(data['hydra:member'])
+    }
+  }, [composter.rid])
+
+  useEffect(() => {
+    getUsers()
+  }, [getUsers])
 
   const handleOpen = () => {
     setOpenModal(true)
@@ -104,8 +118,31 @@ const Content = ({ composter, users }) => {
     setOpenModal(false)
   }
 
+  const onRegisterFormSubmit = async values => {
+    const response = await api
+      .createUserComposter({
+        user: { ...values, userConfirmedAccountURL: `${window.location.origin}/confirmation` },
+        composter: composter['@id']
+      })
+      .catch(() => addToast('Une erreur est survenue', TOAST.ERROR))
+
+    return new Promise((resolve, reject) => {
+      if (response) {
+        addToast("L'ouvreur a bien été ajouté", TOAST.SUCCESS)
+        resolve()
+        handleClose()
+        getUsers()
+      } else {
+        reject()
+      }
+    })
+  }
+
   return (
-    <>
+    <ComposterContainer composter={composter}>
+      <Head>
+        <title>Les ouvreurs de {composter.name} - un composteur géré par Compostri</title>
+      </Head>
       <div>
         <Typography variant="h1">Liste d&apos;ouvreurs pour {composter.name}</Typography>
         {!users ? (
@@ -166,7 +203,7 @@ const Content = ({ composter, users }) => {
             id="creation-compte-content"
             aria-labelledby="creation-compte"
           >
-            <RegisterForm handleClose={handleClose} />
+            <RegisterForm onSubmit={onRegisterFormSubmit} />
           </Box>
           <Box
             p={3}
@@ -180,36 +217,8 @@ const Content = ({ composter, users }) => {
           </Box>
         </Paper>
       </Modal>
-    </>
-  )
-}
-
-const ComposterOuvreurs = ({ composter }) => {
-  const [users, setUsers] = useState()
-
-  useEffect(() => {
-    const getUsers = async () => {
-      const data = await api.getUserComposter({ composter: composter.rid }).catch(console.error)
-      if (data) {
-        setUsers(data['hydra:member'])
-      }
-    }
-    getUsers()
-  }, [composter.rid])
-
-  return (
-    <ComposterContainer composter={composter}>
-      <Head>
-        <title>Les ouvreurs de {composter.name} - un composteur géré par Compostri</title>
-      </Head>
-      <Content composter={composter} users={users} />
     </ComposterContainer>
   )
-}
-
-Content.propTypes = {
-  composter: composterType.isRequired,
-  users: PropTypes.arrayOf(userType).isRequired
 }
 
 ComposterOuvreurs.propTypes = {

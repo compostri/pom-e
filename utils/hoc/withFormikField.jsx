@@ -8,8 +8,7 @@ const withFormikField = WrappedComponent => {
     const [{ onChange, onBlur, name, value }, meta] = useField(propName)
     return (
       <>
-        <WrappedComponent value={value} onChange={onChange} onBlur={onBlur} name={name} {...props} />
-        {meta.error && meta.touched && <div>{meta.error}</div>}
+        <WrappedComponent value={value} onChange={onChange} onBlur={onBlur} name={name} error={meta.error && meta.touched} {...props} />
       </>
     )
   }
