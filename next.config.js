@@ -6,8 +6,4 @@ dotenvLoad()
 
 const withNextEnv = nextEnv()
 
-module.exports = withNextEnv(
-  withOffline({
-    // Your Next.js config.
-  })
-)
+module.exports = withNextEnv(withOffline({}))
