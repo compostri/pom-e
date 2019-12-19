@@ -1,24 +1,16 @@
-import React, { createContext, Component } from 'react'
+import React, { createContext } from 'react'
+import PropTypes from 'prop-types'
+import { composterType } from '~/types'
 
 export const ComposterContext = createContext({})
 
-class ComposterProvider extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      composter: props.composter || null,
-      setComposter: (composter, force = false) => {
-        this.setState(state => {
-          return { composter: composter }
-        })
-      }
-    }
-  }
+const propTypes = { composter: composterType.isRequired, children: PropTypes.node.isRequired }
 
-  render() {
-    return <ComposterContext.Provider value={{ composterContext: this.state }}>{this.props.children}</ComposterContext.Provider>
-  }
+const ComposterProvider = ({ composter, children }) => {
+  return <ComposterContext.Provider value={{ composterContext: { composter } }}>{children}</ComposterContext.Provider>
 }
+
+ComposterProvider.propTypes = propTypes
 
 export const withComposter = Component => props => <ComposterContext.Consumer>{store => <Component {...props} {...store} />}</ComposterContext.Consumer>
 
