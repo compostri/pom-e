@@ -30,10 +30,10 @@ const RegisterSchema = Yup.object().shape({
 })
 
 const initialValues = {
-  [Lastname]: 'd',
-  [Firstname]: 'd',
-  [Username]: 'd',
-  [Email]: 'd@p.fr',
+  [Lastname]: '',
+  [Firstname]: '',
+  [Username]: '',
+  [Email]: '',
   plainPassword: Math.random()
     .toString(36)
     .replace(/[^a-z]+/g, '')

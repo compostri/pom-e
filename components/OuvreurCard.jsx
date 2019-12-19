@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/styles'
 import { Paper, Typography, IconButton, Modal, Button, CircularProgress, Avatar } from '@material-ui/core'
 import { Clear } from '@material-ui/icons'
 import palette from '~/variables'
-import api from '~/utils/api'
 import { getInitial } from '~/utils/utils'
 import { userType } from '~/types'
 
@@ -126,7 +125,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const OuvreurCard = ({ user, ucId }) => {
+const OuvreurCard = ({ user, onUserRemoval }) => {
   const classes = useStyles()
   const [openModal, setOpenModal] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -138,15 +137,12 @@ const OuvreurCard = ({ user, ucId }) => {
     setOpenModal(false)
   }
 
-  const handleSubmit = async () => {
+  const handleUserRemoval = () => {
     setIsDeleting(true)
-
-    // TODO Ajouter l'ouvreur a la permanence
-    const res = api.deleteUserComposter(ucId)
-    if (res.status === 204) {
+    onUserRemoval().finally(() => {
       setIsDeleting(false)
       handleClose()
-    }
+    })
   }
 
   const statutClassesAvatar = classes.ouvreurAvatarGreen
@@ -178,7 +174,7 @@ const OuvreurCard = ({ user, ucId }) => {
             <Typography className={classes.modalUserName}>{user.username}</Typography>
           </div>
 
-          <Button onClick={handleSubmit} fullWidth className={classes.btnAdd}>
+          <Button onClick={handleUserRemoval} fullWidth className={classes.btnAdd}>
             {isDeleting ? <CircularProgress /> : 'Confirmer'}
           </Button>
         </Paper>
@@ -189,6 +185,6 @@ const OuvreurCard = ({ user, ucId }) => {
 
 OuvreurCard.propTypes = {
   user: userType.isRequired,
-  ucId: PropTypes.string.isRequired
+  onUserRemoval: PropTypes.func.isRequired
 }
 export default OuvreurCard

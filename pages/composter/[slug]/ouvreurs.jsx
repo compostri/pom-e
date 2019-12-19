@@ -151,6 +151,13 @@ const ComposterOuvreurs = ({ composter }) => {
     )
   }
 
+  const handleUserRemoval = ucId => () => {
+    return handleResponse(api.deleteUserComposter(ucId), {
+      successMessage: "L'ouvreur a bien été ajouté.",
+      errorMessage: 'Une erreur est intervenue. Veuillez rééssayer plus tard.'
+    })
+  }
+
   return (
     <ComposterContainer composter={composter}>
       <Head>
@@ -168,7 +175,7 @@ const ComposterOuvreurs = ({ composter }) => {
               {users.length > 0 ? (
                 users.map(({ id, user, ...info }) => (
                   <Grid item md={3} xs={6} key={`ouvr-${id}`}>
-                    <OuvreurCard user={user} ucId={info['@id']} />
+                    <OuvreurCard user={user} ucId={info['@id']} onUserRemoval={handleUserRemoval(info['@id'])} />
                   </Grid>
                 ))
               ) : (
