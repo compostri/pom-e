@@ -1,65 +1,93 @@
-// This is the "Offline copy of pages" service worker
+/**
+ * Welcome to your Workbox-powered service worker!
+ *
+ * You'll need to register this file in your web app and you should
+ * disable HTTP caching for this file too.
+ * See https://goo.gl/nhQhGp
+ *
+ * The rest of the code is auto-generated. Please don't update this file
+ * directly; instead, make changes to your Workbox build configuration
+ * and re-run your build process.
+ * See https://goo.gl/2aRDsh
+ */
 
-const CACHE = 'pwabuilder-offline'
+importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
-// TODO: replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "index.html";
-const offlineFallbackPage = 'offline.html'
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
 
-// Install stage sets up the index page (home page) in the cache and opens a new cache
-self.addEventListener('install', function(event) {
-  console.log('[PWA Builder] Install Event processing')
-
-  event.waitUntil(
-    caches.open(CACHE).then(function(cache) {
-      console.log('[PWA Builder] Cached offline page during install')
-
-      if (offlineFallbackPage === 'offline.html') {
-        return cache.add(new Response('TODO: Update the value of the offlineFallbackPage constant in the serviceworker.'))
-      }
-
-      return cache.add(offlineFallbackPage)
-    })
-  )
-})
-
-// If any fetch fails, it will look for the request in the cache and serve it from there first
-self.addEventListener('fetch', function(event) {
-  if (event.request.method !== 'GET') return
-
-  event.respondWith(
-    fetch(event.request)
-      .then(function(response) {
-        console.log('[PWA Builder] add page to offline cache: ' + response.url)
-
-        // If request was success, add or update it in the cache
-        event.waitUntil(updateCache(event.request, response.clone()))
-
-        return response
-      })
-      .catch(function(error) {
-        console.log('[PWA Builder] Network request Failed. Serving content from cache: ' + error)
-        return fromCache(event.request)
-      })
-  )
-})
-
-function fromCache(request) {
-  // Check to see if you have it in the cache
-  // Return response
-  // If not in the cache, then return error page
-  return caches.open(CACHE).then(function(cache) {
-    return cache.match(request).then(function(matching) {
-      if (!matching || matching.status === 404) {
-        return Promise.reject('no-match')
-      }
-
-      return matching
-    })
-  })
-}
-
-function updateCache(request, response) {
-  return caches.open(CACHE).then(function(cache) {
-    return cache.put(request, response)
-  })
-}
+/**
+ * The workboxSW.precacheAndRoute() method efficiently caches and responds to
+ * requests for URLs in the manifest.
+ * See https://goo.gl/S9QRab
+ */
+self.__precacheManifest = [
+  {
+    "url": "android-chrome-192x192.png",
+    "revision": "eea178315f46827e0fdcc7898bdb8b7e"
+  },
+  {
+    "url": "android-chrome-512x512.png",
+    "revision": "46189896da48a6212e7316add1db4202"
+  },
+  {
+    "url": "apple-touch-icon.png",
+    "revision": "fbc22162fbdef9b301dc4d371971a571"
+  },
+  {
+    "url": "browserconfig.xml",
+    "revision": "5645c9d0f6d7ff284177266cfe19164c"
+  },
+  {
+    "url": "favicon-16x16.png",
+    "revision": "296905f826523b35aaa2750120c317a7"
+  },
+  {
+    "url": "favicon-32x32.png",
+    "revision": "8fed56dbc93269cb3876004b47c8d97b"
+  },
+  {
+    "url": "favicon.ico",
+    "revision": "932f0f8126159fc4933dac853bcf8812"
+  },
+  {
+    "url": "manifest.json",
+    "revision": "c3a2a96bda89f5250214793924d2e0bd"
+  },
+  {
+    "url": "mstile-150x150.png",
+    "revision": "3dd152ed5fe35cbbcf265ba5bf2699af"
+  },
+  {
+    "url": "offline.html",
+    "revision": "d3f991533db26c4f627bbc4795f06661"
+  },
+  {
+    "url": "robots.txt",
+    "revision": "3ad0652bd17ff826a31fa29366021cfd"
+  },
+  {
+    "url": "safari-pinned-tab.svg",
+    "revision": "971126dbfa79a8da52c2b3be635f84d7"
+  },
+  {
+    "url": "static/compostri.svg",
+    "revision": "a6b63b9d46f26e75f477baa6127bee82"
+  },
+  {
+    "url": "static/logo-mini.svg",
+    "revision": "ee405879460d5a3fab4d3479c13bdf9c"
+  },
+  {
+    "url": "static/logo.svg",
+    "revision": "22f7472625d5f5d2bef75229f67a81fd"
+  },
+  {
+    "url": "static/logo2.svg",
+    "revision": "78f347976f17a7082d78daf12c7e5ed2"
+  }
+].concat(self.__precacheManifest || []);
+workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
