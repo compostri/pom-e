@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/styles'
-import { Container, Button, Box, Hidden, Select, MenuItem } from '@material-ui/core'
+import { Container, Button, Box, Hidden, Select, MenuItem, Paper } from '@material-ui/core'
 import Link from 'next/link'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
@@ -35,14 +35,16 @@ const ComposterContainer = ({ composter, maxWidth, children }) => {
       <div className={classnames({ [classes.wrapper]: maxWidth })}>
         <AbilityProvider composterSlug={slug}>
           <Header title={name}>
-            <Hidden xsDown>
-              <MenuLinks />
-            </Hidden>
+            <MenuLinks />
           </Header>
           <Box my={4}>
             <Container>
               <Hidden smUp>
-                <SelectMenu />
+                <Box mb={2}>
+                  <Paper>
+                    <SelectMenu />
+                  </Paper>
+                </Box>
               </Hidden>
               {children}
             </Container>

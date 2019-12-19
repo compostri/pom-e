@@ -40,7 +40,6 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(5, 4, 0, 4),
     width: '100%',
     display: 'flex',
-    flexDirection: 'column',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
     [theme.breakpoints.down('md')]: {
@@ -48,6 +47,12 @@ const useStyles = makeStyles(theme => ({
       justifyContent: 'center',
       alignItems: 'center'
     }
+  },
+  toolbarLeftInner: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexGrow: 1
   },
   chevronLeft: {
     padding: '0',
@@ -81,7 +86,7 @@ const Header = ({ title, children }) => {
           </IconButton>
         </Link>
         <div className={classes.toolbarLeft}>
-          <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+          <Box className={classes.toolbarLeftInner}>
             <div className={classes.toolbarTitle}>
               <Hidden smDown implementation="css">
                 <Link href="/" passHref>
@@ -97,8 +102,9 @@ const Header = ({ title, children }) => {
 
             <UserButton />
           </Box>
-
-          <div className={classes.children}>{children}</div>
+          <Hidden xsDown>
+            <div className={classes.children}>{children}</div>
+          </Hidden>
         </div>
       </Toolbar>
     </AppBar>

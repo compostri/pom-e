@@ -28,13 +28,16 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center'
   },
   modalPaper: {
-    padding: theme.spacing(6, 6, 6, 6),
+    padding: theme.spacing(6),
     outline: 'none',
-    maxWidth: 840
+    maxWidth: 840,
+    margin: theme.spacing(0, 2),
+    [theme.breakpoints.down('md')]: {
+      padding: theme.spacing(3)
+    }
   },
   modalHeader: {
     display: 'flex',
-
     paddingBottom: theme.spacing(4)
   },
   tabs: {
@@ -114,7 +117,7 @@ const Content = ({ composter, users }) => {
             <Grid container spacing={2}>
               {users.length > 0 ? (
                 users.map(o => (
-                  <Grid item md={3} xs={6}>
+                  <Grid item md={3} sm={4} xs={12}>
                     <OuvreurCard uc={o} key={`ouvr-${o.id}`} />
                   </Grid>
                 ))

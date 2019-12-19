@@ -1,11 +1,19 @@
 import React from 'react'
 import { useRouter } from 'next/router'
 import { MenuItem, Select, FormControl } from '@material-ui/core'
+import { makeStyles } from '@material-ui/styles'
 import useMenu from './useMenu'
+
+const useStyles = makeStyles(theme => ({
+  fc: {
+    marginBottom: 0
+  }
+}))
 
 const SelectMenu = () => {
   const links = useMenu()
   const router = useRouter()
+  const classes = useStyles()
   const active = links.find(l => l.isActive)
 
   const navigate = e => {
@@ -14,7 +22,7 @@ const SelectMenu = () => {
   }
 
   return (
-    <FormControl fullWidth>
+    <FormControl fullWidth className={classes.fc}>
       <Select fullWidth value={active.href} onChange={navigate}>
         {links.map((l, i) => (
           // eslint-disable-next-line react/no-array-index-key

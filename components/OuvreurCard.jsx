@@ -60,10 +60,12 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center'
   },
   modalPaper: {
-    height: 290,
-    minWidth: 546,
-    padding: theme.spacing(6, 6, 6, 6),
-    outline: 'none'
+    padding: theme.spacing(6),
+    margin: theme.spacing(0, 2),
+    outline: 'none',
+    [theme.breakpoints.down('md')]: {
+      padding: theme.spacing(3)
+    }
   },
   modalHeader: {
     display: 'flex',

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/styles'
-import { Paper, Typography, InputBase, IconButton, Modal, TextField, Button, Switch, FormControlLabel, FormGroup } from '@material-ui/core'
+import { Paper, Typography, InputBase, IconButton, Modal, TextField, Button, Switch, FormControlLabel, FormGroup, Grid } from '@material-ui/core'
 import { Add, Clear, Search } from '@material-ui/icons'
 import PropTypes from 'prop-types'
 import * as Yup from 'yup'
@@ -16,13 +16,8 @@ import { useToasts, TOAST } from '~/components/Snackbar'
 import ComposterNewsletterForm from '~/components/forms/composter/ComposterNewsletterForm'
 
 const useStyles = makeStyles(theme => ({
-  newsletterContainer: {
-    display: 'flex',
-    justifyContent: 'space-between'
-  },
   sectionLeft: {
     flexGrow: '1',
-    marginRight: theme.spacing(3),
     padding: theme.spacing(3, 3)
   },
   sectionRight: {
@@ -54,8 +49,7 @@ const useStyles = makeStyles(theme => ({
     color: 'white'
   },
   searchIcon: {
-    color: 'white',
-    marginRight: theme.spacing(2)
+    color: 'white'
   },
   searchBtn: {
     color: 'white',
@@ -80,9 +74,13 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center'
   },
   modalPaper: {
-    padding: theme.spacing(6, 6, 6, 6),
+    padding: theme.spacing(6),
     outline: 'none',
-    maxWidth: 840
+    maxWidth: 840,
+    margin: theme.spacing(0, 2),
+    [theme.breakpoints.down('md')]: {
+      padding: theme.spacing(3)
+    }
   },
   modalHeader: {
     display: 'flex',
@@ -186,89 +184,94 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
       <Head>
         <title>Newsletter {composter.name} - un composteur géré par Compostri</title>
       </Head>
-      <div className={classes.newsletterContainer}>
-        <Paper elevation={1} className={classes.sectionLeft}>
-          <Typography variant="h2" className={classes.title}>
-            Liste des destinataires
-          </Typography>
 
-          <div className={classes.search}>
-            <InputBase
-              type="search"
-              fullWidth
-              className={classes.searchBar}
-              classes={{ input: classes.searchBarInput }}
-              placeholder="Rechercher un utilisateur"
-              endAdornment={<Search className={classes.searchIcon} />}
-              onChange={handleConsumerSearching}
-            />
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={4}>
+          <Paper elevation={1} className={classes.sectionLeft}>
+            <Typography variant="h2" className={classes.title}>
+              Liste des destinataires
+            </Typography>
 
-            <IconButton className={[classes.searchBtn, classes.addBtn].join(' ')} type="submit" aria-label="add" onClick={setModalVisibilityTo(true)}>
-              <Add />
-            </IconButton>
-            <Modal BackdropProps={{ style: { background: '#faf9f8' } }} className={classes.modal} open={openModal} onClose={setModalVisibilityTo(false)}>
-              <Paper elevation={1} className={classes.modalPaper}>
-                <Formik initialValues={UserInitialValues} validationSchema={UserSchema} onSubmit={handleConsumerAdding}>
-                  {({ values }) => (
-                    <Form>
-                      <div className={classes.modalHeader}>
-                        <Typography variant="h2">Ajouter un nouveau destinataire pour la newsletter de {composter.name}</Typography>
-                        <IconButton className={classes.modalFermer} onClick={setModalVisibilityTo(false)}>
-                          <Clear />
-                        </IconButton>
-                      </div>
+            <div className={classes.search}>
+              <InputBase
+                type="search"
+                fullWidth
+                className={classes.searchBar}
+                classes={{ input: classes.searchBarInput }}
+                placeholder="Rechercher un utilisateur"
+                endAdornment={<Search className={classes.searchIcon} />}
+                onChange={handleConsumerSearching}
+              />
 
-                      <div className={classes.info}>
-                        <FormikTextField
-                          InputLabelProps={{
-                            shrink: true
-                          }}
-                          className={classes.textField}
-                          fullWidth
-                          name="username"
-                          label="Pseudo"
-                          placeholder="Entrez le pseudo ici"
-                        />
-                        <FormikTextField
-                          InputLabelProps={{
-                            shrink: true
-                          }}
-                          className={classes.textField}
-                          fullWidth
-                          name="email"
-                          type="email"
-                          label="E-mail"
-                          placeholder="Entrez l'e-mail ici"
-                        />
-                      </div>
+              <IconButton className={[classes.searchBtn, classes.addBtn].join(' ')} type="submit" aria-label="add" onClick={setModalVisibilityTo(true)}>
+                <Add />
+              </IconButton>
+              <Modal BackdropProps={{ style: { background: '#faf9f8' } }} className={classes.modal} open={openModal} onClose={setModalVisibilityTo(false)}>
+                <Paper elevation={1} className={classes.modalPaper}>
+                  <Formik initialValues={UserInitialValues} validationSchema={UserSchema} onSubmit={handleConsumerAdding}>
+                    {({ values }) => (
+                      <Form>
+                        <div className={classes.modalHeader}>
+                          <Typography variant="h2">Ajouter un nouveau destinataire pour la newsletter de {composter.name}</Typography>
+                          <IconButton className={classes.modalFermer} onClick={setModalVisibilityTo(false)}>
+                            <Clear />
+                          </IconButton>
+                        </div>
 
-                      <FormGroup>
-                        <FormControlLabel
-                          control={<FormikSwitch name="subscribeToCompostriNewsletter" checked={values.subscribeToCompostriNewsletter} />}
-                          label="Ce destinataire recevra également la newsletter de Compostri"
-                          className={classes.switchLabel}
-                        />
-                      </FormGroup>
+                        <div className={classes.info}>
+                          <FormikTextField
+                            InputLabelProps={{
+                              shrink: true
+                            }}
+                            className={classes.textField}
+                            fullWidth
+                            name="username"
+                            label="Pseudo"
+                            placeholder="Entrez le pseudo ici"
+                          />
+                          <FormikTextField
+                            InputLabelProps={{
+                              shrink: true
+                            }}
+                            className={classes.textField}
+                            fullWidth
+                            name="email"
+                            type="email"
+                            label="E-mail"
+                            placeholder="Entrez l'e-mail ici"
+                          />
+                        </div>
 
-                      <Button type="submit" variant="contained" color="secondary" className={classes.btnAdd}>
-                        Valider
-                      </Button>
-                    </Form>
-                  )}
-                </Formik>
-              </Paper>
-            </Modal>
-          </div>
+                        <FormGroup>
+                          <FormControlLabel
+                            control={<FormikSwitch name="subscribeToCompostriNewsletter" checked={values.subscribeToCompostriNewsletter} />}
+                            label="Ce destinataire recevra également la newsletter de Compostri"
+                            className={classes.switchLabel}
+                          />
+                        </FormGroup>
 
-          {mayRenderUsers(users)}
-        </Paper>
-        <Paper elevation={1} className={classes.sectionRight}>
-          <Typography variant="h2" className={classes.title}>
-            Envoyer la newsletter du {composter.name}
-          </Typography>
-          <ComposterNewsletterForm />
-        </Paper>
-      </div>
+                        <Button type="submit" variant="contained" color="secondary" className={classes.btnAdd}>
+                          Valider
+                        </Button>
+                      </Form>
+                    )}
+                  </Formik>
+                </Paper>
+              </Modal>
+            </div>
+
+            {mayRenderUsers(users)}
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={8}>
+          <Paper elevation={1} className={classes.sectionRight}>
+            <Typography variant="h2" className={classes.title}>
+              Envoyer la newsletter du {composter.name}
+            </Typography>
+            <ComposterNewsletterForm />
+          </Paper>
+        </Grid>
+      </Grid>
     </ComposterContainer>
   )
 }

@@ -69,7 +69,7 @@ const RegisterForm = ({ handleClose }) => {
       {({ values, handleChange, handleBlur, errors, touched, isSubmitting }) => (
         <Form>
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 required
                 fullWidth
@@ -85,7 +85,7 @@ const RegisterForm = ({ handleClose }) => {
                 helperText={errors.lastname && touched.lastname ? errors.lastname : null}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 required
                 fullWidth
@@ -101,7 +101,7 @@ const RegisterForm = ({ handleClose }) => {
                 helperText={errors.firstname && touched.firstname ? errors.firstname : null}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 required
                 fullWidth
@@ -117,7 +117,7 @@ const RegisterForm = ({ handleClose }) => {
                 helperText={errors.username && touched.username ? errors.username : null}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 required
                 fullWidth

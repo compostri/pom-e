@@ -1,7 +1,7 @@
 import React, { useState, useMemo, Fragment, useCallback, useContext, useEffect, useRef } from 'react'
 import { rrulestr } from 'rrule'
 import PropTypes from 'prop-types'
-import { Typography, Button, IconButton } from '@material-ui/core'
+import { Typography, Button, IconButton, Hidden } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import { ChevronLeft, ChevronRight } from '@material-ui/icons'
 import dayjs from 'dayjs'
@@ -11,6 +11,7 @@ import PermanceCard, { PermanenceCardPopover } from '~/components/PermanenceCard
 import palette from '~/variables'
 
 import Calendar from '~/components/Calendar'
+import CalendarList from '~/components/CalendarList'
 
 import { ComposterPermanencesContext } from '~/context/ComposterPermamencesContext'
 
@@ -28,7 +29,9 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'space-between'
   },
   permanence: {
-    padding: 6
+    marginBottom: 6,
+    padding: 0,
+    width: '100%'
   }
 }))
 
@@ -175,7 +178,12 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
           <ChevronRight />
         </IconButton>
       </div>
-      <Calendar date={date} renderDay={renderDay} />
+      <Hidden xsDown>
+        <Calendar date={date} renderDay={renderDay} />
+      </Hidden>
+      <Hidden smUp>
+        <CalendarList date={date} renderDay={renderDay} />
+      </Hidden>
       {maybeRenderPopover((permanenceDetails || {}).data || {})}
     </>
   )
