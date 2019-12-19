@@ -38,18 +38,17 @@ const InformationsForm = () => {
   const initialValues = {
     openingProcedures,
     acceptNewMembers,
-    image: { name: image.imageName, url: image.contentUrl },
-    publicDescription,
+    image,
+    publicDescription: publicDescription || '',
     permanencesDescription,
     broyatLevel
   }
 
   const submit = async ({ image: newImage, ...otherValues }, { setSubmitting, setFieldValue }) => {
-    const response = await api.updateComposter(slug, { image: newImage['@id'], ...otherValues })
+    const response = await api.updateComposter(slug, { image: newImage ? newImage['@id'] : null, ...otherValues })
 
     if (response) {
       addToast('Votre modification a bien été prise en compte', TOAST.SUCCESS)
-      setFieldValue('image', null)
     } else {
       addToast('Une erreur est survenue', TOAST.ERROR)
     }
@@ -57,27 +56,32 @@ const InformationsForm = () => {
   }
 
   const handleImageChange = setFieldValue => newImage => {
-    setFieldValue(Name.image, newImage || initialValues.image)
+    setFieldValue(Name.image, newImage)
   }
 
   const renderBroyatlevelOptions = options => {
-    const renderOption = ([value, label]) => <MenuItem value={value}>{label}</MenuItem>
+    const renderOption = ([value, label]) => (
+      <MenuItem key={label} value={value}>
+        {label}
+      </MenuItem>
+    )
     return options.map(renderOption)
   }
 
   return (
-    <Formik initialValues={initialValues} onSubmit={submit}>
+    <Formik initialValues={initialValues} onSubmit={submit} enableReinitialize>
       {({ values, isSubmitting, setFieldValue }) => (
         <Form>
+          {console.log('TCL: values', values)}
           <Grid container spacing={2}>
-            <Grid item xs={2} sm={2}>
+            <Grid item xs={12} sm={2}>
               <ImageInput label="Photo" name={Name.image} onLoadEnd={handleImageChange(setFieldValue)} value={values.image} />
             </Grid>
-            <Grid container xs={12} sm={10} direction="column">
-              <FormikTextField InputLabelProps={InputLabelProps} multiline rows="4" label="Description publique" name={Name.publicDescription} />
-              <FormikTextField InputLabelProps={InputLabelProps} label="Procédure d'ouverture" name={Name.openingProcedures} />
-              <FormikTextField InputLabelProps={InputLabelProps} label="Description des permanences" name={Name.permanencesDescription} />
-              <FormControl>
+            <Grid item xs={12} sm={10}>
+              <FormikTextField fullWidth InputLabelProps={InputLabelProps} multiline rows="4" label="Description publique" name={Name.publicDescription} />
+              <FormikTextField fullWidth InputLabelProps={InputLabelProps} label="Procédure d'ouverture" name={Name.openingProcedures} />
+              <FormikTextField fullWidth InputLabelProps={InputLabelProps} label="Description des permanences" name={Name.permanencesDescription} />
+              <FormControl fullWidth>
                 <InputLabel id="broyat-label" InputLabelProps={InputLabelProps}>
                   Niveau de broyat
                 </InputLabel>

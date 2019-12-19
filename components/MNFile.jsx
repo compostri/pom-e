@@ -71,18 +71,9 @@ const defaultProps = {
   targetHeight: 530
 }
 
-const MNFile = ({ input, children, label, targetWidth, targetHeight }) => {
+const MNFile = ({ input, label, targetWidth, targetHeight }) => {
   const inputFileRef = useRef(null)
-  const [previews, setPreviews] = useState([])
-
-  const inputProps = input.props
-
-  const remove = removedName => () => {
-    const byName = ({ name }) => name !== removedName
-    inputFileRef.current.value = ''
-
-    setPreviews(previews.filter(byName))
-  }
+  const { value, ...inputProps } = input.props
 
   const setRef = e => {
     if (input.props.ref) {
@@ -91,17 +82,14 @@ const MNFile = ({ input, children, label, targetWidth, targetHeight }) => {
     inputFileRef.current = e
   }
 
-  const handleChange = (handleLocaleChange, handleInputChange, width, height) => async event => {
+  const handleChange = async e => {
     const {
       target: { files }
-    } = event
-
-    const allPreviews = await Promise.all([...files].map(compress(width, height)))
-    handleLocaleChange(allPreviews)
-
-    if (handleInputChange) {
-      handleInputChange(event, allPreviews)
-    }
+    } = e
+    // On resize les images
+    const allPreviews = await Promise.all([...files].map(compress(targetWidth, targetHeight)))
+    // On les renvoie au composant parent ImageInput, qui va les enregistrer via l'API
+    inputProps.onChange(allPreviews)
   }
 
   return (
@@ -110,12 +98,11 @@ const MNFile = ({ input, children, label, targetWidth, targetHeight }) => {
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...inputProps}
         ref={setRef}
-        onChange={handleChange(setPreviews, inputProps.onChange, targetWidth, targetHeight)}
+        onChange={handleChange}
         type="file"
         style={{ display: 'none' }}
       />
       <label htmlFor={inputProps.name}>{label}</label>
-      {children(previews, remove)}
     </>
   )
 }
