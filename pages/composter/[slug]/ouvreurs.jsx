@@ -3,7 +3,6 @@ import { Typography, IconButton, Button, Modal, Tabs, Tab, Paper, CircularProgre
 import { Clear } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 import Head from 'next/head'
-import PropTypes from 'prop-types'
 
 import api from '~/utils/api'
 import { useToasts, TOAST } from '~/components/Snackbar'
@@ -12,7 +11,7 @@ import OuvreurCard from '~/components/OuvreurCard'
 import palette from '~/variables'
 import RegisterForm from '~/components/forms/RegisterForm'
 import AddUserComposterForm from '~/components/forms/AddUserComposterForm'
-import { composterType, userType } from '~/types'
+import { composterType } from '~/types'
 
 const useStyles = makeStyles(theme => ({
   btnAdd: {
@@ -118,17 +117,11 @@ const ComposterOuvreurs = ({ composter }) => {
     setOpenModal(false)
   }
 
-  const onRegisterFormSubmit = async values => {
-    const response = await api
-      .createUserComposter({
-        user: { ...values, userConfirmedAccountURL: `${window.location.origin}/confirmation` },
-        composter: composter['@id']
-      })
-      .catch(() => addToast('Une erreur est survenue', TOAST.ERROR))
-
+  const handleResponse = async (request, { successMessage, errorMessage }) => {
+    const response = await request.catch(() => addToast(errorMessage, TOAST.ERROR))
     return new Promise((resolve, reject) => {
       if (response) {
-        addToast("L'ouvreur a bien été ajouté", TOAST.SUCCESS)
+        addToast(successMessage, TOAST.SUCCESS)
         resolve()
         handleClose()
         getUsers()
@@ -136,6 +129,26 @@ const ComposterOuvreurs = ({ composter }) => {
         reject()
       }
     })
+  }
+
+  const handleRegisterFormSubmit = async values => {
+    return handleResponse(
+      api.createUserComposter({
+        user: { ...values, userConfirmedAccountURL: `${window.location.origin}/confirmation` },
+        composter: composter['@id']
+      }),
+      { successMessage: "L'ouvreur a bien été ajouté.", errorMessage: 'Une erreur est intervenue. Veuillez rééssayer plus tard.' }
+    )
+  }
+
+  const handleUserAddingSubmit = async userId => {
+    return handleResponse(
+      api.createUserComposter({
+        user: userId,
+        composter: composter['@id']
+      }),
+      { successMessage: "L'utilisateur a bien été ajouté.", errorMessage: 'Une erreur est intervenue. Veuillez rééssayer plus tard.' }
+    )
   }
 
   return (
@@ -203,7 +216,7 @@ const ComposterOuvreurs = ({ composter }) => {
             id="creation-compte-content"
             aria-labelledby="creation-compte"
           >
-            <RegisterForm onSubmit={onRegisterFormSubmit} />
+            <RegisterForm onSubmit={handleRegisterFormSubmit} />
           </Box>
           <Box
             p={3}
@@ -213,7 +226,7 @@ const ComposterOuvreurs = ({ composter }) => {
             id="recherche-compte-content"
             aria-labelledby="recherche-compte"
           >
-            <AddUserComposterForm />
+            <AddUserComposterForm onSubmit={handleUserAddingSubmit} />
           </Box>
         </Paper>
       </Modal>
