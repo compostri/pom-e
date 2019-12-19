@@ -67,8 +67,8 @@ const propTypes = {
 }
 
 const defaultProps = {
-  targetWidth: 300,
-  targetHeight: 300
+  targetWidth: 942,
+  targetHeight: 530
 }
 
 const MNFile = ({ input, children, label, targetWidth, targetHeight }) => {
