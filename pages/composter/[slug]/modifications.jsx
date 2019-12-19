@@ -93,6 +93,7 @@ const ComposterEdit = ({ composter }) => {
             aria-label="Gestion du composteur"
             indicatorColor="primary"
             textColor="primary"
+            variant="scrollable"
           >
             <Tab
               className={classes.tab}
@@ -101,10 +102,14 @@ const ComposterEdit = ({ composter }) => {
               value="informations-composteur"
               aria-controls="informations-composteur-content"
             />
-            <Hidden smDown>
-              <Tab className={classes.tab} label="Formulaires" id="contact-composteur" value="contact-composteur" aria-controls="contact-composteur-content" />
-            </Hidden>
             <Tab className={classes.tab} label="Permanences" id="perm-composteur" value="perm-composteur" aria-controls="perm-composteur-content" />
+            <Tab
+              className={classes.tab}
+              label="Formulaires de contact"
+              id="contact-composteur"
+              value="contact-composteur"
+              aria-controls="contact-composteur-content"
+            />
           </Tabs>
           <Link href="/composter/[slug]" as={`/composter/${composter.slug}`} passHref>
             <IconButton>
