@@ -1,4 +1,5 @@
 import React, { Fragment, useContext } from 'react'
+import PropTypes from 'prop-types'
 import { Typography, TextField, Box, Avatar, Button, CircularProgress } from '@material-ui/core'
 import { Search } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
@@ -15,7 +16,10 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const AddUserComposterForm = () => {
+const propTypes = {
+  onSubmit: PropTypes.func.isRequired
+}
+const AddUserComposterForm = ({ onSubmit }) => {
   const classes = useStyles()
   const {
     composterContext: { composter }
@@ -64,19 +68,13 @@ const AddUserComposterForm = () => {
     setInputValue(value)
   }
 
-  async function onSubmit() {
-    if (!selectedUser.username) {
+  const handleSubmit = user => () => {
+    if (!user.username) {
       addToast('Veuillez sélectionner un utilisateur.', TOAST.ERROR)
       return
     }
     setIsLoading(true)
-    const res = await api.createUserComposter({ composter: composter['@id'], user: selectedUser['@id'] })
-    if (res.status === 201) {
-      addToast("L'utilisateur a bien été ajouté.", TOAST.SUCCESS)
-    } else {
-      addToast('Une erreur est intervenue. Veuillez rééssayer plus tard.', TOAST.ERROR)
-    }
-    setIsLoading(false)
+    onSubmit(user['@id']).finally(() => setIsLoading(false))
   }
 
   return (
@@ -125,7 +123,7 @@ const AddUserComposterForm = () => {
           }}
         />
         <Box align="center">
-          <Button variant="contained" color="secondary" onClick={onSubmit}>
+          <Button variant="contained" color="secondary" onClick={handleSubmit(selectedUser)}>
             {isLoading ? <CircularProgress size={24} /> : 'Associer'}
           </Button>
         </Box>
@@ -133,5 +131,7 @@ const AddUserComposterForm = () => {
     </>
   )
 }
+
+AddUserComposterForm.propTypes = propTypes
 
 export default AddUserComposterForm

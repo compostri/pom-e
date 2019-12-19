@@ -67,6 +67,7 @@ class MNApi {
     if (status < 300) {
       return data || 'success'
     }
+
     throw errorMessage
   }
 
@@ -79,7 +80,7 @@ class MNApi {
 
   updateComposter = (slug, args) => this.$withPromiseHandling(this.put, `/composters/${slug}`, args)
 
-  createUserComposter = args => this.post(`/user_composters`, args)
+  createUserComposter = args => this.$withPromiseHandling(this.post, `/user_composters`, args)
 
   updateUserComposter = (id, args) => this.put(id, args)
 

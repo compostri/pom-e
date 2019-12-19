@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
+import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/styles'
-import { Paper, Typography, IconButton, Modal, Button, CircularProgress } from '@material-ui/core'
+import { Paper, Typography, IconButton, Modal, Button, CircularProgress, Avatar } from '@material-ui/core'
 import { Clear } from '@material-ui/icons'
 import palette from '~/variables'
-import api from '~/utils/api'
 import { getInitial } from '~/utils/utils'
+import { userType } from '~/types'
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -13,12 +14,9 @@ const useStyles = makeStyles(theme => ({
   },
   ouvreurAvatar: {
     margin: '0 auto',
-    display: 'block',
-    borderRadius: 100,
     width: 30,
     height: 30,
     textAlign: 'center',
-    paddingTop: 4,
     fontSize: 14,
     fontWeight: '700'
   },
@@ -51,6 +49,14 @@ const useStyles = makeStyles(theme => ({
     '&:hover': {
       borderColor: palette.greenPrimary,
       backgroundColor: palette.greenOpacity
+    }
+  },
+  supprOuvreurDisabled: {
+    backgroundColor: palette.greyExtraLight,
+    color: palette.grey,
+    '&:hover': {
+      borderColor: palette.grey,
+      backgroundColor: palette.greyExtraLight
     }
   },
   modal: {
@@ -119,12 +125,10 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const OuvreurCard = ({ uc }) => {
+const OuvreurCard = ({ user, onUserRemoval }) => {
   const classes = useStyles()
   const [openModal, setOpenModal] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
-
-  const { user } = uc
 
   const handleOpen = () => {
     setOpenModal(true)
@@ -133,26 +137,25 @@ const OuvreurCard = ({ uc }) => {
     setOpenModal(false)
   }
 
-  const handleSubmit = async () => {
+  const handleUserRemoval = () => {
     setIsDeleting(true)
-
-    // TODO Ajouter l'ouvreur a la permanence
-    const res = api.deleteUserComposter(uc['@id'])
-    if (res.status === 204) {
+    onUserRemoval().finally(() => {
       setIsDeleting(false)
       handleClose()
-    }
+    })
   }
 
   const statutClassesAvatar = classes.ouvreurAvatarGreen
 
   return (
     <Paper elevation={1} className={classes.card}>
-      <div className={[classes.ouvreurAvatar, statutClassesAvatar].join(' ')}>{getInitial(user.username)}</div>
+      <Avatar className={classes.ouvreurAvatar} aria-label={user.username}>
+        {user.username[0].toUpperCase()}
+      </Avatar>
       <Typography className={[classes.ouvreurInfo, classes.ouvreurName].join(' ')}>{user.username}</Typography>
       <Typography className={classes.ouvreurInfo}>{user.email}</Typography>
 
-      <Button className={classes.supprOuvreur} onClick={handleOpen}>
+      <Button className={classNames(classes.supprOuvreur, { [classes.supprOuvreurDisabled]: !user.enabled })} onClick={handleOpen}>
         Supprimer de ce composteur
       </Button>
       <Modal BackdropProps={{ style: { background: '#faf9f8' } }} className={classes.modal} open={openModal} onClose={handleClose}>
@@ -171,7 +174,7 @@ const OuvreurCard = ({ uc }) => {
             <Typography className={classes.modalUserName}>{user.username}</Typography>
           </div>
 
-          <Button onClick={handleSubmit} fullWidth className={classes.btnAdd}>
+          <Button onClick={handleUserRemoval} fullWidth className={classes.btnAdd}>
             {isDeleting ? <CircularProgress /> : 'Confirmer'}
           </Button>
         </Paper>
@@ -181,12 +184,7 @@ const OuvreurCard = ({ uc }) => {
 }
 
 OuvreurCard.propTypes = {
-  uc: PropTypes.shape({
-    '@id': PropTypes.string.isRequired,
-    user: PropTypes.shape({
-      username: PropTypes.string.isRequired,
-      email: PropTypes.string.isRequired
-    }).isRequired
-  }).isRequired
+  user: userType.isRequired,
+  onUserRemoval: PropTypes.func.isRequired
 }
 export default OuvreurCard
