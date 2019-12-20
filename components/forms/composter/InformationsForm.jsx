@@ -81,9 +81,7 @@ const InformationsForm = () => {
               <FormikTextField fullWidth InputLabelProps={InputLabelProps} label="Procédure d'ouverture" name={Name.openingProcedures} />
               <FormikTextField fullWidth InputLabelProps={InputLabelProps} label="Description des permanences" name={Name.permanencesDescription} />
               <FormControl fullWidth>
-                <InputLabel id="broyat-label" InputLabelProps={InputLabelProps}>
-                  Niveau de broyat
-                </InputLabel>
+                <InputLabel id="broyat-label">Niveau de broyat</InputLabel>
                 <FormikSelect label="Description des permanences" name={Name.broyatLevel}>
                   {renderBroyatlevelOptions(Object.entries(broyatLevels))}
                 </FormikSelect>
