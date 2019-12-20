@@ -85,12 +85,10 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
   }
 
   const handleClick = useCallback(
-    (permanence, { vertical, horizontal }) => ({ currentTarget }) => {
+    permanence => ({ currentTarget }) => {
       addPermanenceDetails(permanence, {
         $popover: {
-          anchorEl: currentTarget,
-          vPos: vertical,
-          hPos: horizontal
+          anchorEl: currentTarget
         }
       })
     },
@@ -100,16 +98,16 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
   const isThereAnyPermanences = day => perm => getDayInMonthFromPermanence(perm) === day
 
   const renderDay = useCallback(
-    (day, position) => {
+    day => {
       if (permanences.fetching) {
         return null
       }
 
       const rulesDates = rrulestr(permanencesRule, { forceset: true }).between(startOfMonth.toDate(), endOfMonth.toDate())
 
-      const renderPermanence = pos => perm => {
+      const renderPermanence = perm => {
         return (
-          <Button className={classes.permanence} classes={{ root: classes.permanenceRoot }} onClick={handleClick(perm, pos)}>
+          <Button className={classes.permanence} classes={{ root: classes.permanenceRoot }} onClick={handleClick(perm)}>
             <PermanceCard permanence={perm} highlighted={permanenceDetails.data && dayjs(permanenceDetails.data.date).isSame(perm.date)} />
           </Button>
         )
@@ -126,7 +124,7 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
       const permanencesOfTheDay = permanences.data.filter(isThereAnyPermanences(day))
 
       if (permanencesOfTheDay.length > 0) {
-        return permanencesOfTheDay.map(renderWithKey(renderPermanence(position)))
+        return permanencesOfTheDay.map(renderWithKey(renderPermanence))
       }
 
       // Si il n'y a aucune permanence pour ce jour, on regard si il n'y a pas une permanence issue d'une régle a afficher
@@ -153,14 +151,7 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
     return (
       $popover &&
       details && (
-        <PermanenceCardPopover
-          anchorEl={$popover.anchorEl}
-          permanence={details}
-          vertical={$popover.vPos}
-          horizontal={$popover.hPos}
-          onClose={removePermanenceDetails}
-          onSubmit={updatePermanenceDetails}
-        />
+        <PermanenceCardPopover anchorEl={$popover.anchorEl} permanence={details} onClose={removePermanenceDetails} onSubmit={updatePermanenceDetails} />
       )
     )
   }
