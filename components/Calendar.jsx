@@ -98,25 +98,6 @@ const Calendar = memo(({ date, renderDay }) => {
     [[]]
   )
 
-  const getSpacePosition = (day, monthCalendar) => {
-    const [TOP, BOTTOM, LEFT, RIGHT] = ['top', 'bottom', 'left', 'right']
-    const getHorizontalCoord = x => (x < 4 ? LEFT : RIGHT)
-    const getVerticalCoord = y => (y < 1 ? TOP : BOTTOM)
-
-    const [vertical, horizontal] = monthCalendar.slice(0).reduce((acc, week, i, arr) => {
-      if (week.includes(day)) {
-        arr.splice(1)
-        return [getVerticalCoord(i), getHorizontalCoord(week.indexOf(day))]
-      }
-      return acc
-    }, [])
-
-    return {
-      vertical,
-      horizontal
-    }
-  }
-
   const renderWeekDayNames = weekDayName => (
     <TableCell align="center" className={classes.calendarDay}>
       {weekDayName}
@@ -128,7 +109,7 @@ const Calendar = memo(({ date, renderDay }) => {
       <TableCell align="left" className={classes.tableCell}>
         <div key={day} className={classes.tableCellContent}>
           <span className={classes.tableCellContentDay}>{day}</span>
-          {renderDay(day, getSpacePosition(day, calendar))}
+          {renderDay(day)}
         </div>
       </TableCell>
     )
