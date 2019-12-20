@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { Button, Box, IconButton } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import { Add, Close } from '@material-ui/icons'
@@ -60,7 +60,7 @@ const defaultProps = {
 const ImageInput = ({ label, onLoadEnd, name: inputName, id: fieldId, value: media, multiple }) => {
   const classes = useStyles()
   const [previews, setPreviews] = useState(media ? [media] : [])
-  console.log('TCL: ImageInput -> media', media)
+  const shouldDispayButton = useMemo(() => !multiple && previews.length === 0, [previews, multiple])
 
   const handleChange = async files => {
     const Promises = files.map(file => {
@@ -83,16 +83,15 @@ const ImageInput = ({ label, onLoadEnd, name: inputName, id: fieldId, value: med
 
   return (
     <>
-      {previews.length > 0 ? (
-        previews.map(({ imageName, contentUrl, id }) => (
-          <Box boxShadow={1} key={imageName} className={classes.imgContainer}>
-            <img src={contentUrl} alt={imageName} className={classes.img} />
-            <IconButton size="small" className={classes.imgClose} onClick={() => handleRemove(id)}>
-              <Close />
-            </IconButton>
-          </Box>
-        ))
-      ) : (
+      {previews.map(({ imageName, contentUrl, id }) => (
+        <Box boxShadow={1} key={imageName} className={classes.imgContainer}>
+          <img src={contentUrl} alt={imageName} className={classes.img} />
+          <IconButton size="small" className={classes.imgClose} onClick={() => handleRemove(id)}>
+            <Close />
+          </IconButton>
+        </Box>
+      ))}
+      {shouldDispayButton && (
         <MNFile
           label={
             <Button variant="outlined" color="primary" size="small" component="span">
@@ -100,7 +99,7 @@ const ImageInput = ({ label, onLoadEnd, name: inputName, id: fieldId, value: med
               {label}
             </Button>
           }
-          input={<FormikInputFile accept="image/*" name={inputName} id={fieldId} value={media} onChange={handleChange} />}
+          input={<FormikInputFile accept="image/*" name={inputName} id={fieldId} onChange={handleChange} />}
         />
       )}
     </>
