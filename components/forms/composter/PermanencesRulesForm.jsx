@@ -88,7 +88,7 @@ const RuleForm = ({ index }) => {
             <InputLabel id="week-day-label">Jour </InputLabel>
             <Field name={`rules.${index}.day`}>
               {({ field }) => (
-                <Select className={classes.permDay} ampm={false} labelId="week-day-label" id="week-day" {...field}>
+                <Select className={classes.permDay} ampm="false" labelId="week-day-label" id="week-day" {...field}>
                   <MenuItem value={RRule.MO}>Lundi</MenuItem>
                   <MenuItem value={RRule.TU}>Mardi</MenuItem>
                   <MenuItem value={RRule.WE}>Mercredi</MenuItem>
@@ -106,7 +106,7 @@ const RuleForm = ({ index }) => {
             <Field name={`rules.${index}.timeStart`}>
               {({ field, form }) => (
                 <TimePicker
-                  ampm={false}
+                  ampm="false"
                   label="Heure d‘ouverture"
                   variant="inline"
                   autoOk
@@ -125,7 +125,7 @@ const RuleForm = ({ index }) => {
                   InputLabelProps={{
                     shrink: true
                   }}
-                  ampm={false}
+                  ampm="false"
                   label="Date de début"
                   variant="inline"
                   autoOk
@@ -144,7 +144,7 @@ const RuleForm = ({ index }) => {
                   InputLabelProps={{
                     shrink: true
                   }}
-                  ampm={false}
+                  ampm="false"
                   label="Date de fin"
                   variant="inline"
                   autoOk

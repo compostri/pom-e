@@ -56,7 +56,12 @@ const ContactForm = () => {
               .filter(uc => uc.composterContactReceiver === true)
               .map(uc => uc.user)
               .map(receiver => (
-                <Chip key={receiver.usernam} className={classes.receiver} avatar={<Avatar>{getInitial(receiver.username)}</Avatar>} label={receiver.username} />
+                <Chip
+                  key={receiver.username}
+                  className={classes.receiver}
+                  avatar={<Avatar>{getInitial(receiver.username)}</Avatar>}
+                  label={receiver.username}
+                />
               ))}
         </Box>
       </Box>

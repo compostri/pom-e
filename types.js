@@ -66,7 +66,6 @@ export const mediaObjectType = PropTypes.shape({
   updatedAt: PropTypes.string,
   imageName: PropTypes.string,
   imageSize: PropTypes.number,
-  imageDimensions: PropTypes.arrayOf(PropTypes.string),
   imageMimeType: PropTypes.string,
   contentUrl: PropTypes.string
 })
