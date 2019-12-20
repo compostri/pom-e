@@ -62,10 +62,6 @@ self.__precacheManifest = [
     "revision": "3dd152ed5fe35cbbcf265ba5bf2699af"
   },
   {
-    "url": "offline.html",
-    "revision": "d3f991533db26c4f627bbc4795f06661"
-  },
-  {
     "url": "robots.txt",
     "revision": "3ad0652bd17ff826a31fa29366021cfd"
   },
