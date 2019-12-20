@@ -72,7 +72,6 @@ const InformationsForm = () => {
     <Formik initialValues={initialValues} onSubmit={submit} enableReinitialize>
       {({ values, isSubmitting, setFieldValue }) => (
         <Form>
-          {console.log('TCL: values', values)}
           <Grid container spacing={2}>
             <Grid item xs={12} sm={2}>
               <ImageInput label="Photo" name={Name.image} onLoadEnd={handleImageChange(setFieldValue)} value={values.image} />
