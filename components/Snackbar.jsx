@@ -56,7 +56,7 @@ export const TOAST = {
 
 export { useToasts }
 
-export default function MNSnackbar({ className, action, appearance, children, autoDismissTimeout = 4000, ...other }) {
+export default function MNSnackbar({ className, action, appearance, children, autoDismissTimeout = 4000 }) {
   const classes = toastStyles()
   const [openSnackBar, setOpenSnackBar] = useState(true)
 
@@ -92,7 +92,6 @@ export default function MNSnackbar({ className, action, appearance, children, au
             <Close className={classes.icon} />
           </IconButton>
         ]}
-        {...other}
       />
     </Snackbar>
   )
