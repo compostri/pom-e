@@ -109,14 +109,16 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const UserSchema = Yup.object({
-  username: Yup.string().required(),
+  firstname: Yup.string().required(),
+  lastname: Yup.string().required(),
   email: Yup.string()
     .email()
     .required(),
   subscribeToCompostriNewsletter: Yup.bool().required()
 })
 const UserInitialValues = {
-  username: '',
+  firstname: '',
+  lastname: '',
   email: '',
   subscribeToCompostriNewsletter: false
 }
@@ -165,9 +167,11 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
     }
   }
 
-  const handleConsumerAdding = async ({ username, email, subscribeToCompostriNewsletter }) => {
+  const handleConsumerAdding = async ({ lastname, firstname, email, subscribeToCompostriNewsletter }) => {
     const handleError = () => displayErrorToast("Une erreur est survenue lors de l'ajout du destinataire")
-    const data = await api.postConsumers({ username, email, composterId: composter['@id'], subscribeToCompostriNewsletter }).catch(handleError)
+    const data = await api
+      .postConsumers({ username: `${lastname} ${firstname}`, email, composterId: composter['@id'], subscribeToCompostriNewsletter })
+      .catch(handleError)
     if (data) {
       displaySuccessToast('Le destinataire a bien été ajouté')
       retrievesConsumers()
@@ -225,9 +229,19 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
                             }}
                             className={classes.textField}
                             fullWidth
-                            name="username"
-                            label="Pseudo"
-                            placeholder="Entrez le pseudo ici"
+                            name="firstname"
+                            label="Prénom"
+                            placeholder="Entrez le prénom ici"
+                          />
+                          <FormikTextField
+                            InputLabelProps={{
+                              shrink: true
+                            }}
+                            className={classes.textField}
+                            fullWidth
+                            name="lastname"
+                            label="Nom"
+                            placeholder="Entrez le nom ici"
                           />
                           <FormikTextField
                             InputLabelProps={{
