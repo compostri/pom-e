@@ -8,6 +8,8 @@ import MNFile from '../MNFile'
 import withFormikField from '~/utils/hoc/withFormikField'
 import api from '~/utils/api'
 import { mediaObjectType } from '~/types'
+import { useToasts } from 'react-toast-notifications'
+import { TOAST } from '../Snackbar'
 
 const useStyles = makeStyles(theme => ({
   icon: {
@@ -59,6 +61,7 @@ const defaultProps = {
 
 const ImageInput = ({ label, onLoadEnd, name: inputName, id: fieldId, value: media, multiple }) => {
   const classes = useStyles()
+  const { addToast } = useToasts()
   const [previews, setPreviews] = useState(media ? [media] : [])
   const shouldDispayButton = useMemo(() => !multiple && previews.length === 0, [previews, multiple])
 
@@ -74,7 +77,7 @@ const ImageInput = ({ label, onLoadEnd, name: inputName, id: fieldId, value: med
   }
 
   const handleRemove = async id => {
-    const success = await api.removeMedia(id)
+    const success = await api.removeMedia(id).catch(() => addToast('Une erreur est survenue au moment de la suppression', TOAST.ERROR))
     if (success) {
       setPreviews(previews.filter(prev => prev.id !== id))
       onLoadEnd(null)
