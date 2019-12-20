@@ -61,7 +61,6 @@ const compress = (targetWidth, targetHeight) => async file => {
 const propTypes = {
   input: PropTypes.node.isRequired,
   label: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired,
   targetWidth: PropTypes.number,
   targetHeight: PropTypes.number
 }
