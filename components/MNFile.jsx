@@ -73,7 +73,7 @@ const defaultProps = {
 
 const MNFile = ({ input, label, targetWidth, targetHeight }) => {
   const inputFileRef = useRef(null)
-  const { value, ...inputProps } = input.props
+  const { ...inputProps } = input.props
 
   const setRef = e => {
     if (input.props.ref) {
@@ -89,6 +89,7 @@ const MNFile = ({ input, label, targetWidth, targetHeight }) => {
     // On resize les images
     const allPreviews = await Promise.all([...files].map(compress(targetWidth, targetHeight)))
     // On les renvoie au composant parent ImageInput, qui va les enregistrer via l'API
+    inputFileRef.current.value = null
     inputProps.onChange(allPreviews)
   }
 
