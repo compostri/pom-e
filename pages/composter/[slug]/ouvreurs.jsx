@@ -96,11 +96,14 @@ const ComposterOuvreurs = ({ composter }) => {
   const classes = useStyles()
   const [openModal, setOpenModal] = useState(false)
   const [activeTab, setActiveTab] = useState('creation-compte')
-  const [users, setUsers] = useState()
+  const [users, setUsers] = useState([])
+  const [fetchingUsers, setFetchingUsers] = useState(false)
   const { addToast } = useToasts()
 
   const getUsers = useCallback(async () => {
+    setFetchingUsers(true)
     const data = await api.getUserComposter({ composter: composter.rid }).catch(console.error)
+    setFetchingUsers(false)
     if (data) {
       setUsers(data['hydra:member'])
     }
@@ -165,7 +168,7 @@ const ComposterOuvreurs = ({ composter }) => {
       </Head>
       <div>
         <Typography variant="h1">Liste d&apos;ouvreurs pour {composter.name}</Typography>
-        {!users ? (
+        {fetchingUsers ? (
           <Box align="center" my={2}>
             <CircularProgress />
           </Box>

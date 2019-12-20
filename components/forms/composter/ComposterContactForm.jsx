@@ -3,7 +3,7 @@ import * as Yup from 'yup'
 import { Formik, Form } from 'formik'
 import { Box, Button, CircularProgress, TextField, Grid } from '@material-ui/core'
 import api from '~/utils/api'
-import { ComposterContext } from '~context/ComposterContext'
+import { ComposterContext } from '~/context/ComposterContext'
 import { useToasts, TOAST } from '~/components/Snackbar'
 
 const ContactSchema = Yup.object().shape({
@@ -54,6 +54,7 @@ const ComposterContactForm = () => {
                   }}
                   label="Email"
                   name="email"
+                  id="contact-email"
                   value={values.email}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -72,6 +73,7 @@ const ComposterContactForm = () => {
                   }}
                   rows={5}
                   name="message"
+                  id="contact-message"
                   value={values.message}
                   onChange={handleChange}
                   onBlur={handleBlur}

@@ -43,7 +43,7 @@ const AddUserComposterForm = ({ onSubmit }) => {
   React.useEffect(() => {
     let active = true
 
-    if (inputValue === '') {
+    if (inputValue.length < 5) {
       setOptions([])
       return undefined
     }
@@ -85,7 +85,7 @@ const AddUserComposterForm = ({ onSubmit }) => {
           id="searchuc"
           loading={loading}
           loadingText="Recherche en cours"
-          noOptionsText={inputValue.length === 0 ? "Tapez le nom d'un utilisateur" : 'Aucun utilisateur correspondant'}
+          noOptionsText={inputValue.length < 5 ? 'Tapez aux moins 5 lettres de son email' : 'Aucun utilisateur correspondant'}
           getOptionLabel={option => option.email}
           options={options}
           onInputChange={onInputChange}
@@ -96,6 +96,7 @@ const AddUserComposterForm = ({ onSubmit }) => {
           }}
           renderInput={params => (
             <TextField
+              // eslint-disable-next-line react/jsx-props-no-spreading
               {...params}
               label="Ajouter un utilisateur existant"
               fullWidth
@@ -116,7 +117,7 @@ const AddUserComposterForm = ({ onSubmit }) => {
                   <Avatar>{getInitial(option.username)}</Avatar>
                 </Box>
                 <Typography variant="body2" color="textSecondary">
-                  {option.email}
+                  {option.firstname} {option.lastname}
                 </Typography>
               </Fragment>
             )
