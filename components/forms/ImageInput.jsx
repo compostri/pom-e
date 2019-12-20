@@ -47,7 +47,7 @@ const propTypes = {
   onLoadEnd: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
   id: PropTypes.string,
-  value: PropTypes.oneOfType([mediaObjectType, PropTypes.array]),
+  value: PropTypes.oneOfType([mediaObjectType, PropTypes.arrayOf(mediaObjectType)]),
   multiple: PropTypes.bool
 }
 
