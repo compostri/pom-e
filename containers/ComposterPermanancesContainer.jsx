@@ -118,7 +118,7 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
           date: currentDateRule,
           openers: []
         }
-        return renderPermanence(currentDateRule.getDate())(perm)
+        return renderPermanence(perm)
       }
 
       const permanencesOfTheDay = permanences.data.filter(isThereAnyPermanences(day))
