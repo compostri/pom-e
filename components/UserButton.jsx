@@ -2,7 +2,7 @@ import React, { useState, useRef, useContext } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Button, Popper, List, ListItem, ListItemText, ListItemIcon, Collapse, Fade, Box, Grow, Hidden, IconButton } from '@material-ui/core'
+import { Button, Popper, List, ListItem, ListItemText, ListItemIcon, Collapse, Box, Grow, Hidden, IconButton } from '@material-ui/core'
 import { Lens, ExpandMore, ExpandLess, AccountCircle } from '@material-ui/icons'
 import { UserContext } from '~/context/UserContext'
 import palette from '~/variables'
@@ -105,6 +105,7 @@ const UserButton = () => {
 
       <Popper className={classes.popper} open={open} anchorEl={anchorRef.current} placement="bottom-end" transition disablePortal>
         {({ TransitionProps }) => (
+          // eslint-disable-next-line react/jsx-props-no-spreading
           <Grow {...TransitionProps} style={{ transformOrigin: 'center top' }} timeout={350}>
             <Box className={classes.menu}>
               <List disablePadding component="nav">
@@ -121,7 +122,7 @@ const UserButton = () => {
                 <Collapse in={openSubMenu} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
                     {userContext.user.composters.map(c => (
-                      <Link key={c.slug} href="/composter/[slug]" as={`/composter/${c.slug}`} passHref>
+                      <Link key={c.slug} href="/composteur/[slug]" as={`/composteur/${c.slug}`} passHref>
                         <ListItem button className={classes.nestedSecondary}>
                           <ListItemIcon className={classes.listIcon}>
                             <Lens className={classes.lens} />

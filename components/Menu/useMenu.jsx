@@ -17,33 +17,33 @@ const useMenu = () => {
   return [
     {
       label: 'Informations',
-      href: '/composter/[slug]',
-      as: `/composter/${slug}`,
-      isActive: ['/composter/[slug]', '/composter/[slug]/modifications'].includes(router.pathname)
+      href: '/composteur/[slug]',
+      as: `/composteur/${slug}`,
+      isActive: ['/composteur/[slug]', '/composteur/[slug]/modifications'].includes(router.pathname)
     },
     abilityContext.can(READ, COMPOSTER_PERMANENCES, permanencesRule) && {
       label: 'Permanences',
-      href: '/composter/[slug]/permanences',
-      as: `/composter/${slug}/permanences`,
-      isActive: router.pathname === '/composter/[slug]/permanences'
+      href: '/composteur/[slug]/permanences',
+      as: `/composteur/${slug}/permanences`,
+      isActive: router.pathname === '/composteur/[slug]/permanences'
     },
     {
       label: 'Statistiques',
-      href: '/composter/[slug]/statistiques',
-      as: `/composter/${slug}/statistiques`,
-      isActive: router.pathname === '/composter/[slug]/statistiques'
+      href: '/composteur/[slug]/statistiques',
+      as: `/composteur/${slug}/statistiques`,
+      isActive: router.pathname === '/composteur/[slug]/statistiques'
     },
     abilityContext.can(READ, COMPOSTER_LISTES_OUVREURS, permanencesRule) && {
       label: "Listes d'ouvreurs",
-      href: '/composter/[slug]/ouvreurs',
-      as: `/composter/${slug}/ouvreurs`,
-      isActive: router.pathname === '/composter/[slug]/ouvreurs'
+      href: '/composteur/[slug]/ouvreurs',
+      as: `/composteur/${slug}/ouvreurs`,
+      isActive: router.pathname === '/composteur/[slug]/ouvreurs'
     },
     abilityContext.can(READ, COMPOSTER_NEWLETTERS, permanencesRule) && {
       label: 'Newsletter',
-      href: '/composter/[slug]/newsletter',
-      as: `/composter/${slug}/newsletter`,
-      isActive: router.pathname === '/composter/[slug]/newsletter'
+      href: '/composteur/[slug]/newsletter',
+      as: `/composteur/${slug}/newsletter`,
+      isActive: router.pathname === '/composteur/[slug]/newsletter'
     }
   ].filter(Boolean)
 }

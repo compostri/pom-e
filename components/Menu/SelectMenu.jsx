@@ -4,7 +4,7 @@ import { MenuItem, Select, FormControl } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import useMenu from './useMenu'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   fc: {
     marginBottom: 0
   }

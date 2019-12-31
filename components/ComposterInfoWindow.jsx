@@ -43,7 +43,7 @@ const ComposterInfoWindow = ({ composter }) => {
   const composterColor = getComposterColor(composter)
 
   return (
-    <Link href="/composter/[slug]" as={`/composter/${composter.slug}`} passHref>
+    <Link href="/composteur/[slug]" as={`/composteur/${composter.slug}`} passHref>
       <a className={classes.container}>
         <Grid container spacing={2}>
           <Grid item xs={4}>
