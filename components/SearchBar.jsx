@@ -70,7 +70,7 @@ const SearchBar = () => {
   }, [search, fetch])
 
   const onChange = (e, value) => {
-    router.push(`/composter/${value.slug}`)
+    router.push(`/composteur/${value.slug}`)
   }
 
   const onInputChange = (e, value) => {
