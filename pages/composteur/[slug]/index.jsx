@@ -123,7 +123,7 @@ const Content = () => {
                   Informations sur le site de compostage
                 </Typography>
                 <Can I={MODIFY} this={COMPOSTER_INFORMATION}>
-                  <Link href="/composteur/[slug]/modifications" as={`/composter/${composter.slug}/modifications`} passHref>
+                  <Link href="/composteur/[slug]/modifications" as={`/composteur/${composter.slug}/modifications`} passHref>
                     <Fab size="small" color="secondary" aria-label="edit" className={classes.edit}>
                       <Edit className={classes.editIcon} />
                     </Fab>
