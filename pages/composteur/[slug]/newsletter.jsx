@@ -161,7 +161,7 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
 
   const retrievesConsumers = async ({ email } = {}) => {
     const handleError = () => displayErrorToast('Une erreur est survenue lors de la récuperation des destinataires')
-    const data = await api.getConsumers({ composter: slug, ...{ email } }).catch(handleError)
+    const data = await api.getConsumers({ composters: slug, ...{ email } }).catch(handleError)
     if (data) {
       setUser(data['hydra:member'])
     }
