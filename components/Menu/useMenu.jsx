@@ -21,7 +21,7 @@ const useMenu = () => {
       as: `/composteur/${slug}`,
       isActive: ['/composteur/[slug]', '/composteur/[slug]/modifications'].includes(router.pathname)
     },
-    abilityContext.can(READ, COMPOSTER_PERMANENCES, permanencesRule) && {
+    permanencesRule && abilityContext.can(READ, COMPOSTER_PERMANENCES, permanencesRule) && {
       label: 'Permanences',
       href: '/composteur/[slug]/permanences',
       as: `/composteur/${slug}/permanences`,
