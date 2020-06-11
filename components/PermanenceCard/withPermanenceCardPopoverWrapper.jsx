@@ -4,11 +4,18 @@ import PropTypes from 'prop-types'
 import { Popper, Card, CardHeader, IconButton, CardContent } from '@material-ui/core'
 import classNames from 'classnames'
 import { Close as CloseIcon } from '@material-ui/icons'
+import { makeStyles } from '@material-ui/styles'
 
 import { useTheme, usePermanenceStatus } from './hooks'
 import useBaseStyle from './PermanenceCard.theme'
 import { ComposterContext } from '~/context/ComposterContext'
 import { permanenceType } from '~/types'
+
+const useStyles = makeStyles(({zIndex})=> ({
+  popper: {
+    zIndex: zIndex.tooltip
+  }
+}))
 
 const today = dayjs()
 
@@ -29,6 +36,7 @@ const withPermanencePopoverWrapper = WrappedComponent => {
 
     const theme = useTheme(permanence)
     const baseStyle = useBaseStyle()
+    const classes = useStyles()
 
     const cardTitle = (
       <>
@@ -38,7 +46,7 @@ const withPermanencePopoverWrapper = WrappedComponent => {
     )
 
     return (
-      <Popper transition open={!!anchorEl} anchorEl={anchorEl} onClose={onClose}>
+      <Popper className={classes.popper} transition open={!!anchorEl} anchorEl={anchorEl} onClose={onClose}>
         <Card className={baseStyle.popoverCard}>
           <CardHeader
             title={cardTitle}
