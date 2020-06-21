@@ -13,7 +13,7 @@ import { permanenceType } from '~/types'
 
 const useStyles = makeStyles(({zIndex})=> ({
   popper: {
-    zIndex: zIndex.tooltip
+    zIndex: zIndex.appBar
   }
 }))
 
