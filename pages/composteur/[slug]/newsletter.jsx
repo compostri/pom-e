@@ -126,9 +126,10 @@ const UserInitialValues = {
 const FormikTextField = withFormikField(TextField)
 const FormikSwitch = withFormikField(Switch)
 
-const ComposterNewsletter = ({ composter, consumers, slug }) => {
+const ComposterNewsletter = ({ composter, consumers, totalConsumers, slug }) => {
   const classes = useStyles()
   const [users, setUser] = useState(consumers)
+  const [totalCons, setTotalConsumers] = useState(totalConsumers)
   const [openModal, setOpenModal] = useState(false)
   const { addToast } = useToasts()
 
@@ -164,6 +165,10 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
     const data = await api.getConsumers({ composters: slug, ...{ email } }).catch(handleError)
     if (data) {
       setUser(data['hydra:member'])
+
+      if (!email) {
+        setTotalConsumers(data['hydra:totalItems'])
+      }
     }
   }
 
@@ -193,7 +198,7 @@ const ComposterNewsletter = ({ composter, consumers, slug }) => {
         <Grid item xs={12} sm={4}>
           <Paper elevation={1} className={classes.sectionLeft}>
             <Typography variant="h2" className={classes.title}>
-              Liste des destinataires
+              Liste des destinataires ({totalCons})
             </Typography>
 
             <div className={classes.search}>
@@ -298,11 +303,14 @@ ComposterNewsletter.propTypes = {
 
 ComposterNewsletter.getInitialProps = async ({ query }) => {
   const composter = await api.getComposter(query.slug)
-  const consumers = (await api.getConsumers({ composters: query.slug }))['hydra:member']
+  const consumersData = await api.getConsumers({ composters: query.slug })
+  const consumers = consumersData['hydra:member']
+  const totalConsumers = consumersData['hydra:totalItems']
 
   return {
     composter: composter.data,
     consumers,
+    totalConsumers,
     slug: query.slug
   }
 }
