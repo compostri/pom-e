@@ -7,6 +7,8 @@ import { DatePicker, TimePicker, MuiPickersUtilsProvider } from '@material-ui/pi
 import DaysJSUtils from '@date-io/dayjs'
 import { Formik, Form, Field, FieldArray } from 'formik'
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+dayjs.extend(utc)
 import { RRule, RRuleSet, rrulestr } from 'rrule'
 import PropTypes from 'prop-types'
 
@@ -88,7 +90,7 @@ const RuleForm = ({ index }) => {
             <InputLabel id="week-day-label">Jour </InputLabel>
             <Field name={`rules.${index}.day`}>
               {({ field }) => (
-                <Select className={classes.permDay} ampm="false" labelId="week-day-label" id="week-day" {...field}>
+                <Select className={classes.permDay} labelId="week-day-label" id="week-day" {...field}>
                   <MenuItem value={RRule.MO}>Lundi</MenuItem>
                   <MenuItem value={RRule.TU}>Mardi</MenuItem>
                   <MenuItem value={RRule.WE}>Mercredi</MenuItem>
@@ -106,7 +108,7 @@ const RuleForm = ({ index }) => {
             <Field name={`rules.${index}.timeStart`}>
               {({ field, form }) => (
                 <TimePicker
-                  ampm="false"
+                  ampm={false}
                   label="Heure d‘ouverture"
                   variant="inline"
                   autoOk
@@ -125,10 +127,10 @@ const RuleForm = ({ index }) => {
                   InputLabelProps={{
                     shrink: true
                   }}
-                  ampm="false"
                   label="Date de début"
                   variant="inline"
                   autoOk
+                  format="D MMMM YYYY"
                   {...field}
                   onChange={value => form.setFieldValue(field.name, value)}
                 />
@@ -144,10 +146,10 @@ const RuleForm = ({ index }) => {
                   InputLabelProps={{
                     shrink: true
                   }}
-                  ampm="false"
                   label="Date de fin"
                   variant="inline"
                   autoOk
+                  format="D MMMM YYYY"
                   {...field}
                   onChange={value => form.setFieldValue(field.name, value)}
                 />
@@ -167,10 +169,11 @@ const getRrulesFromObject = rObject => {
       new RRule({
         freq: RRule.WEEKLY,
         byweekday: rule.day,
-        byhour: rule.timeStart.hour() - 1,
+        byhour: dayjs.utc(rule.timeStart).hour(),
         byminute: rule.timeStart.minute(),
-        dtstart: rule.startDate ? rule.startDate.toDate() : undefined,
-        until: rule.endDate ? rule.endDate.toDate() : undefined
+        dtstart: rule.startDate ? rule.startDate.utc().toDate() : undefined,
+        until: rule.endDate ? rule.endDate.utc().toDate() : undefined
+        //tzid: 'Europe/Paris'
       })
     )
   )
@@ -181,14 +184,24 @@ const getRulesFormFromString = RRuleSetString => {
   const rruleSet = rrulestr(RRuleSetString, { forceset: true })
 
   return rruleSet.rrules().map(rrule => {
-    // On enregistre les date a GTM +0
+    // On enregistre les date en UTC
     return {
       day: rrule.origOptions.byweekday[0],
       timeStart: dayjs()
-        .hour(rrule.origOptions.byhour + 1)
-        .minute(rrule.origOptions.byminute),
-      startDate: rrule.origOptions.dtstart ? dayjs(rrule.origOptions.dtstart) : null,
-      endDate: rrule.origOptions.until ? dayjs(rrule.origOptions.until) : null
+        .utc()
+        .hour(rrule.origOptions.byhour)
+        .minute(rrule.origOptions.byminute)
+        .local(),
+      startDate: rrule.origOptions.dtstart
+        ? dayjs(rrule.origOptions.dtstart)
+            .utc()
+            .local()
+        : null,
+      endDate: rrule.origOptions.until
+        ? dayjs(rrule.origOptions.until)
+            .utc()
+            .local()
+        : null
     }
   })
 }
