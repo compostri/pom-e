@@ -33,7 +33,7 @@ import { useTheme } from './hooks'
 
 const today = dayjs()
 
-const usePermanenceToComeWithOpenersStyle = makeStyles(({ typography }) => ({
+const usePermanenceToComeWithOpenersStyle = makeStyles(({ typography, palette }) => ({
   contentTitle: {
     color: palette.greyLight,
     letterSpacing: 0.5,
@@ -165,11 +165,11 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
   const theme = useTheme(permanence)
   const css = usePermanenceToComeWithOpenersStyle()
 
-  const handleSubmit = useCallback(({ openers, eventTitle, eventMessage, nbUsers, nbBuckets, temperature, isPermanenceAnEvent, canceled }, actions) => {
+  const handleSubmit = useCallback(async ({ openers, eventTitle, eventMessage, nbUsers, nbBuckets, temperature, isPermanenceAnEvent, canceled }, actions) => {
     const mayBeEmptyValue = value => (isPermanenceAnEvent ? value : '')
     const nullIfEmpty = value => (value === '' ? null : value)
 
-    onSubmit(
+    await onSubmit(
       isPermanenceToCome
         ? {
             openers: openers.map(getId),
@@ -179,6 +179,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
           }
         : { nbUsers: nullIfEmpty(nbUsers), nbBuckets: nullIfEmpty(nbBuckets), temperature: nullIfEmpty(temperature) }
     )
+
     actions.setSubmitting(false)
   }, [])
 
@@ -237,7 +238,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
     )
   }
 
-  const renderSubmitCancelButtons = (dirty, handleCancel) =>
+  const renderSubmitCancelButtons = (dirty, handleCancel, isSubmitting) =>
     dirty && (
       <>
         <Button
@@ -246,6 +247,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
           onClick={handleCancel}
           className={classNames(css.openerListBtn, css.openerListBtnCancel)}
           classes={{ label: css.openerListBtnLabel }}
+          disabled={isSubmitting}
         >
           Annuler
         </Button>
@@ -254,6 +256,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
           className={classNames(css.openerListBtn, css.openerListBtnSubmit)}
           variant="contained"
           classes={{ label: css.openerListBtnLabel }}
+          disabled={isSubmitting}
         >
           Enregister
         </Button>
@@ -268,7 +271,8 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
       values: { openers },
       initialValues: { openers: openersAvailable, canceled },
       setFieldValue,
-      dirty
+      dirty,
+      isSubmitting
     } = formikProps
 
     const handleOpenerAdding = newOpener => {
@@ -291,7 +295,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
     }
 
     if (isUserSelfEdited) {
-      return renderSubmitCancelButtons(dirty, handleCancel)
+      return renderSubmitCancelButtons(dirty, handleCancel, isSubmitting)
     }
     if (isUserAlreadyAddedHimSelf) {
       return ''
@@ -390,7 +394,8 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
   const mayRenderRefentInnerForm = (formikProps, handleCancel) => {
     const {
       values: { openers, isPermanenceAnEvent, canceled },
-      dirty
+      dirty,
+      isSubmitting
     } = formikProps
 
     const mayRenderOpenersSelect = (openersAvailable, openerList) => {
@@ -475,7 +480,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
           renderCancelingStatusSwitch(canceled),
           renderPermanenceEventStatusSwitch(isPermanenceAnEvent),
           mayRenderEventFields(isPermanenceAnEvent),
-          renderSubmitCancelButtons(dirty, handleCancel)
+          renderSubmitCancelButtons(dirty, handleCancel, isSubmitting)
         ]}
       </Can>
     )
