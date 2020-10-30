@@ -121,7 +121,7 @@ const ComposterStatistiques = ({ composter, permanences }) => {
       },
       {
         ...lineNbBucketsStyle,
-        label: 'Nombre de sceaux',
+        label: 'Nombre de seaux',
         data: nbBucketsData
       }
     ]
@@ -134,7 +134,7 @@ const ComposterStatistiques = ({ composter, permanences }) => {
       </Head>
       <Paper className={classes.graphContainer}>
         <Box className={classes.inner}>
-          <Typography variant="h2">Nombre d‘utilisateurs et de sceaux par date</Typography>
+          <Typography variant="h2">Nombre d‘utilisateurs et de seaux par date</Typography>
           <Line
             data={data}
             width={50}
