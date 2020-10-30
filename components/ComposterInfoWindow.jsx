@@ -59,30 +59,26 @@ const ComposterInfoWindow = ({ composter }) => {
             </Typography>
             <Box className={classes.containerInfo}>
               <List disablePadding>
-                <div>
-                  <ListItem className={classes.listItem}>
-                    <ListItemIcon className={classes.infoIcone}>
-                      <Room fontSize="small" style={{ color: composterColor }} />
-                    </ListItemIcon>
-                    <ListItemText>{composter.communeName}</ListItemText>
-                  </ListItem>
-                </div>
-                <div>
-                  <ListItem className={classes.listItem}>
-                    <ListItemIcon className={classes.infoIcone}>
-                      <RadioButtonChecked fontSize="small" style={{ color: composterColor }} />
-                    </ListItemIcon>
-                    <ListItemText>{composter.categorieName}</ListItemText>
-                  </ListItem>
-                </div>
-                <div className={classes.InfoImg}>
+                <ListItem className={classes.listItem}>
+                  <ListItemIcon className={classes.infoIcone}>
+                    <Room fontSize="small" style={{ color: composterColor }} />
+                  </ListItemIcon>
+                  <ListItemText>{composter.communeName}</ListItemText>
+                </ListItem>
+                <ListItem className={classes.listItem}>
+                  <ListItemIcon className={classes.infoIcone}>
+                    <RadioButtonChecked fontSize="small" style={{ color: composterColor }} />
+                  </ListItemIcon>
+                  <ListItemText>{composter.categorieName}</ListItemText>
+                </ListItem>
+                {(!composter.categorie || composter.categorieName !== 'Ecole') && (
                   <ListItem className={classes.listItem}>
                     <ListItemIcon className={classes.infoIcone}>
                       <Person fontSize="small" style={{ color: composterColor }} />
                     </ListItemIcon>
                     <ListItemText>{composter.acceptNewMembers ? 'Accepte' : "N'accepte pas"} de nouveau adhérents</ListItemText>
                   </ListItem>
-                </div>
+                )}
               </List>
             </Box>
           </Grid>

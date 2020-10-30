@@ -146,12 +146,15 @@ const Content = () => {
                     <ListItemText>{composter.categorie.name}</ListItemText>
                   </ListItem>
                 )}
-                <ListItem className={classes.listItem}>
-                  <ListItemIcon>
-                    <Person className={classes.infoIcone} />
-                  </ListItemIcon>
-                  <ListItemText>{composter.acceptNewMembers ? 'Accepte' : "N'accepte pas"} de nouveaux adhérents</ListItemText>
-                </ListItem>
+                { (! composter.categorie || composter.categorie.name !== 'Ecole' ) &&
+                  <ListItem className={classes.listItem}>
+                    <ListItemIcon>
+                      <Person className={classes.infoIcone} />
+                    </ListItemIcon>
+
+                    <ListItemText>{composter.acceptNewMembers && composter.status === 'Active' ? 'Accepte' : "N'accepte pas"} de nouveaux adhérents</ListItemText>
+                  </ListItem>
+                }
 
                 <ListItem className={classes.listItem}>
                   <ListItemIcon>
