@@ -447,7 +447,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
       return renderSwitch('Cette permanence est un événement', <FormikSwitch name="isPermanenceAnEvent" checked={isOn} />)
     }
 
-    const renderCancelingStatusSwitch = isOn => renderSwitch('Annulé cette permanence', <FormikSwitch name="canceled" checked={isOn} />)
+    const renderCancelingStatusSwitch = isOn => renderSwitch('Annuler cette permanence', <FormikSwitch name="canceled" checked={isOn} />)
 
     const mayRenderEventFields = hasTobeRendered =>
       hasTobeRendered && (
