@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Typography, IconButton, Button, Modal, Tabs, Tab, Paper, CircularProgress, Grid, Box } from '@material-ui/core'
+import { Typography, IconButton, Button, Modal, Tabs, Tab, Paper, CircularProgress, Box, Table, TableBody, Avatar } from '@material-ui/core'
+import Pagination from '@material-ui/lab/Pagination'
 import { Clear } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 import Head from 'next/head'
@@ -7,11 +8,12 @@ import Head from 'next/head'
 import api from '~/utils/api'
 import { useToasts, TOAST } from '~/components/Snackbar'
 import ComposterContainer from '~/components/ComposterContainer'
-import OuvreurCard from '~/components/OuvreurCard'
+import OuvreurRow from '~/components/OuvreurRow'
 import palette from '~/variables'
 import RegisterForm from '~/components/forms/RegisterForm'
 import AddUserComposterForm from '~/components/forms/AddUserComposterForm'
 import { composterType } from '~/types'
+import { getInitial } from '~/utils/utils'
 
 const useStyles = makeStyles(theme => ({
   btnAdd: {
@@ -20,6 +22,16 @@ const useStyles = makeStyles(theme => ({
   },
   btnNew: {
     marginTop: theme.spacing(4)
+  },
+  userTable: {
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(4)
+  },
+  pagination: {
+    margin: theme.spacing(4, 0)
+  },
+  paginationUl: {
+    justifyContent: 'center'
   },
   modal: {
     backgroundColor: 'white',
@@ -50,6 +62,32 @@ const useStyles = makeStyles(theme => ({
   },
   modalFermer: {
     padding: '0'
+  },
+  modalUser: {
+    backgroundColor: palette.greyExtraLight,
+    padding: theme.spacing(2, 2, 2, 2),
+    display: 'flex',
+    alignItems: 'center'
+  },
+  modalUserName: {
+    color: palette.greyMedium,
+    fontSize: 14,
+    padding: (5, 0, 0, 5)
+  },
+  modalAvatar: {
+    borderRadius: 100,
+    width: 30,
+    height: 30,
+    textAlign: 'center',
+    paddingTop: 4,
+    fontSize: 14,
+    fontWeight: '700'
+  },
+  modalTitle: {
+    color: palette.greyDark,
+    fontSize: 20,
+    fontWeight: '700',
+    flexGrow: '1'
   },
   info: {
     display: 'flex',
@@ -95,19 +133,29 @@ const useStyles = makeStyles(theme => ({
 const ComposterOuvreurs = ({ composter }) => {
   const classes = useStyles()
   const [openModal, setOpenModal] = useState(false)
+  const [userToDelete, setUserToDelete] = useState(null)
+  const [userComposerToUpdate, setUserComposerToUpdate] = useState(null)
+  const [isDeleting, setIsDeleting] = useState(false)
   const [activeTab, setActiveTab] = useState('creation-compte')
   const [users, setUsers] = useState([])
+  const [usersTotalCount, setUsersTotalCount] = useState(0)
+  const [usersTotalPages, setUsersTotalPages] = useState(1)
+  const [usersCurrentPages, setUsersCurrentPages] = useState(1)
   const [fetchingUsers, setFetchingUsers] = useState(false)
   const { addToast } = useToasts()
 
   const getUsers = useCallback(async () => {
     setFetchingUsers(true)
-    const data = await api.getUserComposter({ composter: composter.rid }).catch(console.error)
+    const perPage = 10
+    const data = await api.getUserComposter({ composter: composter.rid, perPage: perPage, page: usersCurrentPages }).catch(console.error)
     setFetchingUsers(false)
+    const userCount = data['hydra:totalItems']
+    setUsersTotalCount(userCount)
+    setUsersTotalPages(Math.round(userCount / perPage))
     if (data) {
       setUsers(data['hydra:member'])
     }
-  }, [composter.rid])
+  }, [composter.rid, usersCurrentPages])
 
   useEffect(() => {
     getUsers()
@@ -118,28 +166,36 @@ const ComposterOuvreurs = ({ composter }) => {
   }
   const handleClose = () => {
     setOpenModal(false)
+    setUserComposerToUpdate(null)
   }
 
-  const handleResponse = async (request, { successMessage, errorMessage }) => {
-    const response = await request.catch(() => addToast(errorMessage, TOAST.ERROR))
-    return new Promise((resolve, reject) => {
-      if (response) {
+  const handleResponse = (request, { successMessage, errorMessage }) => {
+    return request
+      .then(() => {
         addToast(successMessage, TOAST.SUCCESS)
-        resolve()
         handleClose()
         getUsers()
-      } else {
-        reject()
-      }
-    })
+      })
+      .catch(error => {
+        const responseErrorMessage = error.response && error.response.data['hydra:description']
+        errorMessage = responseErrorMessage || errorMessage
+        addToast(errorMessage, TOAST.ERROR)
+      })
   }
 
-  const handleRegisterFormSubmit = async values => {
+  const handleRegisterFormSubmit = async ({ user, ...values }) => {
     return handleResponse(
-      api.createUserComposter({
-        user: { ...values, userConfirmedAccountURL: `${window.location.origin}/confirmation` },
-        composter: composter['@id']
-      }),
+      values['@id']
+        ? api.updateUserComposter(values['@id'], {
+            ...values,
+            user: { ...user, userConfirmedAccountURL: `${window.location.origin}/confirmation` },
+            composter: composter['@id']
+          })
+        : api.createUserComposter({
+            ...values,
+            user: { ...user, userConfirmedAccountURL: `${window.location.origin}/confirmation` },
+            composter: composter['@id']
+          }),
       { successMessage: "L'ouvreur a bien été ajouté.", errorMessage: 'Une erreur est intervenue. Veuillez rééssayer plus tard.' }
     )
   }
@@ -154,10 +210,14 @@ const ComposterOuvreurs = ({ composter }) => {
     )
   }
 
-  const handleUserRemoval = ucId => () => {
-    return handleResponse(api.deleteUserComposter(ucId), {
-      successMessage: "L'ouvreur a bien été ajouté.",
+  const handleUserRemoval = () => {
+    setIsDeleting(true)
+    handleResponse(api.deleteUserComposter(userToDelete['@id']), {
+      successMessage: "L'utilisateur•rice a bien été supprimé.",
       errorMessage: 'Une erreur est intervenue. Veuillez rééssayer plus tard.'
+    }).finally(() => {
+      setIsDeleting(false)
+      setUserToDelete(null)
     })
   }
 
@@ -167,26 +227,41 @@ const ComposterOuvreurs = ({ composter }) => {
         <title>Les ouvreurs de {composter.name} - un composteur géré par Compostri</title>
       </Head>
       <div>
-        <Typography variant="h1">Liste d&apos;ouvreurs pour {composter.name}</Typography>
+        <Typography variant="h1">
+          Liste des utilisateurs pour {composter.name} ({fetchingUsers ? '...' : usersTotalCount})
+        </Typography>
+
         {fetchingUsers ? (
           <Box align="center" my={2}>
             <CircularProgress />
           </Box>
         ) : (
-          <Box my={2}>
-            <Grid container spacing={2}>
-              {users.length > 0 ? (
-                users.map(({ id, user, ...info }) => (
-                  <Grid item md={3} xs={6} key={`ouvr-${id}`}>
-                    <OuvreurCard user={user} ucId={info['@id']} onUserRemoval={handleUserRemoval(info['@id'])} />
-                  </Grid>
-                ))
-              ) : (
-                <Grid item xs={12}>
-                  <Typography>Aucun ouvreur pour le moment</Typography>
-                </Grid>
-              )}
-            </Grid>
+          <Box style={{ overflow: 'auto' }}>
+            <Table className={classes.userTable}>
+              <TableBody>
+                {users.map(userComposer => (
+                  <OuvreurRow
+                    key={`ouvr-${userComposer.id}`}
+                    userComposter={userComposer}
+                    callDeleteUser={u => setUserToDelete(u)}
+                    callUpdateUserComposer={uc => {
+                      handleOpen()
+                      setUserComposerToUpdate(uc)
+                    }}
+                    callUpdateUserComposerNoModal={uc => handleRegisterFormSubmit(uc)}
+                  />
+                ))}
+              </TableBody>
+            </Table>
+            {usersTotalPages > 1 && (
+              <Pagination
+                classes={{ root: classes.pagination, ul: classes.paginationUl }}
+                size="small"
+                count={usersTotalPages}
+                page={usersCurrentPages}
+                onChange={(event, value) => setUsersCurrentPages(value)}
+              />
+            )}
           </Box>
         )}
       </div>
@@ -226,7 +301,7 @@ const ComposterOuvreurs = ({ composter }) => {
             id="creation-compte-content"
             aria-labelledby="creation-compte"
           >
-            <RegisterForm onSubmit={handleRegisterFormSubmit} />
+            <RegisterForm onSubmit={handleRegisterFormSubmit} userComposerToUpdate={userComposerToUpdate} />
           </Box>
           <Box
             p={3}
@@ -238,6 +313,31 @@ const ComposterOuvreurs = ({ composter }) => {
           >
             <AddUserComposterForm onSubmit={handleUserAddingSubmit} />
           </Box>
+        </Paper>
+      </Modal>
+      <Modal BackdropProps={{ style: { background: '#faf9f8' } }} className={classes.modal} open={userToDelete !== null} onClose={handleClose}>
+        <Paper elevation={1} className={classes.modalPaper}>
+          <div className={classes.modalHeader}>
+            <Typography variant="h1" className={classes.modalTitle}>
+              Supprimer de ce composteur
+            </Typography>
+            <IconButton className={classes.modalFermer} onClick={() => setUserToDelete(null)}>
+              <Clear />
+            </IconButton>
+          </div>
+
+          {userToDelete && (
+            <div className={classes.modalUser}>
+              <Avatar className={classes.ouvreurAvatar} aria-label={userToDelete.username}>
+                {getInitial(userToDelete.username)}
+              </Avatar>
+              <Typography className={classes.modalUserName}>{userToDelete.username}</Typography>
+            </div>
+          )}
+
+          <Button onClick={handleUserRemoval} fullWidth className={classes.btnAdd}>
+            {isDeleting ? <CircularProgress /> : 'Confirmer'}
+          </Button>
         </Paper>
       </Modal>
     </ComposterContainer>
