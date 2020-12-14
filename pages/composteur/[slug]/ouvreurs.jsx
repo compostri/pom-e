@@ -14,8 +14,12 @@ import RegisterForm from '~/components/forms/RegisterForm'
 import AddUserComposterForm from '~/components/forms/AddUserComposterForm'
 import { composterType } from '~/types'
 import { getInitial } from '~/utils/utils'
+import UsersSerachForm from '~/components/forms/composter/UsersSearchForm'
 
 const useStyles = makeStyles(theme => ({
+  title: {
+    marginBottom: theme.spacing(2)
+  },
   btnAdd: {
     margin: '0 auto',
     display: 'block'
@@ -104,6 +108,11 @@ const useStyles = makeStyles(theme => ({
     textAlign: 'center',
     paddingTop: theme.spacing(2)
   },
+  headerContainer: {
+    [theme.breakpoints.down('sm')]: {
+      display: 'block'
+    }
+  },
   box: {
     padding: 0
   },
@@ -148,13 +157,13 @@ const ComposterOuvreurs = ({ composter }) => {
     setFetchingUsers(true)
     const perPage = 10
     const data = await api.getUserComposter({ composter: composter.rid, perPage: perPage, page: usersCurrentPages }).catch(console.error)
-    setFetchingUsers(false)
-    const userCount = data['hydra:totalItems']
-    setUsersTotalCount(userCount)
-    setUsersTotalPages(Math.round(userCount / perPage))
     if (data) {
+      const userCount = data['hydra:totalItems']
+      setUsersTotalCount(userCount)
+      setUsersTotalPages(Math.round(userCount / perPage))
       setUsers(data['hydra:member'])
     }
+    setFetchingUsers(false)
   }, [composter.rid, usersCurrentPages])
 
   useEffect(() => {
@@ -221,15 +230,32 @@ const ComposterOuvreurs = ({ composter }) => {
     })
   }
 
+  const handleSearchUsers = async searchValue => {
+    if (searchValue.length === 0) {
+      await getUsers()
+    } else {
+      setFetchingUsers(true)
+      const response = await api.getUserComposter({ 'user.email': searchValue, composter: composter.rid })
+      if (response) {
+        setUsers(response['hydra:member'])
+        setUsersTotalCount(response['hydra:totalItems'])
+      }
+      setFetchingUsers(false)
+    }
+  }
+
   return (
     <ComposterContainer composter={composter}>
       <Head>
         <title>Les ouvreurs de {composter.name} - un composteur géré par Compostri</title>
       </Head>
       <div>
-        <Typography variant="h1">
-          Liste des utilisateurs pour {composter.name} ({fetchingUsers ? '...' : usersTotalCount})
-        </Typography>
+        <Box display="flex" justifyContent="space-between" className={classes.headerContainer}>
+          <Typography variant="h1" className={classes.title}>
+            Liste des utilisateurs pour {composter.name} ({fetchingUsers ? '...' : usersTotalCount})
+          </Typography>
+          <UsersSerachForm handleSearchUsers={handleSearchUsers} />
+        </Box>
 
         {fetchingUsers ? (
           <Box align="center" my={2}>
