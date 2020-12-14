@@ -104,12 +104,6 @@ class MNApi {
   postPermanences = ({ date, openers, composter }) => this.$withPromiseHandling(this.post, '/permanences', { date, openers, composter })
 
   // Newsletter
-
-  getConsumers = params => this.$withPromiseHandling(this.get, '/consumers', { params })
-
-  postConsumers = ({ username, email, composterId, subscribeToCompostriNewsletter }) =>
-    this.$withPromiseHandling(this.post, '/consumers', { username, email, composters: [composterId], subscribeToCompostriNewsletter })
-
   sendComposterNewsletter = values => this.post('/composter_newsletters', values)
 
   // Media

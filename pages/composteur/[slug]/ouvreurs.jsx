@@ -160,7 +160,7 @@ const ComposterOuvreurs = ({ composter }) => {
     if (data) {
       const userCount = data['hydra:totalItems']
       setUsersTotalCount(userCount)
-      setUsersTotalPages(Math.round(userCount / perPage))
+      setUsersTotalPages(Math.ceil(userCount / perPage))
       setUsers(data['hydra:member'])
     }
     setFetchingUsers(false)
