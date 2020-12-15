@@ -10,7 +10,7 @@ import { ComposterContext } from '~context/ComposterContext'
 import { useToasts, TOAST } from '~/components/Snackbar'
 
 const ContactSchema = Yup.object().shape({
-  subject: Yup.string().required('Le champ titre est obligatoire'),
+  subject: Yup.string().required('Le champ objet est obligatoire'),
   message: Yup.string().required('Le champ message est obligatoire')
 })
 /**
@@ -76,7 +76,7 @@ const ComposterNewsletterForm = () => {
               InputLabelProps={{
                 shrink: true
               }}
-              label="Titre"
+              label="Objet"
               name="subject"
               value={subject}
               onBlur={() => setSubjectTouched(true)}
