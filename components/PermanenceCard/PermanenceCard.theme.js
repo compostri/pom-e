@@ -54,7 +54,7 @@ const useBaseStyle = makeStyles(({ typography }) => ({
     height: typography.pxToRem(16)
   },
   popoverCard: {
-    width: typography.pxToRem(236),
+    width: typography.pxToRem(400),
     backgroundColor: '#fff'
   },
   popoverHeader: {

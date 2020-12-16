@@ -165,23 +165,26 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
   const theme = useTheme(permanence)
   const css = usePermanenceToComeWithOpenersStyle()
 
-  const handleSubmit = useCallback(async ({ openers, eventTitle, eventMessage, nbUsers, nbBuckets, temperature, isPermanenceAnEvent, canceled }, actions) => {
-    const mayBeEmptyValue = value => (isPermanenceAnEvent ? value : '')
-    const nullIfEmpty = value => (value === '' ? null : value)
+  const handleSubmit = useCallback(
+    async ({ openers, eventTitle, eventMessage, nbUsers, nbBuckets, temperature, isPermanenceAnEvent, canceled }, actions) => {
+      const mayBeEmptyValue = value => (isPermanenceAnEvent ? value : '')
+      const nullIfEmpty = value => (value === '' ? null : value)
 
-    await onSubmit(
-      isPermanenceToCome
-        ? {
-            openers: openers.map(getId),
-            eventTitle: mayBeEmptyValue(eventTitle),
-            eventMessage: mayBeEmptyValue(eventMessage),
-            canceled
-          }
-        : { nbUsers: nullIfEmpty(nbUsers), nbBuckets: nullIfEmpty(nbBuckets), temperature: nullIfEmpty(temperature) }
-    )
+      await onSubmit(
+        isPermanenceToCome
+          ? {
+              openers: openers.map(getId),
+              eventTitle: mayBeEmptyValue(eventTitle),
+              eventMessage: mayBeEmptyValue(eventMessage),
+              canceled
+            }
+          : { nbUsers: nullIfEmpty(nbUsers), nbBuckets: nullIfEmpty(nbBuckets), temperature: nullIfEmpty(temperature) }
+      )
 
-    actions.setSubmitting(false)
-  }, [])
+      actions.setSubmitting(false)
+    },
+    [onSubmit]
+  )
 
   const mayRenderCurrentOpeners = formikProps => {
     const {
