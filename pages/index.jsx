@@ -51,12 +51,17 @@ const Home = ({ allCommunes, allCategories }) => {
     bearing: 0,
     pitch: 0
   })
+  const [windowWidth, setWindowWidth] = useState(0)
   const [openSidebar, setOpenSidebar] = useState(true)
   const [acceptNewMembers, setAcceptNewMembers] = useState(true)
   const [selectedCommune, setSelectedCommune] = useState(allCommunes.map(com => com.id))
   const [selectedCategories, setSelectedCategories] = useState(allCategories.map(cat => cat.id))
   const [selectedStatus, setSelectedStatus] = useState(['Active'])
   const [mapPopup, setMapPopup] = useState(false)
+
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth)
+  }
 
   const fetchComposters = async () => {
     const geojson = await api.getComposterGeojson()
@@ -79,7 +84,7 @@ const Home = ({ allCommunes, allCategories }) => {
           top: 40,
           bottom: 40,
           right: 40,
-          left: openSidebar ? 460 : 40
+          left: window.innerWidth > 600 ? 460 : 40
         }
       })
       setMapViewport({ ...mapViewport, longitude, latitude, zoom })
@@ -87,9 +92,17 @@ const Home = ({ allCommunes, allCategories }) => {
   }
 
   useEffect(() => {
+    handleResize()
     fetchComposters()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    console.log(windowWidth)
+    setOpenSidebar(windowWidth > 600)
+  }, [windowWidth])
 
   const onMapClick = event => {
     const { features } = event

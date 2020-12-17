@@ -85,7 +85,7 @@ const UserButton = () => {
 
   return userContext.isLoggedIn() ? (
     <>
-      <Hidden xsDown>
+      <Hidden>
         <Button
           onClick={handleToggle}
           color="secondary"
@@ -96,11 +96,6 @@ const UserButton = () => {
         >
           Mon compte
         </Button>
-      </Hidden>
-      <Hidden smUp>
-        <IconButton onClick={handleToggle} color="secondary" ref={anchorRef}>
-          <AccountCircle />
-        </IconButton>
       </Hidden>
 
       <Popper className={classes.popper} open={open} anchorEl={anchorRef.current} placement="bottom-end" transition disablePortal>
