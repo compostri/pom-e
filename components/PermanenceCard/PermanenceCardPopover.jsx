@@ -143,7 +143,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
 
   const initialValues = useMemo(() => {
     const emptyIfNull = value => (value === null ? '' : value)
-    const { openers, eventTitle, eventMessage, nbUsers, nbBuckets, temperature, canceled } = permanence
+    const { openers, eventTitle, eventMessage, nbUsers, nbBuckets, weight, temperature, canceled } = permanence
     return {
       openers,
       eventTitle,
@@ -151,6 +151,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
       canceled,
       nbUsers: emptyIfNull(nbUsers),
       nbBuckets: emptyIfNull(nbBuckets),
+      weight: emptyIfNull(weight),
       temperature: emptyIfNull(temperature),
       isPermanenceAnEvent: !!eventTitle
     }
@@ -166,7 +167,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
   const css = usePermanenceToComeWithOpenersStyle()
 
   const handleSubmit = useCallback(
-    async ({ openers, eventTitle, eventMessage, nbUsers, nbBuckets, temperature, isPermanenceAnEvent, canceled }, actions) => {
+    async ({ openers, eventTitle, eventMessage, nbUsers, nbBuckets, weight, temperature, isPermanenceAnEvent, canceled }, actions) => {
       const mayBeEmptyValue = value => (isPermanenceAnEvent ? value : '')
       const nullIfEmpty = value => (value === '' ? null : value)
 
@@ -178,7 +179,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
               eventMessage: mayBeEmptyValue(eventMessage),
               canceled
             }
-          : { nbUsers: nullIfEmpty(nbUsers), nbBuckets: nullIfEmpty(nbBuckets), temperature: nullIfEmpty(temperature) }
+          : { nbUsers: nullIfEmpty(nbUsers), nbBuckets: nullIfEmpty(nbBuckets), weight: nullIfEmpty(weight), temperature: nullIfEmpty(temperature) }
       )
 
       actions.setSubmitting(false)
@@ -347,21 +348,39 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
           self: hasUserBeenOpener
         }}
       >
-        <FormikTextField InputLabelProps={InputLabelProps} className={css.field} name="nbUsers" label="Utilisateurs" type="number" disabled={disabled} />
+        <FormikTextField
+          InputLabelProps={InputLabelProps}
+          className={css.field}
+          name="nbUsers"
+          label="Nombre d'utilisateurs"
+          type="number"
+          disabled={disabled}
+        />
         <FormikTextField
           InputLabelProps={{
             shrink: true
           }}
           className={css.field}
           name="nbBuckets"
-          label="Sceaux"
+          label="Nombre de sceaux"
           type="number"
+          disabled={disabled}
+        />
+        <FormikTextField
+          InputLabelProps={{
+            shrink: true
+          }}
+          className={css.field}
+          name="weight"
+          label="Poids total de biodéchets détourné"
+          type="number"
+          inputProps={{ step: 0.1 }}
           disabled={disabled}
         />
         <FormikTextField
           className={css.field}
           name="temperature"
-          label="Température"
+          label="Température du composte"
           type="number"
           disabled={disabled}
           InputLabelProps={InputLabelProps}
