@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import { makeStyles } from '@material-ui/styles'
 import { fitBounds } from 'viewport-mercator-project'
@@ -55,9 +55,13 @@ const Home = ({ allCommunes, allCategories }) => {
   const [openSidebar, setOpenSidebar] = useState(true)
   const [acceptNewMembers, setAcceptNewMembers] = useState(true)
   const [selectedCommune, setSelectedCommune] = useState(allCommunes.map(com => com.id))
+  const [countCategories, setCountCategories] = useState([])
+  const [totalMarkerActive, setTotalMarkerActive] = useState(0)
   const [selectedCategories, setSelectedCategories] = useState(allCategories.map(cat => cat.id))
   const [selectedStatus, setSelectedStatus] = useState(['Active'])
   const [mapPopup, setMapPopup] = useState(false)
+
+  const mapRef = useRef(null)
 
   const handleResize = () => {
     setWindowWidth(window.innerWidth)
@@ -100,9 +104,35 @@ const Home = ({ allCommunes, allCategories }) => {
   }, [])
 
   useEffect(() => {
-    console.log(windowWidth)
     setOpenSidebar(windowWidth > 600)
   }, [windowWidth])
+
+  useEffect(() => {
+    if (composters && composters.features) {
+      const catCount = []
+      composters.features.map(c => {
+        const catId = c.properties.categorie
+        if (catId) {
+          if (catCount[catId]) {
+            catCount[catId] = catCount[catId] + 1
+          } else {
+            catCount[catId] = 1
+          }
+        }
+      })
+      setCountCategories(catCount)
+      mapRef.current.getMap().on('sourcedata', mapCountMarkers)
+    }
+
+    return () => mapRef.current.getMap().off('sourcedata', mapCountMarkers)
+  }, [composters])
+
+  const mapCountMarkers = e => {
+    if (e.isSourceLoaded) {
+      const total = mapRef.current.getMap().queryRenderedFeatures({ layers: ['data'] }).length
+      setTotalMarkerActive(total)
+    }
+  }
 
   const onMapClick = event => {
     const { features } = event
@@ -130,6 +160,7 @@ const Home = ({ allCommunes, allCategories }) => {
         {...{
           allCommunes,
           allCategories,
+          countCategories,
           selectedCommune,
           setSelectedCommune,
           selectedCategories,
@@ -139,7 +170,8 @@ const Home = ({ allCommunes, allCategories }) => {
           acceptNewMembers,
           setAcceptNewMembers,
           openSidebar,
-          setOpenSidebar
+          setOpenSidebar,
+          totalMarkerActive
         }}
       />
 
@@ -154,6 +186,7 @@ const Home = ({ allCommunes, allCategories }) => {
           mapboxApiAccessToken={process.env.NEXT_STATIC_MAP_BOX_TOKEN}
           onViewportChange={viewport => setMapViewport(viewport)}
           onClick={onMapClick}
+          ref={mapRef}
         >
           {composters && (
             <Source type="geojson" data={composters}>

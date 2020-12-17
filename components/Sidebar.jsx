@@ -158,14 +158,18 @@ const useFieldStyles = makeStyles(theme => ({
 
 const Field = props => {
   const classes = useFieldStyles(props)
-  const { selectedCategories, toggleCategories, category } = props
+  const { selectedCategories, toggleCategories, category, countCategorie } = props
 
+  let label = category.name
+  if (countCategorie) {
+    label += ` (${countCategorie})`
+  }
   return (
     <FormControlLabel
       control={
         <Checkbox color="primary" checked={selectedCategories.includes(category.id)} onChange={() => toggleCategories(category.id)} value={category.id} />
       }
-      label={category.name}
+      label={label}
       className={classes.formControlLabel}
       classes={{ root: classes.catFilter, label: classes.catFilterLabel }}
       key={`checkbox-cat-${category.id}`}
@@ -175,6 +179,7 @@ const Field = props => {
 const Sidebar = ({
   allCommunes,
   allCategories,
+  countCategories,
   selectedCommune,
   setSelectedCommune,
   selectedCategories,
@@ -184,6 +189,7 @@ const Sidebar = ({
   acceptNewMembers,
   setAcceptNewMembers,
   openSidebar,
+  totalMarkerActive,
   setOpenSidebar
 }) => {
   const classes = useStyles()
@@ -256,7 +262,7 @@ const Sidebar = ({
     return (
       <section className={classes.sidebarContent}>
         <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography variant="h2">Filtrer mes recherches</Typography>
+          <Typography variant="h2">Filtrer mes recherches ({totalMarkerActive})</Typography>
           <Button disableRipple onClick={reinit} className={classes.reinit}>
             Effacer les filtres
           </Button>
@@ -267,7 +273,14 @@ const Sidebar = ({
           <div className={classes.categorie}>
             {allCategories &&
               allCategories.map(c => (
-                <Field key={`cat-${c.id}`} selectedCategories={selectedCategories} toggleCategories={toggleCategories} category={c} color={getCategoryColor(c)} />
+                <Field
+                  key={`cat-${c.id}`}
+                  selectedCategories={selectedCategories}
+                  toggleCategories={toggleCategories}
+                  category={c}
+                  color={getCategoryColor(c)}
+                  countCategorie={countCategories[c.id]}
+                />
               ))}
           </div>
         </FormGroup>
