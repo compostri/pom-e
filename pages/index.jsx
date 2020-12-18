@@ -55,8 +55,7 @@ const Home = ({ allCommunes, allCategories }) => {
   const [openSidebar, setOpenSidebar] = useState(true)
   const [acceptNewMembers, setAcceptNewMembers] = useState(true)
   const [selectedCommune, setSelectedCommune] = useState(allCommunes.map(com => com.id))
-  const [countCategories, setCountCategories] = useState([])
-  const [totalMarkerActive, setTotalMarkerActive] = useState(0)
+  const [countComposteurs, setCountComposteurs] = useState(0)
   const [selectedCategories, setSelectedCategories] = useState(allCategories.map(cat => cat.id))
   const [selectedStatus, setSelectedStatus] = useState(['Active'])
   const [mapPopup, setMapPopup] = useState(false)
@@ -109,30 +108,15 @@ const Home = ({ allCommunes, allCategories }) => {
 
   useEffect(() => {
     if (composters && composters.features) {
-      const catCount = []
+      let count = 0
       composters.features.map(c => {
-        const catId = c.properties.categorie
-        if (catId) {
-          if (catCount[catId]) {
-            catCount[catId] = catCount[catId] + 1
-          } else {
-            catCount[catId] = 1
-          }
+        if (c.properties.status === 'Active') {
+          count++
         }
       })
-      setCountCategories(catCount)
-      mapRef.current.getMap().on('sourcedata', mapCountMarkers)
+      setCountComposteurs(count)
     }
-
-    return () => mapRef.current.getMap().off('sourcedata', mapCountMarkers)
   }, [composters])
-
-  const mapCountMarkers = e => {
-    if (e.isSourceLoaded) {
-      const total = mapRef.current.getMap().queryRenderedFeatures({ layers: ['data'] }).length
-      setTotalMarkerActive(total)
-    }
-  }
 
   const onMapClick = event => {
     const { features } = event
@@ -160,7 +144,6 @@ const Home = ({ allCommunes, allCategories }) => {
         {...{
           allCommunes,
           allCategories,
-          countCategories,
           selectedCommune,
           setSelectedCommune,
           selectedCategories,
@@ -171,7 +154,7 @@ const Home = ({ allCommunes, allCategories }) => {
           setAcceptNewMembers,
           openSidebar,
           setOpenSidebar,
-          totalMarkerActive
+          countComposteurs
         }}
       />
 

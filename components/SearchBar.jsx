@@ -91,6 +91,7 @@ const SearchBar = () => {
         <TextField
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...params}
+          style={{ marginBottom: 0 }}
           fullWidth
           variant="standard"
           placeholder="Rechercher un composteur"
