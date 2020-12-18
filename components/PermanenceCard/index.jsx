@@ -32,11 +32,11 @@ const PermanceCard = ({ permanence, highlighted }) => {
 
   const renderIcon = () => {
     if (!isPermDatePassed) return null
-    const { nbUsers, nbBuckets, temperature, openers } = permanence
+    const { nbUsers, nbBuckets, temperature, openers, weight } = permanence
     const openersIds = openers.map(o => o.id)
     const canEdit = userContext.user && openersIds.includes(userContext.user.userId)
 
-    return nbUsers > 0 || nbBuckets > 0 || temperature > 0 ? (
+    return nbUsers > 0 || nbBuckets > 0 || temperature > 0 || weight > 0 ? (
       <Timeline fontSize="small" />
     ) : (
       <Can I={MODIFY} this={{ $type: COMPOSTER_STATISTIQUES, self: canEdit }}>

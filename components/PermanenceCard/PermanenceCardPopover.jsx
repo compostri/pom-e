@@ -171,16 +171,25 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
       const mayBeEmptyValue = value => (isPermanenceAnEvent ? value : '')
       const nullIfEmpty = value => (value === '' ? null : value)
 
-      await onSubmit(
-        isPermanenceToCome
-          ? {
-              openers: openers.map(getId),
-              eventTitle: mayBeEmptyValue(eventTitle),
-              eventMessage: mayBeEmptyValue(eventMessage),
-              canceled
-            }
-          : { nbUsers: nullIfEmpty(nbUsers), nbBuckets: nullIfEmpty(nbBuckets), weight: nullIfEmpty(weight), temperature: nullIfEmpty(temperature) }
-      )
+      // Faire attention de ne pas renvoyer tous les champs pour les ouvreurs sinon ca fini en erreur 403
+      let response = {
+        nbUsers: nullIfEmpty(nbUsers),
+        nbBuckets: nullIfEmpty(nbBuckets),
+        weight: nullIfEmpty(weight),
+        temperature: nullIfEmpty(temperature),
+        openers: openers.map(getId)
+      }
+      if (abilityContext.can(Action.MODIFY, Subject.COMPOSTER_LISTES_OUVREURS)) {
+        response = {
+          ...response,
+          ...{
+            eventTitle: mayBeEmptyValue(eventTitle),
+            eventMessage: mayBeEmptyValue(eventMessage),
+            canceled
+          }
+        }
+      }
+      await onSubmit(response)
 
       actions.setSubmitting(false)
     },
@@ -211,12 +220,18 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
             </Avatar>
             {username}
           </div>
-          <Can I={MODIFY} this={{ $type: COMPOSTER_LISTES_OUVREURS, isPermanencePassed }}>
+          <Can I={MODIFY} this={{ $type: COMPOSTER_LISTES_OUVREURS }}>
             <IconButton aria-label="remove" onClick={handleOpenerRemoval(openerId)} className={css.openerListItemDeleteIcon}>
               <DeleteIcon />
             </IconButton>
           </Can>
-          <Can I={DELETE} this={{ $type: COMPOSTER_OUVREUR, self: user && getId(opener) === `/users/${user.userId}`, isPermanencePassed }}>
+          <Can
+            I={DELETE}
+            this={{
+              $type: COMPOSTER_OUVREUR,
+              self: user && getId(opener) === `/users/${user.userId}`
+            }}
+          >
             <IconButton aria-label="remove" onClick={handleOpenerRemoval(openerId)} className={css.openerListItemDeleteIcon}>
               <DeleteIcon />
             </IconButton>
@@ -267,23 +282,19 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
       </>
     )
 
-  const mayRenderOpenerInnerForm = (formikProps, handleCancel) => {
+  const mayRenderOpenerInnerForm = formikProps => {
     if (abilityContext.cannot(Action.CREATE, Subject.COMPOSTER_OUVREUR)) {
       return null
     }
     const {
       values: { openers },
-      initialValues: { openers: openersAvailable, canceled },
-      setFieldValue,
-      dirty,
-      isSubmitting
+      initialValues: { canceled },
+      setFieldValue
     } = formikProps
 
     const handleOpenerAdding = newOpener => {
       setFieldValue('openers', [...openers, newOpener])
     }
-
-    const isUserSelfEdited = openersAvailable.length !== openers.length
 
     const isUserAlreadyAddedHimSelf = openers.map(getId).includes(`/users/${user.userId}`)
 
@@ -298,9 +309,6 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
       return ''
     }
 
-    if (isUserSelfEdited) {
-      return renderSubmitCancelButtons(dirty, handleCancel, isSubmitting)
-    }
     if (isUserAlreadyAddedHimSelf) {
       return ''
     }
@@ -388,36 +396,13 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
             endAdornment: <InputAdornment position="end">°C</InputAdornment>
           }}
         />
-        {dirty && (
-          <>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={handleCancel}
-              className={classNames(css.openerListBtn, css.openerListBtnCancel)}
-              classes={{ label: css.openerListBtnLabel }}
-            >
-              Annuler
-            </Button>
-            <Button
-              type="submit"
-              className={classNames(css.openerListBtn, css.openerListBtnSubmit)}
-              variant="contained"
-              classes={{ label: css.openerListBtnLabel }}
-            >
-              Enregister
-            </Button>
-          </>
-        )}
       </Can>
     )
   }
 
-  const mayRenderRefentInnerForm = (formikProps, handleCancel) => {
+  const mayRenderRefentInnerForm = formikProps => {
     const {
-      values: { openers, isPermanenceAnEvent, canceled },
-      dirty,
-      isSubmitting
+      values: { openers, isPermanenceAnEvent, canceled }
     } = formikProps
 
     const mayRenderOpenersSelect = (openersAvailable, openerList) => {
@@ -501,8 +486,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
           mayRenderNoOpenersWarning(openers),
           renderCancelingStatusSwitch(canceled),
           renderPermanenceEventStatusSwitch(isPermanenceAnEvent),
-          mayRenderEventFields(isPermanenceAnEvent),
-          renderSubmitCancelButtons(dirty, handleCancel, isSubmitting)
+          mayRenderEventFields(isPermanenceAnEvent)
         ]}
       </Can>
     )
@@ -514,12 +498,13 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
         return (
           <Form>
             {mayRenderCurrentOpeners(formikProps)}
-            {isPermanencePassed && mayRenderInnerFormStats(formikProps, onCancel)}
-            {isPermanenceToCome && mayRenderRefentInnerForm(formikProps, onCancel)}
+            {mayRenderRefentInnerForm(formikProps, onCancel)}
+            {mayRenderOpenerInnerForm(formikProps)}
             <Can not I={MODIFY} this={COMPOSTER_PERMANENCE_MESSAGE}>
               {mayRenderEventMessage(permanence.eventTitle, permanence.eventMessage)}
             </Can>
-            {isPermanenceToCome && mayRenderOpenerInnerForm(formikProps, onCancel)}
+            {isPermanencePassed && mayRenderInnerFormStats(formikProps, onCancel)}
+            {renderSubmitCancelButtons(formikProps.dirty, onCancel, formikProps.isSubmitting)}
           </Form>
         )
       }}

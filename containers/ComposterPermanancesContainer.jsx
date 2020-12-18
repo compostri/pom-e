@@ -85,12 +85,8 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
   }
 
   const handleClick = useCallback(
-    permanence => ({ currentTarget }) => {
-      addPermanenceDetails(permanence, {
-        $popover: {
-          anchorEl: currentTarget
-        }
-      })
+    permanence => () => {
+      addPermanenceDetails(permanence)
     },
     [addPermanenceDetails]
   )
@@ -147,8 +143,8 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
     ]
   )
 
-  const maybeRenderPopover = ({ $popover, ...details }) => {
-    return $popover && details && <PermanenceCardPopover permanence={details} onClose={removePermanenceDetails} onSubmit={updatePermanenceDetails} />
+  const maybeRenderPopover = details => {
+    return details.date && <PermanenceCardPopover permanence={details} onClose={removePermanenceDetails} onSubmit={updatePermanenceDetails} />
   }
 
   return (
