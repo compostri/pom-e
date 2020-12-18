@@ -16,7 +16,7 @@ const usePermanenceStatus = ({ canceled, date }) => {
 
   return setStatus('Permanence à venir')
 }
-const useTheme = ({ canceled, date, openers, eventTitle }) => {
+const useTheme = ({ canceled, date, openers, eventTitle, openersString }) => {
   const greenTheme = useGreenTheme()
   const greyTheme = useGreyTheme()
   const redTheme = useRedTheme()
@@ -24,7 +24,7 @@ const useTheme = ({ canceled, date, openers, eventTitle }) => {
   const orangeTheme = useOrangeTheme()
 
   const isPermDatePassed = today.isAfter(date)
-  const hasAnyOpeners = openers.length > 0
+  const hasAnyOpeners = openers.length > 0 || openersString
   const hasTitle = eventTitle
 
   if (isPermDatePassed) {

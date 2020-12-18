@@ -139,11 +139,10 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
   const { MODIFY, DELETE } = Action
   const { COMPOSTER_LISTES_OUVREURS, COMPOSTER_OUVREUR, COMPOSTER_PERMANENCE_MESSAGE } = Subject
   const isPermanencePassed = today.isAfter(permanence.date)
-  const isPermanenceToCome = !isPermanencePassed
 
   const initialValues = useMemo(() => {
     const emptyIfNull = value => (value === null ? '' : value)
-    const { openers, eventTitle, eventMessage, nbUsers, nbBuckets, weight, temperature, canceled } = permanence
+    const { openers, eventTitle, eventMessage, nbUsers, nbBuckets, weight, temperature, canceled, openersString } = permanence
     return {
       openers,
       eventTitle,
@@ -153,6 +152,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
       nbBuckets: emptyIfNull(nbBuckets),
       weight: emptyIfNull(weight),
       temperature: emptyIfNull(temperature),
+      openersString: emptyIfNull(openersString),
       isPermanenceAnEvent: !!eventTitle
     }
   }, [permanence])
@@ -167,7 +167,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
   const css = usePermanenceToComeWithOpenersStyle()
 
   const handleSubmit = useCallback(
-    async ({ openers, eventTitle, eventMessage, nbUsers, nbBuckets, weight, temperature, isPermanenceAnEvent, canceled }, actions) => {
+    async ({ openers, eventTitle, eventMessage, nbUsers, nbBuckets, weight, temperature, isPermanenceAnEvent, canceled, openersString }, actions) => {
       const mayBeEmptyValue = value => (isPermanenceAnEvent ? value : '')
       const nullIfEmpty = value => (value === '' ? null : value)
 
@@ -185,6 +185,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
           ...{
             eventTitle: mayBeEmptyValue(eventTitle),
             eventMessage: mayBeEmptyValue(eventMessage),
+            openersString: nullIfEmpty(openersString),
             canceled
           }
         }
@@ -198,7 +199,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
 
   const mayRenderCurrentOpeners = formikProps => {
     const {
-      values: { openers },
+      values: { openers, openersString },
       setFieldValue
     } = formikProps
 
@@ -244,7 +245,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
       <>
         <h3 className={css.contentTitle}>Liste des ouvreurs</h3>
         <ul className={css.openerList}>
-          {openers.length > 0 ? (
+          {openers.length > 0 || openersString ? (
             openers.map(renderOpener)
           ) : (
             <li className={classNames(css.openerListItem, css.noOpenerListItem)}>
@@ -436,11 +437,23 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
       }
 
       return (
-        <FormControl className={css.selectFormControl}>
-          <FormikSelect multiple className={css.select} classes={{ root: css.selectRoot }} name="openers" displayEmpty renderValue={renderValue}>
-            {renderOpenersToAdd(openersAvailable, openers)}
-          </FormikSelect>
-        </FormControl>
+        <>
+          <FormControl className={css.selectFormControl}>
+            <FormikSelect multiple className={css.select} classes={{ root: css.selectRoot }} name="openers" displayEmpty renderValue={renderValue}>
+              {renderOpenersToAdd(openersAvailable, openers)}
+            </FormikSelect>
+          </FormControl>
+          <FormControl className={css.selectFormControl}>
+            <FormikTextField
+              InputLabelProps={{
+                shrink: true
+              }}
+              label="Ouveurs sans compte"
+              name="openersString"
+              placeholder="ex: Nathalie,Hervé"
+            />
+          </FormControl>
+        </>
       )
     }
 

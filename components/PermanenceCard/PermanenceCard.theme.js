@@ -53,6 +53,10 @@ const useBaseStyle = makeStyles(({ typography }) => ({
     width: typography.pxToRem(16),
     height: typography.pxToRem(16)
   },
+  cardAvatarName: {
+    textAlign: 'left',
+    fontSize: typography.pxToRem(12)
+  },
   popoverCard: {
     width: typography.pxToRem(400),
     backgroundColor: '#fff'
@@ -243,6 +247,9 @@ const useBlueTheme = makeStyles(() => ({
   cardAvatar: {
     backgroundColor: palette.blue
   },
+  cardAvatarName: {
+    color: palette.blue
+  },
   popoverHeader: {
     color: palette.blue,
     backgroundColor: palette.blueExtraLight
@@ -284,6 +291,9 @@ const useGreenTheme = makeStyles(() => ({
   },
   cardAvatar: {
     backgroundColor: palette.greenPrimary
+  },
+  cardAvatarName: {
+    color: palette.greenPrimary
   },
   popoverHeader: {
     color: palette.greenPrimary,

@@ -16,6 +16,10 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  modalRoot: {
+    maxHeight: '90vh',
+    overflowY: 'auto'
   }
 }))
 
@@ -48,7 +52,12 @@ const withPermanencePopoverWrapper = WrappedComponent => {
 
     return (
       <Modal className={classes.modal} open={!!permanence} onClose={onClose}>
-        <Card className={baseStyle.popoverCard}>
+        <Card
+          className={baseStyle.popoverCard}
+          classes={{
+            root: classes.modalRoot
+          }}
+        >
           <CardHeader
             title={cardTitle}
             subheader={dayjs(permanence.date).format('HH:mm')}
