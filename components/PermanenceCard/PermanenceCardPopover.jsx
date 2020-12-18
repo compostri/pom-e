@@ -370,7 +370,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
           }}
           className={css.field}
           name="nbBuckets"
-          label="Nombre de sceaux"
+          label="Nombre de seaux"
           type="number"
           disabled={disabled}
         />
@@ -380,15 +380,18 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
           }}
           className={css.field}
           name="weight"
-          label="Poids total de biodéchets détourné"
+          label="Poids total de biodéchets détournés"
           type="number"
-          inputProps={{ step: 0.1 }}
+          inputProps={{ step: 0.01 }}
           disabled={disabled}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">Kg</InputAdornment>
+          }}
         />
         <FormikTextField
           className={css.field}
           name="temperature"
-          label="Température du composte"
+          label="Température du compost"
           type="number"
           disabled={disabled}
           InputLabelProps={InputLabelProps}
