@@ -144,22 +144,11 @@ const UserButton = () => {
       </Popper>
     </>
   ) : (
-    <>
-      <Hidden xsDown>
-        <Link href={{ pathname: '/connexion', query: { ref: router.asPath } }} passHref>
-          <Button color="secondary" variant="contained" className={classes.UserButtonLog}>
-            Se connecter
-          </Button>
-        </Link>
-      </Hidden>
-      <Hidden smUp>
-        <Link href={{ pathname: '/connexion', query: { ref: router.asPath } }} passHref>
-          <IconButton onClick={handleToggle} color="secondary" ref={anchorRef}>
-            <AccountCircle />
-          </IconButton>
-        </Link>
-      </Hidden>
-    </>
+    <Link href={{ pathname: '/connexion', query: { ref: router.asPath } }} passHref>
+      <Button color="secondary" variant="contained" className={classes.UserButtonLog}>
+        Se connecter
+      </Button>
+    </Link>
   )
 }
 
