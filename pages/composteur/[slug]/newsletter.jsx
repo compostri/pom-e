@@ -1,6 +1,7 @@
 import React from 'react'
+import Link from 'next/link'
 import { makeStyles } from '@material-ui/styles'
-import { Paper, Typography } from '@material-ui/core'
+import { Paper, Typography, Link as LinkM } from '@material-ui/core'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 
@@ -15,6 +16,10 @@ const ComposterNewsletterForm = dynamic(() => import('~/components/forms/compost
 
 const useStyles = makeStyles(theme => ({
   title: {
+    marginBottom: theme.spacing(2)
+  },
+  desc: {
+    fontStyle: 'italic',
     marginBottom: theme.spacing(2)
   },
   sectionRight: {
@@ -33,7 +38,14 @@ const ComposterNewsletter = ({ composter }) => {
 
       <Paper elevation={1} className={classes.sectionRight}>
         <Typography variant="h2" className={classes.title}>
-          Envoyer la newsletter du {composter.name}
+          Newsletter du/de - {composter.name}
+        </Typography>
+        <Typography className={classes.desc}>
+          Envoyer un message à l'ensemble des utilisateurs (gérer la liste dans l'onglet{' '}
+          <Link href="/composteur/[slug]/utilisateurs" as={`/composteur/${composter.slug}/utilisateurs`} passHref>
+            <LinkM>"liste des utilisateurs"</LinkM>
+          </Link>
+          )
         </Typography>
         <ComposterNewsletterForm />
       </Paper>
