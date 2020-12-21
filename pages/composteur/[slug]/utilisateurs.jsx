@@ -197,7 +197,7 @@ const ComposterOuvreurs = ({ composter }) => {
       values['@id']
         ? api.updateUserComposter(values['@id'], {
             ...values,
-            user: { ...user, userConfirmedAccountURL: `${window.location.origin}/confirmation` },
+            user: typeof user === 'string' ? user : { ...user, userConfirmedAccountURL: `${window.location.origin}/confirmation` },
             composter: composter['@id']
           })
         : api.createUserComposter({
@@ -274,7 +274,7 @@ const ComposterOuvreurs = ({ composter }) => {
                       handleOpen()
                       setUserComposerToUpdate(uc)
                     }}
-                    callUpdateUserComposerNoModal={uc => handleRegisterFormSubmit(uc)}
+                    callUpdateUserComposerNoModal={uc => handleRegisterFormSubmit({ ...uc, ...{ user: uc.user['@id'] } })}
                   />
                 ))}
               </TableBody>
@@ -292,7 +292,7 @@ const ComposterOuvreurs = ({ composter }) => {
         )}
       </div>
       <Button variant="contained" color="secondary" className={classes.btnAdd} onClick={handleOpen}>
-        Ajouter un nouvel ouvreur
+        Ajouter un nouvel utilisateur
       </Button>
       <Modal BackdropProps={{ style: { background: '#faf9f8' } }} className={classes.modal} open={openModal} onClose={handleClose}>
         <Paper elevation={1} className={classes.modalPaper}>
