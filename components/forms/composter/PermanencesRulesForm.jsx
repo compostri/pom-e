@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useContext } from 'react'
-import { InputLabel, FormControl, Select, MenuItem, Button, Grid, Box, Hidden, IconButton } from '@material-ui/core'
+import { InputLabel, FormControl, Select, TextField, MenuItem, Button, Grid, Box, Hidden, IconButton } from '@material-ui/core'
 import { Add, Delete } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
-import { DatePicker, TimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
+import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 import DaysJSUtils from '@date-io/dayjs'
 import { Formik, Form, Field, FieldArray } from 'formik'
 import dayjs from 'dayjs'
@@ -107,13 +107,23 @@ const RuleForm = ({ index }) => {
           <FormControl fullWidth>
             <Field name={`rules.${index}.timeStart`}>
               {({ field, form }) => (
-                <TimePicker
-                  ampm={false}
+                <TextField
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                  type="time"
                   label="Heure d‘ouverture"
-                  variant="inline"
-                  autoOk
                   {...field}
-                  onChange={value => form.setFieldValue(field.name, value)}
+                  value={field.value.format('HH:mm')}
+                  onChange={e => {
+                    const [hour, min] = e.target.value.split(':')
+                    form.setFieldValue(
+                      field.name,
+                      dayjs()
+                        .hour(hour)
+                        .minute(min)
+                    )
+                  }}
                 />
               )}
             </Field>
@@ -127,11 +137,11 @@ const RuleForm = ({ index }) => {
                   InputLabelProps={{
                     shrink: true
                   }}
+                  {...field}
                   label="Date de début"
                   variant="inline"
                   autoOk
                   format="D MMMM YYYY"
-                  {...field}
                   onChange={value => form.setFieldValue(field.name, value)}
                 />
               )}
