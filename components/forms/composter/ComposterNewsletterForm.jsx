@@ -31,6 +31,8 @@ const ComposterNewsletterForm = () => {
   } = useContext(ComposterContext)
 
   const resetForm = () => {
+    setSubjectTouched(false)
+    setMessageTouched(false)
     setSubject('')
     setMessage('')
   }
@@ -43,7 +45,7 @@ const ComposterNewsletterForm = () => {
           setFormError(err.errors)
         })
     }
-  }, [subject, message])
+  }, [subject, message, subjectTouched, messageTouched])
 
   const submit = async event => {
     event.preventDefault()
