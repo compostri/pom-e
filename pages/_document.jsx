@@ -1,28 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react'
-import Document, { Html, Head, Main, NextScript } from 'next/document'
+import Document, { Html, Main, NextScript } from 'next/document'
 import { ServerStyleSheets } from '@material-ui/styles'
-import theme from '~/theme'
 
 class MyDocument extends Document {
   render() {
     return (
       <Html lang="en">
-        <Head>
-          <meta charSet="utf-8" />
-          <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no" />
-          {/* PWA primary color */}
-          <meta name="theme-color" content={theme.palette.primary.main} />
-          <link rel="icon" href="/favicon.ico" />
-          <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-          <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-          <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-          <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#a4c538" />
-          <meta name="msapplication-TileColor" content="#a4c538" />
-
-          <link rel="manifest" href="/manifest.json" />
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,700&display=swap" />
-        </Head>
         <body>
           <Main />
           <NextScript />

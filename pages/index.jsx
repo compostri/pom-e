@@ -136,7 +136,7 @@ const Home = ({ allCommunes, allCategories }) => {
   return (
     <div>
       <Head>
-        <title>Les composteurs de Compostri</title>
+        <title>Pom-e - Les composteurs de Compostri</title>
         <meta name="description" content="Retrouvez tous les composteurs de Nantes Métropole géré par l’association Compostri" />
       </Head>
 
