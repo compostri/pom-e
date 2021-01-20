@@ -156,7 +156,7 @@ const ComposterOuvreurs = ({ composter }) => {
   const getUsers = useCallback(async () => {
     setFetchingUsers(true)
     const perPage = 10
-    const data = await api.getUserComposter({ composter: composter.rid, perPage: perPage, page: usersCurrentPages }).catch(console.error)
+    const data = await api.getUserComposter({ composter: composter.rid, itemsPerPage: perPage, page: usersCurrentPages }).catch(console.error)
     if (data) {
       const userCount = data['hydra:totalItems']
       setUsersTotalCount(userCount)
