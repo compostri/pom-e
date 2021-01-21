@@ -1,12 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react'
-import Document, { Html, Main, NextScript } from 'next/document'
+import Document, { Html, Main, Head, NextScript } from 'next/document'
 import { ServerStyleSheets } from '@material-ui/styles'
 
 class MyDocument extends Document {
   render() {
     return (
       <Html lang="en">
+        <Head />
         <body>
           <Main />
           <NextScript />
