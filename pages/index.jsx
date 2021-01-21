@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import { makeStyles } from '@material-ui/styles'
 import { fitBounds } from 'viewport-mercator-project'
@@ -51,12 +51,20 @@ const Home = ({ allCommunes, allCategories }) => {
     bearing: 0,
     pitch: 0
   })
+  const [windowWidth, setWindowWidth] = useState(0)
   const [openSidebar, setOpenSidebar] = useState(true)
   const [acceptNewMembers, setAcceptNewMembers] = useState(true)
   const [selectedCommune, setSelectedCommune] = useState(allCommunes.map(com => com.id))
+  const [countComposteurs, setCountComposteurs] = useState(0)
   const [selectedCategories, setSelectedCategories] = useState(allCategories.map(cat => cat.id))
   const [selectedStatus, setSelectedStatus] = useState(['Active'])
   const [mapPopup, setMapPopup] = useState(false)
+
+  const mapRef = useRef(null)
+
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth)
+  }
 
   const fetchComposters = async () => {
     const geojson = await api.getComposterGeojson()
@@ -79,7 +87,7 @@ const Home = ({ allCommunes, allCategories }) => {
           top: 40,
           bottom: 40,
           right: 40,
-          left: openSidebar ? 460 : 40
+          left: window.innerWidth > 600 ? 460 : 40
         }
       })
       setMapViewport({ ...mapViewport, longitude, latitude, zoom })
@@ -87,9 +95,28 @@ const Home = ({ allCommunes, allCategories }) => {
   }
 
   useEffect(() => {
+    handleResize()
     fetchComposters()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    setOpenSidebar(windowWidth > 600)
+  }, [windowWidth])
+
+  useEffect(() => {
+    if (composters && composters.features) {
+      let count = 0
+      composters.features.map(c => {
+        if (c.properties.status === 'Active') {
+          count++
+        }
+      })
+      setCountComposteurs(count)
+    }
+  }, [composters])
 
   const onMapClick = event => {
     const { features } = event
@@ -109,7 +136,8 @@ const Home = ({ allCommunes, allCategories }) => {
   return (
     <div>
       <Head>
-        <title>Les composteurs de Compostri</title>
+        <title>Pom-e - Les composteurs de Compostri</title>
+        <meta name="description" content="Retrouvez tous les composteurs de Nantes Métropole géré par l’association Compostri" />
       </Head>
 
       <Sidebar
@@ -125,7 +153,8 @@ const Home = ({ allCommunes, allCategories }) => {
           acceptNewMembers,
           setAcceptNewMembers,
           openSidebar,
-          setOpenSidebar
+          setOpenSidebar,
+          countComposteurs
         }}
       />
 
@@ -140,6 +169,7 @@ const Home = ({ allCommunes, allCategories }) => {
           mapboxApiAccessToken={process.env.NEXT_STATIC_MAP_BOX_TOKEN}
           onViewportChange={viewport => setMapViewport(viewport)}
           onClick={onMapClick}
+          ref={mapRef}
         >
           {composters && (
             <Source type="geojson" data={composters}>

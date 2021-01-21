@@ -139,11 +139,10 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
   const { MODIFY, DELETE } = Action
   const { COMPOSTER_LISTES_OUVREURS, COMPOSTER_OUVREUR, COMPOSTER_PERMANENCE_MESSAGE } = Subject
   const isPermanencePassed = today.isAfter(permanence.date)
-  const isPermanenceToCome = !isPermanencePassed
 
   const initialValues = useMemo(() => {
     const emptyIfNull = value => (value === null ? '' : value)
-    const { openers, eventTitle, eventMessage, nbUsers, nbBuckets, temperature, canceled } = permanence
+    const { openers, eventTitle, eventMessage, nbUsers, nbBuckets, weight, temperature, canceled, openersString } = permanence
     return {
       openers,
       eventTitle,
@@ -151,7 +150,9 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
       canceled,
       nbUsers: emptyIfNull(nbUsers),
       nbBuckets: emptyIfNull(nbBuckets),
+      weight: emptyIfNull(weight),
       temperature: emptyIfNull(temperature),
+      openersString: emptyIfNull(openersString),
       isPermanenceAnEvent: !!eventTitle
     }
   }, [permanence])
@@ -165,27 +166,40 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
   const theme = useTheme(permanence)
   const css = usePermanenceToComeWithOpenersStyle()
 
-  const handleSubmit = useCallback(async ({ openers, eventTitle, eventMessage, nbUsers, nbBuckets, temperature, isPermanenceAnEvent, canceled }, actions) => {
-    const mayBeEmptyValue = value => (isPermanenceAnEvent ? value : '')
-    const nullIfEmpty = value => (value === '' ? null : value)
+  const handleSubmit = useCallback(
+    async ({ openers, eventTitle, eventMessage, nbUsers, nbBuckets, weight, temperature, isPermanenceAnEvent, canceled, openersString }, actions) => {
+      const mayBeEmptyValue = value => (isPermanenceAnEvent ? value : '')
+      const nullIfEmpty = value => (value === '' ? null : value)
 
-    await onSubmit(
-      isPermanenceToCome
-        ? {
-            openers: openers.map(getId),
+      // Faire attention de ne pas renvoyer tous les champs pour les ouvreurs sinon ca fini en erreur 403
+      let response = {
+        nbUsers: nullIfEmpty(nbUsers),
+        nbBuckets: nullIfEmpty(nbBuckets),
+        weight: nullIfEmpty(weight),
+        temperature: nullIfEmpty(temperature),
+        openers: openers.map(getId)
+      }
+      if (abilityContext.can(Action.MODIFY, Subject.COMPOSTER_LISTES_OUVREURS)) {
+        response = {
+          ...response,
+          ...{
             eventTitle: mayBeEmptyValue(eventTitle),
             eventMessage: mayBeEmptyValue(eventMessage),
+            openersString: nullIfEmpty(openersString),
             canceled
           }
-        : { nbUsers: nullIfEmpty(nbUsers), nbBuckets: nullIfEmpty(nbBuckets), temperature: nullIfEmpty(temperature) }
-    )
+        }
+      }
+      await onSubmit(response)
 
-    actions.setSubmitting(false)
-  }, [])
+      actions.setSubmitting(false)
+    },
+    [onSubmit]
+  )
 
   const mayRenderCurrentOpeners = formikProps => {
     const {
-      values: { openers },
+      values: { openers, openersString },
       setFieldValue
     } = formikProps
 
@@ -207,12 +221,18 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
             </Avatar>
             {username}
           </div>
-          <Can I={MODIFY} this={{ $type: COMPOSTER_LISTES_OUVREURS, isPermanencePassed }}>
+          <Can I={MODIFY} this={{ $type: COMPOSTER_LISTES_OUVREURS }}>
             <IconButton aria-label="remove" onClick={handleOpenerRemoval(openerId)} className={css.openerListItemDeleteIcon}>
               <DeleteIcon />
             </IconButton>
           </Can>
-          <Can I={DELETE} this={{ $type: COMPOSTER_OUVREUR, self: user && getId(opener) === `/users/${user.userId}`, isPermanencePassed }}>
+          <Can
+            I={DELETE}
+            this={{
+              $type: COMPOSTER_OUVREUR,
+              self: user && getId(opener) === `/users/${user.userId}`
+            }}
+          >
             <IconButton aria-label="remove" onClick={handleOpenerRemoval(openerId)} className={css.openerListItemDeleteIcon}>
               <DeleteIcon />
             </IconButton>
@@ -225,7 +245,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
       <>
         <h3 className={css.contentTitle}>Liste des ouvreurs</h3>
         <ul className={css.openerList}>
-          {openers.length > 0 ? (
+          {openers.length > 0 || openersString ? (
             openers.map(renderOpener)
           ) : (
             <li className={classNames(css.openerListItem, css.noOpenerListItem)}>
@@ -263,23 +283,19 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
       </>
     )
 
-  const mayRenderOpenerInnerForm = (formikProps, handleCancel) => {
+  const mayRenderOpenerInnerForm = formikProps => {
     if (abilityContext.cannot(Action.CREATE, Subject.COMPOSTER_OUVREUR)) {
       return null
     }
     const {
       values: { openers },
-      initialValues: { openers: openersAvailable, canceled },
-      setFieldValue,
-      dirty,
-      isSubmitting
+      initialValues: { canceled },
+      setFieldValue
     } = formikProps
 
     const handleOpenerAdding = newOpener => {
       setFieldValue('openers', [...openers, newOpener])
     }
-
-    const isUserSelfEdited = openersAvailable.length !== openers.length
 
     const isUserAlreadyAddedHimSelf = openers.map(getId).includes(`/users/${user.userId}`)
 
@@ -294,9 +310,6 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
       return ''
     }
 
-    if (isUserSelfEdited) {
-      return renderSubmitCancelButtons(dirty, handleCancel, isSubmitting)
-    }
     if (isUserAlreadyAddedHimSelf) {
       return ''
     }
@@ -344,21 +357,42 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
           self: hasUserBeenOpener
         }}
       >
-        <FormikTextField InputLabelProps={InputLabelProps} className={css.field} name="nbUsers" label="Utilisateurs" type="number" disabled={disabled} />
+        <FormikTextField
+          InputLabelProps={InputLabelProps}
+          className={css.field}
+          name="nbUsers"
+          label="Nombre d'utilisateurs"
+          type="number"
+          disabled={disabled}
+        />
         <FormikTextField
           InputLabelProps={{
             shrink: true
           }}
           className={css.field}
           name="nbBuckets"
-          label="Sceaux"
+          label="Nombre de seaux"
           type="number"
           disabled={disabled}
         />
         <FormikTextField
+          InputLabelProps={{
+            shrink: true
+          }}
+          className={css.field}
+          name="weight"
+          label="Poids total de biodéchets détournés"
+          type="number"
+          inputProps={{ step: 0.01 }}
+          disabled={disabled}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">Kg</InputAdornment>
+          }}
+        />
+        <FormikTextField
           className={css.field}
           name="temperature"
-          label="Température"
+          label="Température du compost"
           type="number"
           disabled={disabled}
           InputLabelProps={InputLabelProps}
@@ -366,36 +400,13 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
             endAdornment: <InputAdornment position="end">°C</InputAdornment>
           }}
         />
-        {dirty && (
-          <>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={handleCancel}
-              className={classNames(css.openerListBtn, css.openerListBtnCancel)}
-              classes={{ label: css.openerListBtnLabel }}
-            >
-              Annuler
-            </Button>
-            <Button
-              type="submit"
-              className={classNames(css.openerListBtn, css.openerListBtnSubmit)}
-              variant="contained"
-              classes={{ label: css.openerListBtnLabel }}
-            >
-              Enregister
-            </Button>
-          </>
-        )}
       </Can>
     )
   }
 
-  const mayRenderRefentInnerForm = (formikProps, handleCancel) => {
+  const mayRenderRefentInnerForm = formikProps => {
     const {
-      values: { openers, isPermanenceAnEvent, canceled },
-      dirty,
-      isSubmitting
+      values: { openers, isPermanenceAnEvent, canceled }
     } = formikProps
 
     const mayRenderOpenersSelect = (openersAvailable, openerList) => {
@@ -426,11 +437,23 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
       }
 
       return (
-        <FormControl className={css.selectFormControl}>
-          <FormikSelect multiple className={css.select} classes={{ root: css.selectRoot }} name="openers" displayEmpty renderValue={renderValue}>
-            {renderOpenersToAdd(openersAvailable, openers)}
-          </FormikSelect>
-        </FormControl>
+        <>
+          <FormControl className={css.selectFormControl}>
+            <FormikSelect multiple className={css.select} classes={{ root: css.selectRoot }} name="openers" displayEmpty renderValue={renderValue}>
+              {renderOpenersToAdd(openersAvailable, openers)}
+            </FormikSelect>
+          </FormControl>
+          <FormControl className={css.selectFormControl}>
+            <FormikTextField
+              InputLabelProps={{
+                shrink: true
+              }}
+              label="Ouveurs sans compte"
+              name="openersString"
+              placeholder="ex: Nathalie,Hervé"
+            />
+          </FormControl>
+        </>
       )
     }
 
@@ -479,8 +502,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
           mayRenderNoOpenersWarning(openers),
           renderCancelingStatusSwitch(canceled),
           renderPermanenceEventStatusSwitch(isPermanenceAnEvent),
-          mayRenderEventFields(isPermanenceAnEvent),
-          renderSubmitCancelButtons(dirty, handleCancel, isSubmitting)
+          mayRenderEventFields(isPermanenceAnEvent)
         ]}
       </Can>
     )
@@ -492,12 +514,13 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
         return (
           <Form>
             {mayRenderCurrentOpeners(formikProps)}
-            {isPermanencePassed && mayRenderInnerFormStats(formikProps, onCancel)}
-            {isPermanenceToCome && mayRenderRefentInnerForm(formikProps, onCancel)}
+            {mayRenderRefentInnerForm(formikProps, onCancel)}
+            {mayRenderOpenerInnerForm(formikProps)}
             <Can not I={MODIFY} this={COMPOSTER_PERMANENCE_MESSAGE}>
               {mayRenderEventMessage(permanence.eventTitle, permanence.eventMessage)}
             </Can>
-            {isPermanenceToCome && mayRenderOpenerInnerForm(formikProps, onCancel)}
+            {isPermanencePassed && mayRenderInnerFormStats(formikProps, onCancel)}
+            {renderSubmitCancelButtons(formikProps.dirty, onCancel, formikProps.isSubmitting)}
           </Form>
         )
       }}

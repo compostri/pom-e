@@ -33,6 +33,12 @@ export const userType = PropTypes.shape({
   email: PropTypes.string
 })
 
+export const userComposerType = PropTypes.shape({
+  id: PropTypes.number,
+  user: userType,
+  composer: composterType
+})
+
 export const consumerType = PropTypes.shape({
   '@id': PropTypes.string,
   '@type': PropTypes.string,

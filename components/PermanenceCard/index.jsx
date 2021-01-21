@@ -32,11 +32,11 @@ const PermanceCard = ({ permanence, highlighted }) => {
 
   const renderIcon = () => {
     if (!isPermDatePassed) return null
-    const { nbUsers, nbBuckets, temperature, openers } = permanence
+    const { nbUsers, nbBuckets, temperature, openers, weight } = permanence
     const openersIds = openers.map(o => o.id)
     const canEdit = userContext.user && openersIds.includes(userContext.user.userId)
 
-    return nbUsers > 0 || nbBuckets > 0 || temperature > 0 ? (
+    return nbUsers > 0 || nbBuckets > 0 || temperature > 0 || weight > 0 ? (
       <Timeline fontSize="small" />
     ) : (
       <Can I={MODIFY} this={{ $type: COMPOSTER_STATISTIQUES, self: canEdit }}>
@@ -45,19 +45,25 @@ const PermanceCard = ({ permanence, highlighted }) => {
     )
   }
 
-  const mayRenderCardFooter = (isCanceled, openers) => {
+  const mayRenderCardFooter = (isCanceled, openers, openersString) => {
     if (isCanceled) return null
     return (
-      <div className={baseStyle.cardAvatarList}>
-        {openers.length > 0 ? (
-          openers.map(opener => {
-            const userLetter = opener.username.charAt(0).toUpperCase()
-            return (
-              <Avatar key={opener.username} className={classNames(baseStyle.cardAvatar, theme.cardAvatar)}>
-                {userLetter}
-              </Avatar>
-            )
-          })
+      <div>
+        {openers.length > 0 || openersString ? (
+          <>
+            {openers.map(opener => {
+              const userLetter = opener.username.charAt(0).toUpperCase()
+              return (
+                <div className={baseStyle.cardAvatarList}>
+                  <Avatar key={opener.username} className={classNames(baseStyle.cardAvatar, theme.cardAvatar)}>
+                    {userLetter}
+                  </Avatar>
+                  <Typography className={classNames(baseStyle.cardAvatarName, theme.cardAvatarName)}>{opener.username}</Typography>
+                </div>
+              )
+            })}
+            {openersString && <Typography className={classNames(baseStyle.cardAvatarName, theme.cardAvatarName)}>{openersString}</Typography>}
+          </>
         ) : (
           <>
             <Avatar className={classNames(baseStyle.cardAvatar, theme.cardAvatar)}>?</Avatar>
@@ -103,7 +109,7 @@ const PermanceCard = ({ permanence, highlighted }) => {
         }}
       />
       <CardContent className={classNames(baseStyle.cardContent, theme.cardContent)} classes={{ root: baseStyle.cardContentRoot }}>
-        {!isPermDatePassed && mayRenderCardFooter(permanence.canceled, permanence.openers)}
+        {!isPermDatePassed && mayRenderCardFooter(permanence.canceled, permanence.openers, permanence.openersString)}
       </CardContent>
     </Card>
   )

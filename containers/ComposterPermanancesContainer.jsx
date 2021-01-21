@@ -85,12 +85,8 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
   }
 
   const handleClick = useCallback(
-    permanence => ({ currentTarget }) => {
-      addPermanenceDetails(permanence, {
-        $popover: {
-          anchorEl: currentTarget
-        }
-      })
+    permanence => () => {
+      addPermanenceDetails(permanence)
     },
     [addPermanenceDetails]
   )
@@ -108,7 +104,7 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
       const renderPermanence = perm => {
         return (
           <Button className={classes.permanence} classes={{ root: classes.permanenceRoot }} onClick={handleClick(perm)}>
-            <PermanceCard permanence={perm} highlighted={permanenceDetails.data && dayjs(permanenceDetails.data.date).isSame(perm.date)} />
+            <PermanceCard permanence={perm} highlighted={!!permanenceDetails.data && dayjs(permanenceDetails.data.date).isSame(perm.date)} />
           </Button>
         )
       }
@@ -147,13 +143,8 @@ const ComposterPermanancesContainer = ({ permanencesRule }) => {
     ]
   )
 
-  const maybeRenderPopover = ({ $popover, ...details }) => {
-    return (
-      $popover &&
-      details && (
-        <PermanenceCardPopover anchorEl={$popover.anchorEl} permanence={details} onClose={removePermanenceDetails} onSubmit={updatePermanenceDetails} />
-      )
-    )
+  const maybeRenderPopover = details => {
+    return details.date && <PermanenceCardPopover permanence={details} onClose={removePermanenceDetails} onSubmit={updatePermanenceDetails} />
   }
 
   return (

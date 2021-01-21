@@ -21,12 +21,13 @@ const useMenu = () => {
       as: `/composteur/${slug}`,
       isActive: ['/composteur/[slug]', '/composteur/[slug]/modifications'].includes(router.pathname)
     },
-    permanencesRule && abilityContext.can(READ, COMPOSTER_PERMANENCES, permanencesRule) && {
-      label: 'Permanences',
-      href: '/composteur/[slug]/permanences',
-      as: `/composteur/${slug}/permanences`,
-      isActive: router.pathname === '/composteur/[slug]/permanences'
-    },
+    permanencesRule &&
+      abilityContext.can(READ, COMPOSTER_PERMANENCES, permanencesRule) && {
+        label: 'Permanences',
+        href: '/composteur/[slug]/permanences',
+        as: `/composteur/${slug}/permanences`,
+        isActive: router.pathname === '/composteur/[slug]/permanences'
+      },
     {
       label: 'Statistiques',
       href: '/composteur/[slug]/statistiques',
@@ -34,10 +35,10 @@ const useMenu = () => {
       isActive: router.pathname === '/composteur/[slug]/statistiques'
     },
     abilityContext.can(READ, COMPOSTER_LISTES_OUVREURS, permanencesRule) && {
-      label: "Listes d'ouvreurs",
-      href: '/composteur/[slug]/ouvreurs',
-      as: `/composteur/${slug}/ouvreurs`,
-      isActive: router.pathname === '/composteur/[slug]/ouvreurs'
+      label: 'Liste des utilisateurs',
+      href: '/composteur/[slug]/utilisateurs',
+      as: `/composteur/${slug}/utilisateurs`,
+      isActive: router.pathname === '/composteur/[slug]/utilisateurs'
     },
     abilityContext.can(READ, COMPOSTER_NEWLETTERS, permanencesRule) && {
       label: 'Newsletter',

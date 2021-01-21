@@ -146,15 +146,17 @@ const Content = () => {
                     <ListItemText>{composter.categorie.name}</ListItemText>
                   </ListItem>
                 )}
-                { (! composter.categorie || composter.categorie.name !== 'Ecole' ) &&
+                {(!composter.categorie || composter.categorie.name !== 'Ecole') && (
                   <ListItem className={classes.listItem}>
                     <ListItemIcon>
                       <Person className={classes.infoIcone} />
                     </ListItemIcon>
 
-                    <ListItemText>{composter.acceptNewMembers && composter.status === 'Active' ? 'Accepte' : "N'accepte pas"} de nouveaux adhérents</ListItemText>
+                    <ListItemText>
+                      {composter.acceptNewMembers && composter.status === 'Active' ? 'Accepte' : "N'accepte pas"} de nouveaux adhérents
+                    </ListItemText>
                   </ListItem>
-                }
+                )}
 
                 <ListItem className={classes.listItem}>
                   <ListItemIcon>
@@ -198,6 +200,7 @@ const ComposterDetail = ({ composter }) => {
     <ComposterContainer composter={composter}>
       <Head>
         <title>{composter.name} - un composteur géré par Compostri</title>
+        <meta name="description" content={`Composteur ${composter.name} - ${composter.publicDescription}`.replace(/(<([^>]+)>)/gi, '').substring(0, 156)} />
       </Head>
       <Content />
     </ComposterContainer>

@@ -85,7 +85,7 @@ const UserButton = () => {
 
   return userContext.isLoggedIn() ? (
     <>
-      <Hidden xsDown>
+      <Hidden>
         <Button
           onClick={handleToggle}
           color="secondary"
@@ -96,11 +96,6 @@ const UserButton = () => {
         >
           Mon compte
         </Button>
-      </Hidden>
-      <Hidden smUp>
-        <IconButton onClick={handleToggle} color="secondary" ref={anchorRef}>
-          <AccountCircle />
-        </IconButton>
       </Hidden>
 
       <Popper className={classes.popper} open={open} anchorEl={anchorRef.current} placement="bottom-end" transition disablePortal>
@@ -149,22 +144,11 @@ const UserButton = () => {
       </Popper>
     </>
   ) : (
-    <>
-      <Hidden xsDown>
-        <Link href={{ pathname: '/connexion', query: { ref: router.asPath } }} passHref>
-          <Button color="secondary" variant="contained" className={classes.UserButtonLog}>
-            Se connecter
-          </Button>
-        </Link>
-      </Hidden>
-      <Hidden smUp>
-        <Link href={{ pathname: '/connexion', query: { ref: router.asPath } }} passHref>
-          <IconButton onClick={handleToggle} color="secondary" ref={anchorRef}>
-            <AccountCircle />
-          </IconButton>
-        </Link>
-      </Hidden>
-    </>
+    <Link href={{ pathname: '/connexion', query: { ref: router.asPath } }} passHref>
+      <Button color="secondary" variant="contained" className={classes.UserButtonLog}>
+        Se connecter
+      </Button>
+    </Link>
   )
 }
 

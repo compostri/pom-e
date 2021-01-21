@@ -60,6 +60,9 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2, 0),
     width: '100%'
   },
+  sidebarTitle: {
+    marginBottom: theme.spacing(2)
+  },
   sidebarContent: {
     padding: theme.spacing(3.75)
   },
@@ -184,6 +187,7 @@ const Sidebar = ({
   acceptNewMembers,
   setAcceptNewMembers,
   openSidebar,
+  countComposteurs,
   setOpenSidebar
 }) => {
   const classes = useStyles()
@@ -255,8 +259,11 @@ const Sidebar = ({
   const renderFilters = () => {
     return (
       <section className={classes.sidebarContent}>
+        <Typography variant="h2" align="center" className={classes.sidebarTitle}>
+          {countComposteurs} sites de compostage partagé
+        </Typography>
         <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography variant="h2">Filtrer mes recherches</Typography>
+          <Typography className={classes.formSectionTitle}>Filtrer mes recherches</Typography>
           <Button disableRipple onClick={reinit} className={classes.reinit}>
             Effacer les filtres
           </Button>
@@ -267,7 +274,13 @@ const Sidebar = ({
           <div className={classes.categorie}>
             {allCategories &&
               allCategories.map(c => (
-                <Field key={`cat-${c.id}`} selectedCategories={selectedCategories} toggleCategories={toggleCategories} category={c} color={getCategoryColor(c)} />
+                <Field
+                  key={`cat-${c.id}`}
+                  selectedCategories={selectedCategories}
+                  toggleCategories={toggleCategories}
+                  category={c}
+                  color={getCategoryColor(c)}
+                />
               ))}
           </div>
         </FormGroup>

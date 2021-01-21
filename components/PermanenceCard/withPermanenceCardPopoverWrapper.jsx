@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import dayjs from 'dayjs'
 import PropTypes from 'prop-types'
-import { Popper, Card, CardHeader, IconButton, CardContent } from '@material-ui/core'
+import { Modal, Card, CardHeader, IconButton, CardContent } from '@material-ui/core'
 import classNames from 'classnames'
 import { Close as CloseIcon } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
@@ -11,23 +11,28 @@ import useBaseStyle from './PermanenceCard.theme'
 import { ComposterContext } from '~/context/ComposterContext'
 import { permanenceType } from '~/types'
 
-const useStyles = makeStyles(({zIndex})=> ({
-  popper: {
-    zIndex: zIndex.appBar
+const useStyles = makeStyles(() => ({
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  modalRoot: {
+    maxHeight: '90vh',
+    overflowY: 'auto'
   }
 }))
 
 const today = dayjs()
 
 const propTypes = {
-  anchorEl: PropTypes.elementType.isRequired,
   permanence: permanenceType.isRequired,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired
 }
 
 const withPermanencePopoverWrapper = WrappedComponent => {
-  function WithPermanencePopoverWrapper({ anchorEl, onClose, permanence, onSubmit }) {
+  function WithPermanencePopoverWrapper({ onClose, permanence, onSubmit }) {
     const {
       composterContext: { composter }
     } = useContext(ComposterContext)
@@ -46,8 +51,13 @@ const withPermanencePopoverWrapper = WrappedComponent => {
     )
 
     return (
-      <Popper className={classes.popper} transition open={!!anchorEl} anchorEl={anchorEl} onClose={onClose}>
-        <Card className={baseStyle.popoverCard}>
+      <Modal className={classes.modal} open={!!permanence} onClose={onClose}>
+        <Card
+          className={baseStyle.popoverCard}
+          classes={{
+            root: classes.modalRoot
+          }}
+        >
           <CardHeader
             title={cardTitle}
             subheader={dayjs(permanence.date).format('HH:mm')}
@@ -65,7 +75,7 @@ const withPermanencePopoverWrapper = WrappedComponent => {
             <WrappedComponent permanence={permanence} composterId={composter.rid} onSubmit={onSubmit} onCancel={onClose} />
           </CardContent>
         </Card>
-      </Popper>
+      </Modal>
     )
   }
   WithPermanencePopoverWrapper.propTypes = propTypes

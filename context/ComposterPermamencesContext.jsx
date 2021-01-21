@@ -199,12 +199,11 @@ const ComposterPermanencesProvider = ({ children, composterId, composterAtId, pe
     permanenceDetailsAction.reset()
   }
 
-  const addPermanenceDetails = async (permanence, { $popover }) => {
+  const addPermanenceDetails = async permanence => {
     const hasNotAbilityToMofidyOpeners = abilityContext.cannot(Action.MODIFY, Subject.COMPOSTER_LISTES_OUVREURS)
-    const isPermanenceAlreadyPassed = today.isAfter(dayjs(permanence.date))
 
-    if (hasNotAbilityToMofidyOpeners || isPermanenceAlreadyPassed) {
-      permanenceDetailsAction.success({ ...permanence, $popover, $openersAvailable: [] })
+    if (hasNotAbilityToMofidyOpeners) {
+      permanenceDetailsAction.success({ ...permanence, $openersAvailable: [] })
       return
     }
 
@@ -215,7 +214,7 @@ const ComposterPermanencesProvider = ({ children, composterId, composterAtId, pe
       const composterOpeners = data['hydra:member'].map(({ user }) => user)
       const $openersAvailable = $removeDuplicate([...permanence.openers, ...composterOpeners], { by: '@id' })
 
-      permanenceDetailsAction.success({ ...permanence, $popover, $openersAvailable })
+      permanenceDetailsAction.success({ ...permanence, $openersAvailable })
     } else {
       $displayErrorFromApi()
     }
