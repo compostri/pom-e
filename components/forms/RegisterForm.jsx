@@ -104,7 +104,7 @@ const buildFields = fields => {
         field = (
           <Grid item xs={6} key={name}>
             <FormControlLabel
-              control={<FormikSwitchField checked={values[name]} name={name} required />}
+              control={<FormikSwitchField checked={values[name]} name={name} />}
               label={label}
               InputLabelProps={{
                 shrink: true
