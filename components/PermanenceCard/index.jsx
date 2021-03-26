@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import { Card, CardContent, CardHeader, Typography, Avatar } from '@material-ui/core'
 import { AddCircleOutline, Timeline } from '@material-ui/icons'
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+dayjs.extend(utc)
 import 'dayjs/locale/fr'
 
 import { permanenceType } from '~/types'
@@ -95,7 +97,10 @@ const PermanceCard = ({ permanence, highlighted }) => {
       return null
     }
 
-    return dayjs(permanence.date).format('HH:mm')
+    // La date n'est pas sauvegarder en UTC mais par defaut il pense oui
+    // Forcer le formtage UTC nous renvoie donc la vrai date
+    // Cela evite les variations de changement d'horaire
+    return dayjs.utc(permanence.date).format('HH:mm')
   }
 
   return (
