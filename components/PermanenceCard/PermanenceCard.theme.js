@@ -67,7 +67,7 @@ const useBaseStyle = makeStyles(({ typography }) => ({
     backgroundColor: '#fff'
   },
   popoverHeader: {
-    height: typography.pxToRem(56),
+    minHeight: typography.pxToRem(56),
     padding: typography.pxToRem(10)
   },
   popoverCloseIcon: {

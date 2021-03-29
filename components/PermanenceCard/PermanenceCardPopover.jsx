@@ -479,6 +479,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
             InputLabelProps={{
               shrink: true
             }}
+            className={css.field}
             name="eventTitle"
             label="Titre de l'évènement"
           />
@@ -486,6 +487,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
             InputLabelProps={{
               shrink: true
             }}
+            className={css.field}
             multiline
             rows="4"
             name="eventMessage"
