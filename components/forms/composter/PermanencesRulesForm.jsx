@@ -238,7 +238,7 @@ const PermanencesRulesForm = () => {
               <div>
                 {values.rules &&
                   values.rules.map((rule, index) => (
-                    <div key={`rule-${rule.timeStart.valueOf()}`}>
+                    <div key={`rule-${rule.timeStart.valueOf()}-${index}`}>
                       <Box className={classes.hourLine}>
                         <RuleForm index={index} {...rule} />
 
