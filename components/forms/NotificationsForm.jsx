@@ -36,11 +36,13 @@ const useStyle = makeStyles(theme => ({
 }))
 
 const propTypes = {
-  userId: PropTypes.number.isRequired
+  onUserInformationUpdate: PropTypes.func.isRequired,
+  user: PropTypes.object
 }
 
-const NotificationsForm = ({ userId }) => {
+const NotificationsForm = ({ user, onUserInformationUpdate }) => {
   const classes = useStyle()
+  const userId = user.userId
   const { addToast } = useToasts()
 
   const [userComposter, setUserComposter] = React.useState([])
@@ -68,7 +70,7 @@ const NotificationsForm = ({ userId }) => {
     }
   }, [userId])
 
-  /* Update Notifications */
+  /* Update User Composteur */
   const updateUC = async (uc, field) => {
     updateNotif(uc, field)
     const res = await api.updateUserComposter(uc['@id'], { [field]: !uc[field] })
@@ -85,10 +87,11 @@ const NotificationsForm = ({ userId }) => {
       </Typography>
       <FormControlLabel
         className={classes.newsCompostri}
-        value="newsletterCompostri"
+        name="newsletterCompostri"
         label="S'abonner à la newsletter de Compostri"
-        control={<Switch color="primary" />}
+        control={<Switch color="primary" checked={user.isSubscribeToCompostriNewsletter} />}
         labelPlacement="end"
+        onChange={() => onUserInformationUpdate({ isSubscribeToCompostriNewsletter: !user.isSubscribeToCompostriNewsletter })}
       />
       <Typography component="h2" variant="h2" className={classes.titles}>
         Mes composteurs

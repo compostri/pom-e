@@ -7,8 +7,6 @@ import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 import DaysJSUtils from '@date-io/dayjs'
 import { Formik, Form, Field, FieldArray } from 'formik'
 import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-dayjs.extend(utc)
 import { RRule, RRuleSet, rrulestr } from 'rrule'
 import PropTypes from 'prop-types'
 
@@ -179,11 +177,11 @@ const getRrulesFromObject = rObject => {
       new RRule({
         freq: RRule.WEEKLY,
         byweekday: rule.day,
-        byhour: dayjs.utc(rule.timeStart).hour(),
+        byhour: rule.timeStart.hour(),
         byminute: rule.timeStart.minute(),
-        dtstart: rule.startDate ? rule.startDate.utc().toDate() : undefined,
-        until: rule.endDate ? rule.endDate.utc().toDate() : undefined
-        //tzid: 'Europe/Paris'
+        dtstart: rule.startDate ? rule.startDate.toDate() : undefined,
+        until: rule.endDate ? rule.endDate.toDate() : undefined,
+        tzid: 'Europe/Paris'
       })
     )
   )
@@ -194,24 +192,13 @@ const getRulesFormFromString = RRuleSetString => {
   const rruleSet = rrulestr(RRuleSetString, { forceset: true })
 
   return rruleSet.rrules().map(rrule => {
-    // On enregistre les date en UTC
     return {
       day: rrule.origOptions.byweekday[0],
       timeStart: dayjs()
-        .utc()
         .hour(rrule.origOptions.byhour)
-        .minute(rrule.origOptions.byminute)
-        .local(),
-      startDate: rrule.origOptions.dtstart
-        ? dayjs(rrule.origOptions.dtstart)
-            .utc()
-            .local()
-        : null,
-      endDate: rrule.origOptions.until
-        ? dayjs(rrule.origOptions.until)
-            .utc()
-            .local()
-        : null
+        .minute(rrule.origOptions.byminute),
+      startDate: rrule.origOptions.dtstart ? dayjs(rrule.origOptions.dtstart) : null,
+      endDate: rrule.origOptions.until ? dayjs(rrule.origOptions.until) : null
     }
   })
 }
@@ -251,7 +238,7 @@ const PermanencesRulesForm = () => {
               <div>
                 {values.rules &&
                   values.rules.map((rule, index) => (
-                    <div key={`rule-${rule.timeStart.valueOf()}`}>
+                    <div key={`rule-${rule.timeStart.valueOf()}-${index}`}>
                       <Box className={classes.hourLine}>
                         <RuleForm index={index} {...rule} />
 

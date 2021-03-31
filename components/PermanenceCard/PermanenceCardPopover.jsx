@@ -122,10 +122,12 @@ const usePermanenceToComeWithOpenersStyle = makeStyles(({ typography, palette })
   },
   eventMessageTitle: {
     marginTop: typography.pxToRem(14),
-    marginBottom: 0
+    marginBottom: 0,
+    width: '100%'
   },
   eventMessageText: {
-    margin: 0
+    margin: 0,
+    width: '100%'
   }
 }))
 
@@ -479,6 +481,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
             InputLabelProps={{
               shrink: true
             }}
+            className={css.field}
             name="eventTitle"
             label="Titre de l'évènement"
           />
@@ -486,6 +489,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
             InputLabelProps={{
               shrink: true
             }}
+            className={css.field}
             multiline
             rows="4"
             name="eventMessage"

@@ -18,11 +18,12 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const [Email, Username, Firstname, Lastname, Capability, Newsletter] = [
+const [Email, Username, Firstname, Lastname, IsSubscribeToCompostriNewsletter, Capability, Newsletter] = [
   'user.email',
   'user.username',
   'user.firstname',
   'user.lastname',
+  'user.isSubscribeToCompostriNewsletter',
   'capability',
   'newsletter'
 ]
@@ -34,7 +35,8 @@ const RegisterSchema = Yup.object().shape({
       .required('Le champ email est obligatoire'),
     username: Yup.string().required('Le pseudo est obligatoire'),
     firstname: Yup.string().required('Le prénom est obligatoire'),
-    lastname: Yup.string().required('Le nom est obligatoire')
+    lastname: Yup.string().required('Le nom est obligatoire'),
+    isSubscribeToCompostriNewsletter: Yup.boolean()
   }),
   [Capability]: Yup.string().required('Le role est obligatoire')
 })
@@ -45,6 +47,7 @@ const initialValues = {
     firstname: '',
     username: '',
     email: '',
+    isSubscribeToCompostriNewsletter: true,
     plainPassword: Math.random()
       .toString(36)
       .replace(/[^a-z]+/g, '')
@@ -60,6 +63,7 @@ const FormikSelectField = withFormikField(Select)
 const buildFields = fields => {
   const buildField = (errors, touched, values) => ({ label, name, type, choices }) => {
     let field = ''
+    const value = name.startsWith('user') ? values['user'][name.substring(5)] : values[name]
     switch (type) {
       case 'select':
         field = (
@@ -102,9 +106,9 @@ const buildFields = fields => {
         break
       case 'boolean':
         field = (
-          <Grid item xs={6} key={name}>
+          <Grid item xs={12} key={name}>
             <FormControlLabel
-              control={<FormikSwitchField checked={values[name]} name={name} />}
+              control={<FormikSwitchField checked={value} name={name} />}
               label={label}
               InputLabelProps={{
                 shrink: true
@@ -135,7 +139,8 @@ const renderFields = buildFields([
       { value: 'User', label: 'Utilisateur' }
     ]
   },
-  { label: 'Newsletter', name: Newsletter, type: 'boolean' }
+  { label: 'Newsletter du composteur', name: Newsletter, type: 'boolean' },
+  { label: 'Newsletter de Compostri', name: IsSubscribeToCompostriNewsletter, type: 'boolean' }
 ])
 
 const propTypes = {

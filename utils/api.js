@@ -72,7 +72,10 @@ class MNApi {
   }
 
   // composters
-  getComposters = args => this.get('/composters', { params: args })
+  getComposters = args =>
+    this.get('/composters', {
+      params: { ...args, status: ['InProject', 'Active'] }
+    })
 
   getComposter = slug => this.get(`/composters/${slug}`)
 

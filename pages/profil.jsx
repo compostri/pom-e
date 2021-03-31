@@ -74,7 +74,7 @@ const Profil = ({ persitentUser }) => {
     const panels = [
       <ProfileForm onUserInformationUpdate={handleUserUpdate} user={persitentUser} />,
       <PasswordForm onPasswordUpdate={handleUserUpdate} />,
-      <NotificationsForm userId={id} />
+      <NotificationsForm onUserInformationUpdate={handleUserUpdate} user={persitentUser} />
     ]
 
     const renderTabPanel = (Panel, index) => (

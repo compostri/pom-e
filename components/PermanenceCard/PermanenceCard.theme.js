@@ -17,11 +17,16 @@ const useBaseStyle = makeStyles(({ typography }) => ({
     paddingBottom: typography.pxToRem(26)
   },
   cardTitle: {
-    fontSize: typography.pxToRem(14),
+    fontSize: typography.pxToRem(12),
     fontWeight: 'bold',
     textAlign: 'left',
     padding: 0,
-    margin: 0
+    margin: 0,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    display: '-webkit-box',
+    boxOrient: 'vertical',
+    lineClamp: 2
   },
   cardSubHeader: {
     fontSize: typography.pxToRem(10),
@@ -62,7 +67,7 @@ const useBaseStyle = makeStyles(({ typography }) => ({
     backgroundColor: '#fff'
   },
   popoverHeader: {
-    height: typography.pxToRem(56),
+    minHeight: typography.pxToRem(56),
     padding: typography.pxToRem(10)
   },
   popoverCloseIcon: {
