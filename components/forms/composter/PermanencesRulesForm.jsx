@@ -7,12 +7,13 @@ import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers'
 import DaysJSUtils from '@date-io/dayjs'
 import { Formik, Form, Field, FieldArray } from 'formik'
 import dayjs from 'dayjs'
-import { RRule, RRuleSet, rrulestr } from 'rrule'
+import { RRule, RRuleSet } from 'rrule'
 import PropTypes from 'prop-types'
 
 import palette from '~/variables'
 import 'dayjs/locale/fr'
 import api from '~/utils/api'
+import { parseRRuleSet } from '~/utils/rrulesFix'
 import { ComposterContext } from '~/context/ComposterContext'
 import { useToasts, TOAST } from '~/components/Snackbar'
 
@@ -189,7 +190,7 @@ const getRrulesFromObject = rObject => {
 }
 
 const getRulesFormFromString = RRuleSetString => {
-  const rruleSet = rrulestr(RRuleSetString, { forceset: true })
+  const rruleSet = parseRRuleSet(RRuleSetString, { forceset: true })
 
   return rruleSet.rrules().map(rrule => {
     return {
