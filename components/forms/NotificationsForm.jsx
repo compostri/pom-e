@@ -101,7 +101,7 @@ const NotificationsForm = ({ user, onUserInformationUpdate }) => {
         {userComposter.length > 0 &&
           userComposter.map(uc => {
             return (
-              <Grid item xs={6} key={`uc-${uc.id}`}>
+              <Grid item xs={12} sm={6} key={`uc-${uc.id}`}>
                 <Paper className={classes.composterUc}>
                   <Typography className={classes.composterName} component="h3" variant="h2">
                     {uc.composter.name}

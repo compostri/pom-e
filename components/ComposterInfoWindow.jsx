@@ -76,7 +76,9 @@ const ComposterInfoWindow = ({ composter }) => {
                     <ListItemIcon className={classes.infoIcone}>
                       <Person fontSize="small" style={{ color: composterColor }} />
                     </ListItemIcon>
-                    <ListItemText>{composter.acceptNewMembers ? 'Accepte' : "N'accepte pas"} de nouveau adhérents</ListItemText>
+                    <ListItemText>
+                      {composter.acceptNewMembers && composter.status === 'Active' ? 'Accepte' : 'N’accepte pas'} de nouveau adhérents
+                    </ListItemText>
                   </ListItem>
                 )}
               </List>

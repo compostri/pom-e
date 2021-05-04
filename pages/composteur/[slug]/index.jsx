@@ -153,7 +153,7 @@ const Content = () => {
                     </ListItemIcon>
 
                     <ListItemText>
-                      {composter.acceptNewMembers && composter.status === 'Active' ? 'Accepte' : "N'accepte pas"} de nouveaux adhérents
+                      {composter.acceptNewMembers && composter.status === 'Active' ? 'Accepte' : 'N’accepte pas'} de nouveaux adhérents
                     </ListItemText>
                   </ListItem>
                 )}
