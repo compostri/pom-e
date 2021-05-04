@@ -26,7 +26,7 @@ const ProfileForm = ({ onUserInformationUpdate, user }) => {
       {({ values, handleChange, handleBlur, errors, touched, isSubmitting }) => (
         <Form>
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid item sm={6} xs={12}>
               <TextField
                 required
                 fullWidth
@@ -42,7 +42,7 @@ const ProfileForm = ({ onUserInformationUpdate, user }) => {
                 helperText={errors.lastname && touched.lastname ? errors.lastname : null}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item sm={6} xs={12}>
               <TextField
                 required
                 fullWidth
@@ -58,7 +58,7 @@ const ProfileForm = ({ onUserInformationUpdate, user }) => {
                 helperText={errors.firstname && touched.firstname ? errors.firstname : null}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item sm={6} xs={12}>
               <TextField
                 required
                 fullWidth
@@ -74,7 +74,7 @@ const ProfileForm = ({ onUserInformationUpdate, user }) => {
                 helperText={errors.usernames && touched.username ? errors.username : null}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid item sm={6} xs={12}>
               <TextField
                 required
                 fullWidth

@@ -17,7 +17,11 @@ import { userType } from '~/types'
 const useStyle = makeStyles(theme => ({
   sectionProfil: {
     padding: theme.spacing(2, 5, 5, 5),
-    margin: theme.spacing(10, 15)
+    margin: theme.spacing(10, 15),
+    [theme.breakpoints.down('sm')]: {
+      margin: theme.spacing(0),
+      padding: theme.spacing(2)
+    }
   },
   appBar: {
     alignItems: 'baseline',
