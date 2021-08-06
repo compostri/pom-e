@@ -140,7 +140,7 @@ const FormikSelect = withFormikField(Select)
 const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
   const { MODIFY, DELETE } = Action
   const { COMPOSTER_LISTES_OUVREURS, COMPOSTER_OUVREUR, COMPOSTER_PERMANENCE_MESSAGE } = Subject
-  const isPermanencePassed = today.isAfter(permanence.date)
+  const isPermanencePassed = today.isAfter(dayjs.utc(permanence.date))
 
   const initialValues = useMemo(() => {
     const emptyIfNull = value => (value === null ? '' : value)
