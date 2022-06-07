@@ -2,7 +2,6 @@
 import React, { useContext, useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { makeStyles } from '@material-ui/styles'
 import {
   Avatar,
   IconButton,
@@ -15,121 +14,26 @@ import {
   TextField,
   FormControlLabel,
   Switch,
-  InputAdornment
+  InputAdornment,
+  List,
+  ListItem,
+  Typography
 } from '@material-ui/core'
 import { Delete as DeleteIcon } from '@material-ui/icons'
 import { Formik, Form } from 'formik'
 import dayjs from 'dayjs'
 
 import { permanenceType } from '~/types'
-import palette from '~/variables'
 import { Can, Action, Subject, AbilityContext } from '~/context/AbilityContext'
 import { UserContext } from '~/context/UserContext'
 
 import useBaseStyle from './PermanenceCard.theme'
 import withPermanancePopoverWrapper from './withPermanenceCardPopoverWrapper'
 import withFormikField from '~/utils/hoc/withFormikField'
-import { useTheme } from './hooks'
+import { useTheme, usePermanenceToComeWithOpenersStyle } from './hooks'
+import InProgressDataCollect from './InProgressDataCollect'
 
 const today = dayjs()
-
-const usePermanenceToComeWithOpenersStyle = makeStyles(({ typography, palette }) => ({
-  contentTitle: {
-    color: palette.greyLight,
-    letterSpacing: 0.5,
-    fontWeight: 'bold',
-    fontSize: typography.pxToRem(8),
-    textTransform: 'uppercase',
-    margin: 0
-  },
-  avatar: {
-    marginRight: typography.pxToRem(5)
-  },
-  avatarQuestionMark: {
-    backgroundColor: palette.redPrimary
-  },
-  openerList: {
-    padding: 0,
-    margin: 0
-  },
-  openerListItem: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: typography.pxToRem(7),
-    padding: typography.pxToRem(10),
-    backgroundColor: palette.greyExtraLight,
-    fontSize: typography.pxToRem(11),
-    color: palette.greyMedium,
-    listStyle: 'none'
-  },
-  field: {
-    marginTop: typography.pxToRem(10),
-    marginBottom: 0,
-    fontSize: typography.pxToRem(11),
-    width: '100%',
-    color: palette.greyMedium,
-    textAlign: 'center'
-  },
-  noOpenerListItem: {
-    justifyContent: 'flex-start',
-    color: 'red'
-  },
-  openerListItemLeftContent: {
-    display: 'flex',
-    alignItems: 'center'
-  },
-  openerListItemDeleteIcon: {
-    padding: 0
-  },
-  openerListBtn: {
-    width: '100%',
-    marginTop: typography.pxToRem(14)
-  },
-  openerListBtnSubmit: {
-    backgroundColor: palette.greenPrimary,
-    color: palette.white
-  },
-  openerListBtnCancel: {
-    backgroundColor: palette.white
-  },
-  openerListBtnLabel: {
-    fontSize: typography.pxToRem(12)
-  },
-  selectFormControl: {
-    width: '100%'
-  },
-  select: {
-    marginTop: typography.pxToRem(4),
-    padding: 0
-  },
-  selectRoot: {
-    padding: typography.pxToRem(12)
-  },
-  switchRoot: {
-    marginBottom: typography.pxToRem(14),
-    marginTop: typography.pxToRem(14)
-  },
-  switchLabel: {
-    fontSize: typography.pxToRem(11)
-  },
-  textarea: {
-    fontSize: typography.pxToRem(11)
-  },
-  noOpenerMsg: {
-    color: palette.greyDark,
-    fontSize: typography.pxToRem(11)
-  },
-  eventMessageTitle: {
-    marginTop: typography.pxToRem(14),
-    marginBottom: 0,
-    width: '100%'
-  },
-  eventMessageText: {
-    margin: 0,
-    width: '100%'
-  }
-}))
 
 const getId = opener => opener['@id']
 
@@ -140,7 +44,8 @@ const FormikSelect = withFormikField(Select)
 const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
   const { MODIFY, DELETE } = Action
   const { COMPOSTER_LISTES_OUVREURS, COMPOSTER_OUVREUR, COMPOSTER_PERMANENCE_MESSAGE } = Subject
-  const isPermanencePassed = today.isAfter(permanence.date)
+  const isPermanencePassed = today.isAfter(permanence.date, 'day')
+  const isPermanenceInProgress = today.isSame(permanence.date, 'day')
 
   const initialValues = useMemo(() => {
     const emptyIfNull = value => (value === null ? '' : value)
@@ -336,6 +241,46 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
     )
   }, [])
 
+  const mayRenderInnerInProgressForm = () => {
+    const hasUserBeenOpener = user && permanence.openers.map(getId).includes(`/users/${user.userId}`)
+
+    return (
+      <>
+        <Can
+          I={MODIFY}
+          this={{
+            $type: Subject.COMPOSTER_STATISTIQUES,
+            self: hasUserBeenOpener
+          }}
+        >
+          <InProgressDataCollect permanence={permanence} savePermanence={onSubmit} />
+        </Can>
+        <div>
+          <h3 className={classNames(css.contentTitle, css.contentTitleSpace)}>Dépots en cours:</h3>
+
+          <List dense>
+            <ListItem>
+              <ListItemText primary="Temperature" />
+              {permanence.temperature ? `${permanence.temperature}°C` : <Typography sc>—</Typography>}
+            </ListItem>
+            <ListItem>
+              <ListItemText primary="Total des utilisateurs" />
+              {permanence.nbUsers}
+            </ListItem>
+            <ListItem>
+              <ListItemText primary="Total des seaux" />
+              {permanence.nbBuckets}
+            </ListItem>
+            <ListItem>
+              <ListItemText primary="Poids total" />
+              {permanence.weight}Kg
+            </ListItem>
+          </List>
+        </div>
+      </>
+    )
+  }
+
   const mayRenderInnerFormStats = (formikProps, handleCancel) => {
     const { dirty } = formikProps
     const hasUserBeenOpener = user && permanence.openers.map(getId).includes(`/users/${user.userId}`)
@@ -377,6 +322,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
           type="number"
           disabled={disabled}
         />
+
         <FormikTextField
           InputLabelProps={{
             shrink: true
@@ -391,12 +337,28 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
             endAdornment: <InputAdornment position="end">Kg</InputAdornment>
           }}
         />
+      </Can>
+    )
+  }
+
+  const mayRenderTemperatureFormField = () => {
+    const hasUserBeenOpener = user && permanence.openers.map(getId).includes(`/users/${user.userId}`)
+    const InputLabelProps = {
+      shrink: true
+    }
+    return (
+      <Can
+        I={MODIFY}
+        this={{
+          $type: Subject.COMPOSTER_STATISTIQUES,
+          self: hasUserBeenOpener
+        }}
+      >
         <FormikTextField
           className={css.field}
           name="temperature"
           label="Température du compost"
           type="number"
-          disabled={disabled}
           InputLabelProps={InputLabelProps}
           InputProps={{
             endAdornment: <InputAdornment position="end">°C</InputAdornment>
@@ -513,22 +475,26 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
   }
 
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit} enableReinitialize>
-      {formikProps => {
-        return (
-          <Form>
-            {mayRenderCurrentOpeners(formikProps)}
-            {mayRenderRefentInnerForm(formikProps, onCancel)}
-            {mayRenderOpenerInnerForm(formikProps)}
-            <Can not I={MODIFY} this={COMPOSTER_PERMANENCE_MESSAGE}>
-              {mayRenderEventMessage(permanence.eventTitle, permanence.eventMessage)}
-            </Can>
-            {isPermanencePassed && mayRenderInnerFormStats(formikProps, onCancel)}
-            {renderSubmitCancelButtons(formikProps.dirty, onCancel, formikProps.isSubmitting)}
-          </Form>
-        )
-      }}
-    </Formik>
+    <>
+      <Formik initialValues={initialValues} onSubmit={handleSubmit} enableReinitialize>
+        {formikProps => {
+          return (
+            <Form>
+              {mayRenderCurrentOpeners(formikProps)}
+              {mayRenderRefentInnerForm(formikProps, onCancel)}
+              {mayRenderOpenerInnerForm(formikProps)}
+              <Can not I={MODIFY} this={COMPOSTER_PERMANENCE_MESSAGE}>
+                {mayRenderEventMessage(permanence.eventTitle, permanence.eventMessage)}
+              </Can>
+              {isPermanencePassed && mayRenderInnerFormStats(formikProps, onCancel)}
+              {(isPermanenceInProgress || isPermanencePassed) && mayRenderTemperatureFormField()}
+              {renderSubmitCancelButtons(formikProps.dirty, onCancel, formikProps.isSubmitting)}
+            </Form>
+          )
+        }}
+      </Formik>
+      {isPermanenceInProgress && mayRenderInnerInProgressForm()}
+    </>
   )
 }
 
