@@ -102,6 +102,8 @@ class MNApi {
   getPermanences = ({ composterId: composter, before, after }) =>
     this.$withPromiseHandling(this.get, '/permanences', { params: { composter, 'date[before]': before, 'date[after]': after } })
 
+  getPermanence = permanenceId => this.$withPromiseHandling(this.get, `/permanences/${permanenceId}`)
+
   putPermanences = (permanenceId, args) => this.$withPromiseHandling(this.put, `/permanences/${permanenceId}`, args)
 
   postPermanences = ({ date, openers, composter }) => this.$withPromiseHandling(this.post, '/permanences', { date, openers, composter })
