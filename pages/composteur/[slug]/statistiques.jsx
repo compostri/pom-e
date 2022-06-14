@@ -68,6 +68,11 @@ const lineNbUsersStyle = {
   borderColor: palette.greenPrimary,
   pointBorderColor: palette.greenPrimary
 }
+const lineWeightStyle = {
+  ...commonGraphStyle,
+  borderColor: palette.orangePrimary,
+  pointBorderColor: palette.orangePrimary
+}
 
 const propTypes = {
   permanences: PropTypes.arrayOf(permanenceType).isRequired,
@@ -100,16 +105,17 @@ const ComposterStatistiques = ({ composter, permanences }) => {
 
   const permanencesData = useMemo(() => orderedByDate(withOnePermanenceByDate(permanences)), [permanences])
 
-  const { nbBucketsData, nbUsersData, days } = permanencesData.reduce(
-    (acc, { nbBuckets, nbUsers, date }) => {
+  const { nbBucketsData, nbUsersData, days, weightData } = permanencesData.reduce(
+    (acc, { nbBuckets, nbUsers, date, weight }) => {
       return {
         ...acc,
         nbBucketsData: [...acc.nbBucketsData, zeroIfNull(nbBuckets)],
         nbUsersData: [...acc.nbUsersData, zeroIfNull(nbUsers)],
-        days: [...acc.days, date]
+        days: [...acc.days, date],
+        weightData: [...acc.weightData, zeroIfNull(weight)]
       }
     },
-    { nbBucketsData: [], nbUsersData: [], days: [] }
+    { nbBucketsData: [], nbUsersData: [], days: [], weightData: [] }
   )
 
   const data = {
@@ -124,6 +130,11 @@ const ComposterStatistiques = ({ composter, permanences }) => {
         ...lineNbBucketsStyle,
         label: 'Nombre de seaux',
         data: nbBucketsData
+      },
+      {
+        ...lineWeightStyle,
+        label: 'Poids de biodéchets récolté',
+        data: weightData
       }
     ]
   }
