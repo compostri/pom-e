@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Line } from 'react-chartjs-2'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/styles'
-import { Paper, Typography, Box } from '@material-ui/core'
+import { Paper, Typography, Box, Fab } from '@material-ui/core'
+import { Save as SaveIcon } from '@material-ui/icons'
 import dayjs from 'dayjs'
 import Head from 'next/head'
 
@@ -13,6 +14,11 @@ import { composterType, permanenceType } from '~/types'
 import StatsFilters from '~/components/forms/StatsFilter'
 
 const useStyles = makeStyles(theme => ({
+  statisticsTitle: {
+    display: 'flex',
+    justifyContent: 'space-between'
+  },
+  saveIcon: { width: 15 },
   graphContainer: {
     padding: theme.spacing(2),
     marginBottom: theme.spacing(2),
@@ -102,6 +108,7 @@ const withOnePermanenceByDate = perms =>
 
 const ComposterStatistiques = ({ composter, permanences }) => {
   const classes = useStyles()
+  const [preparingDownload, setPreparingDownload] = useState(false)
 
   const permanencesData = useMemo(() => orderedByDate(withOnePermanenceByDate(permanences)), [permanences])
 
@@ -139,6 +146,25 @@ const ComposterStatistiques = ({ composter, permanences }) => {
     ]
   }
 
+  const handleClickDownload = () => {
+    setPreparingDownload(true)
+    const blobData = permanencesData
+      .map(({ date, nbBuckets, nbUsers, weight }) => [date, zeroIfNull(nbBuckets), zeroIfNull(nbUsers), zeroIfNull(weight)].join(','))
+      .join('\n')
+    // optim: concat est un peu plus rapide que les template strings (non-mesuré).
+    const blob = new Blob(['date, nbBuckets, nbUsers, weight\n' + blobData], { type: 'application/csv' })
+    const blobURL = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.style.display = 'none'
+    link.href = blobURL
+    link.setAttribute('download', `pom-e_${composter.name}_.csv`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(blobURL)
+    setPreparingDownload(false)
+  }
+
   return (
     <ComposterContainer composter={composter}>
       <Head>
@@ -146,7 +172,12 @@ const ComposterStatistiques = ({ composter, permanences }) => {
       </Head>
       <Paper className={classes.graphContainer}>
         <Box className={classes.inner}>
-          <Typography variant="h2">Nombre d‘utilisateurs et de seaux par date</Typography>
+          <div className={classes.statisticsTitle}>
+            <Typography variant="h2">Nombre d‘utilisateurs et de seaux par date</Typography>
+            <Fab onClick={handleClickDownload} size="small" color="primary" disabled={preparingDownload} aria-label="Télécharger les données">
+              <SaveIcon className={classes.saveIcon} />
+            </Fab>
+          </div>
           <StatsFilters />
           <Line
             data={data}
