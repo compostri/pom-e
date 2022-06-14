@@ -10,6 +10,7 @@ import api from '~/utils/api'
 import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
 import { composterType, permanenceType } from '~/types'
+import StatsFilters from '~/components/forms/StatsFilter'
 
 const useStyles = makeStyles(theme => ({
   graphContainer: {
@@ -135,6 +136,7 @@ const ComposterStatistiques = ({ composter, permanences }) => {
       <Paper className={classes.graphContainer}>
         <Box className={classes.inner}>
           <Typography variant="h2">Nombre d‘utilisateurs et de seaux par date</Typography>
+          <StatsFilters />
           <Line
             data={data}
             width={50}
@@ -162,14 +164,30 @@ const ComposterStatistiques = ({ composter, permanences }) => {
 
 ComposterStatistiques.propTypes = propTypes
 
+const undefinedIfNotSet = value => {
+  if (value && value.length > 0) {
+    return value
+  }
+
+  return undefined
+}
+
 ComposterStatistiques.getInitialProps = async ({ query }) => {
+  const fromDate = undefinedIfNotSet(query.fromDate)
+  const toDate = undefinedIfNotSet(query.toDate)
   const { data: composter } = await api.getComposter(query.slug)
 
-  const before = dayjs().toISOString()
-  const after = dayjs()
-    .subtract(30, 'day')
-    .toISOString()
-  const permanences = (await api.getPermanences({ composterId: composter.rid, before, after }))['hydra:member']
+  let before = dayjs(toDate)
+  let after = dayjs(fromDate)
+  if (!fromDate) {
+    // par défaut, définir un intervalle
+    after = after.subtract(1, 'month')
+  }
+  // on inclue la date selectionnée (après avoir éventuellement appliqué l'intervalle)
+  before = before.add(1, 'day')
+  const permanences = (await api.getPermanences({ composterId: composter.rid, before: before.format('YYYY-MM-DD'), after: after.format('YYYY-MM-DD') }))[
+    'hydra:member'
+  ]
 
   return {
     composter,
