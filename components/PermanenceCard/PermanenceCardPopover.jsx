@@ -523,7 +523,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
             <Can not I={MODIFY} this={COMPOSTER_PERMANENCE_MESSAGE}>
               {mayRenderEventMessage(permanence.eventTitle, permanence.eventMessage)}
             </Can>
-            {isPermanencePassed && mayRenderInnerFormStats(formikProps, onCancel)}
+            {mayRenderInnerFormStats(formikProps, onCancel)}
             {renderSubmitCancelButtons(formikProps.dirty, onCancel, formikProps.isSubmitting)}
           </Form>
         )
