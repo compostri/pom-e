@@ -41,7 +41,7 @@ const useMenu = () => {
       isActive: router.pathname === '/composteur/[slug]/utilisateurs'
     },
     abilityContext.can(READ, COMPOSTER_NEWLETTERS, permanencesRule) && {
-      label: 'Newsletter',
+      label: 'Messagerie',
       href: '/composteur/[slug]/newsletter',
       as: `/composteur/${slug}/newsletter`,
       isActive: router.pathname === '/composteur/[slug]/newsletter'
