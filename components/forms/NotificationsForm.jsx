@@ -1,10 +1,15 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Paper, FormControlLabel, Switch, Typography, Grid } from '@material-ui/core'
+import { Can, Action, Subject } from '~/context/AbilityContext'
+import AbilityProvider from '~/context/AbilityContext'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/styles'
 import { useToasts, TOAST } from '~/components/Snackbar'
 import api from '~/utils/api'
 import palette from '~/variables'
+
+const { MODIFY } = Action
+const { COMPOSTER_INFORMATION } = Subject
 
 const useStyle = makeStyles(theme => ({
   newsletter: {
@@ -101,38 +106,42 @@ const NotificationsForm = ({ user, onUserInformationUpdate }) => {
         {userComposter.length > 0 &&
           userComposter.map(uc => {
             return (
-              <Grid item xs={12} sm={6} key={`uc-${uc.id}`}>
-                <Paper className={classes.composterUc}>
-                  <Typography className={classes.composterName} component="h3" variant="h2">
-                    {uc.composter.name}
-                  </Typography>
+              <AbilityProvider composterSlug={uc.composter.slug}>
+                <Grid item xs={12} sm={6} key={`uc-${uc.id}`}>
+                  <Paper className={classes.composterUc}>
+                    <Typography className={classes.composterName} component="h3" variant="h2">
+                      {uc.composter.name}
+                    </Typography>
 
-                  <FormControlLabel
-                    onChange={() => updateUC(uc, 'notif')}
-                    className={classes.newsletter}
-                    name="notif"
-                    label="Être notifié lors de mes permanences"
-                    control={<Switch value="notif" checked={uc.notif} color="primary" />}
-                    labelPlacement="end"
-                  />
-                  <FormControlLabel
-                    onChange={() => updateUC(uc, 'newsletter')}
-                    className={classes.newsletter}
-                    name="newsletter"
-                    label="S'abonner à la newsletter du composteur"
-                    control={<Switch value="newsletter" checked={uc.newsletter} color="primary" />}
-                    labelPlacement="end"
-                  />
-                  <FormControlLabel
-                    onChange={() => updateUC(uc, 'composterContactReceiver')}
-                    className={classes.newsletter}
-                    name="composterContactReceiver"
-                    label="Recevoir les formulaires de contact"
-                    control={<Switch value="composterContactReceiver" checked={uc.composterContactReceiver} color="primary" />}
-                    labelPlacement="end"
-                  />
-                </Paper>
-              </Grid>
+                    <FormControlLabel
+                      onChange={() => updateUC(uc, 'notif')}
+                      className={classes.newsletter}
+                      name="notif"
+                      label="Être notifié lors de mes permanences"
+                      control={<Switch value="notif" checked={uc.notif} color="primary" />}
+                      labelPlacement="end"
+                    />
+                    <FormControlLabel
+                      onChange={() => updateUC(uc, 'newsletter')}
+                      className={classes.newsletter}
+                      name="newsletter"
+                      label="S'abonner à la newsletter du composteur"
+                      control={<Switch value="newsletter" checked={uc.newsletter} color="primary" />}
+                      labelPlacement="end"
+                    />
+                    <Can I={MODIFY} this={COMPOSTER_INFORMATION}>
+                      <FormControlLabel
+                        onChange={() => updateUC(uc, 'composterContactReceiver')}
+                        className={classes.newsletter}
+                        name="composterContactReceiver"
+                        label="Recevoir les formulaires de contact"
+                        control={<Switch value="composterContactReceiver" checked={uc.composterContactReceiver} color="primary" />}
+                        labelPlacement="end"
+                      />
+                    </Can>
+                  </Paper>
+                </Grid>
+              </AbilityProvider>
             )
           })}
       </Grid>

@@ -33,12 +33,12 @@ const ComposterNewsletter = ({ composter }) => {
   return (
     <ComposterContainer composter={composter}>
       <Head>
-        <title>Newsletter {composter.name} - un composteur géré par Compostri</title>
+        <title>Messagerie {composter.name} - un composteur géré par Compostri</title>
       </Head>
 
       <Paper elevation={1} className={classes.sectionRight}>
         <Typography variant="h2" className={classes.title}>
-          Newsletter du/de - {composter.name}
+          Messagerie du/de - {composter.name}
         </Typography>
         <Typography className={classes.desc}>
           Envoyer un message à l'ensemble des utilisateurs (gérer la liste dans l'onglet{' '}

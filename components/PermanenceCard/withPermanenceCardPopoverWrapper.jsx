@@ -1,5 +1,7 @@
 import React, { useContext } from 'react'
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+dayjs.extend(utc)
 import PropTypes from 'prop-types'
 import { Modal, Card, CardHeader, IconButton, CardContent } from '@material-ui/core'
 import classNames from 'classnames'
@@ -60,7 +62,7 @@ const withPermanencePopoverWrapper = WrappedComponent => {
         >
           <CardHeader
             title={cardTitle}
-            subheader={dayjs(permanence.date).format('HH:mm')}
+            subheader={dayjs.utc(permanence.date).format('HH:mm')}
             action={
               <IconButton aria-label="close" onClick={onClose}>
                 <CloseIcon className={classNames(baseStyle.popoverCloseIcon, theme.popoverCloseIcon)} />
