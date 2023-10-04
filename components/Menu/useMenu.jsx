@@ -28,7 +28,7 @@ const useMenu = () => {
         as: `/composteur/${slug}/permanences`,
         isActive: router.pathname === '/composteur/[slug]/permanences'
       },
-    {
+    userContext.isLoggedIn() && {
       label: 'Statistiques',
       href: '/composteur/[slug]/statistiques',
       as: `/composteur/${slug}/statistiques`,
