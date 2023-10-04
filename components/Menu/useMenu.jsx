@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 
 import { ComposterContext } from '~/context/ComposterContext'
 import { Action, Subject, AbilityContext } from '~/context/AbilityContext'
+import { UserContext } from '~/context/UserContext'
 
 const useMenu = () => {
   const { READ } = Action
@@ -12,6 +13,7 @@ const useMenu = () => {
     composterContext: { composter }
   } = useContext(ComposterContext)
   const abilityContext = useContext(AbilityContext)
+  const { userContext } = useContext(UserContext)
   const { slug, permanencesRule } = composter
 
   return [
