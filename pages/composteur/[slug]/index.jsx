@@ -165,12 +165,16 @@ const Content = () => {
                   </ListItemIcon>
                   <ListItemText>{composter.status === 'Active' ? 'En service' : 'Hors service'}</ListItemText>
                 </ListItem>
-                <ListItem className={classes.listItem}>
-                  <ListItemIcon>
-                    <BlockIcon className={classes.infoIcone} />
-                  </ListItemIcon>
-                  <ListItemText>Aliments non-autorisés : {composter.alimentsNonAutorises}</ListItemText>
-                </ListItem>
+
+                {composter.AlimentsNonAutorises && (
+                  <ListItem className={classes.listItem}>
+                    <ListItemIcon>
+                      <BlockIcon className={classes.infoIcone} />
+                    </ListItemIcon>
+                    <ListItemText>Aliments non-autorisés : {composter.AlimentsNonAutorises}</ListItemText>
+                  </ListItem>
+                )}
+
                 {composter.permanencesDescription && (
                   <ListItem className={classes.listItem}>
                     <ListItemIcon>
