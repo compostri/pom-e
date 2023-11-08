@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import Link from 'next/link'
 import { Paper, Typography, List, ListItem, ListItemText, ListItemIcon, Fab, Grid } from '@material-ui/core'
-import { Room, Person, RadioButtonChecked, Lock, WatchLater, Edit } from '@material-ui/icons'
+import { Room, Person, RadioButtonChecked, Lock, WatchLater, Edit, BlockIcon } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 import Head from 'next/head'
 
@@ -163,6 +163,12 @@ const Content = () => {
                     <Lock className={classes.infoIcone} />
                   </ListItemIcon>
                   <ListItemText>{composter.status === 'Active' ? 'En service' : 'Hors service'}</ListItemText>
+                </ListItem>
+                <ListItem className={classes.listItem}>
+                  <ListItemIcon>
+                    <Block className={classes.infoIcone} />
+                  </ListItemIcon>
+                  <ListItemText>Aliments non-autorisés : {composter.alimentsNonAutorises}</ListItemText>
                 </ListItem>
                 {composter.permanencesDescription && (
                   <ListItem className={classes.listItem}>
