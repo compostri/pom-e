@@ -166,7 +166,7 @@ const Content = () => {
                 </ListItem>
                 <ListItem className={classes.listItem}>
                   <ListItemIcon>
-                    <Block className={classes.infoIcone} />
+                    <BlockIcon className={classes.infoIcone} />
                   </ListItemIcon>
                   <ListItemText>Aliments non-autorisés : {composter.alimentsNonAutorises}</ListItemText>
                 </ListItem>
