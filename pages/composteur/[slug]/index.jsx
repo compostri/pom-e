@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import Link from 'next/link'
 import { Paper, Typography, List, ListItem, ListItemText, ListItemIcon, Fab, Grid } from '@material-ui/core'
 import { Room, Person, RadioButtonChecked, Lock, WatchLater, Edit } from '@material-ui/icons'
+import BlockIcon from '@material-ui/icons/Block';
 import { makeStyles } from '@material-ui/styles'
 import Head from 'next/head'
 
@@ -164,6 +165,16 @@ const Content = () => {
                   </ListItemIcon>
                   <ListItemText>{composter.status === 'Active' ? 'En service' : 'Hors service'}</ListItemText>
                 </ListItem>
+
+                {composter.AlimentsNonAutorises && (
+                  <ListItem className={classes.listItem}>
+                    <ListItemIcon>
+                      <BlockIcon className={classes.infoIcone} />
+                    </ListItemIcon>
+                    <ListItemText>Aliments non-autorisés : {composter.AlimentsNonAutorises}</ListItemText>
+                  </ListItem>
+                )}
+
                 {composter.permanencesDescription && (
                   <ListItem className={classes.listItem}>
                     <ListItemIcon>
