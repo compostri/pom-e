@@ -8,21 +8,18 @@ import {
   IconButton,
   Button,
   FormControl,
-  MenuItem,
-  Select,
   Checkbox,
-  ListItemText,
   TextField,
   FormControlLabel,
   Switch,
   InputAdornment
 } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
 import { Delete as DeleteIcon } from '@material-ui/icons'
 import { Formik, Form } from 'formik'
 import dayjs from 'dayjs'
 
 import { permanenceType } from '~/types'
-import palette from '~/variables'
 import { Can, Action, Subject, AbilityContext } from '~/context/AbilityContext'
 import { UserContext } from '~/context/UserContext'
 
@@ -135,18 +132,23 @@ const getId = opener => opener['@id']
 
 const FormikTextField = withFormikField(TextField)
 const FormikSwitch = withFormikField(Switch)
-const FormikSelect = withFormikField(Select)
+const FormikAutocomplete = withFormikField(Autocomplete)
 
 const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
   const { MODIFY, DELETE } = Action
   const { COMPOSTER_LISTES_OUVREURS, COMPOSTER_OUVREUR, COMPOSTER_PERMANENCE_MESSAGE } = Subject
   const isPermanencePassed = today.isAfter(dayjs.utc(permanence.date))
 
+  const getLabelOpenerFromId = openerId => {
+    const op = permanence.$openersAvailable.find(o => getId(o) === openerId)
+    return op ? op.username : ''
+  }
+
   const initialValues = useMemo(() => {
     const emptyIfNull = value => (value === null ? '' : value)
     const { openers, eventTitle, eventMessage, nbUsers, nbBuckets, weight, temperature, canceled, openersString } = permanence
     return {
-      openers,
+      openers: openers.map(getId),
       eventTitle,
       eventMessage,
       canceled,
@@ -179,7 +181,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
         nbBuckets: nullIfEmpty(nbBuckets),
         weight: nullIfEmpty(weight),
         temperature: nullIfEmpty(temperature),
-        openers: openers.map(getId)
+        openers: openers
       }
       if (abilityContext.can(Action.MODIFY, Subject.COMPOSTER_LISTES_OUVREURS)) {
         response = {
@@ -208,13 +210,12 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
     const handleOpenerRemoval = id => () => {
       setFieldValue(
         'openers',
-        openers.filter(opener => getId(opener) !== id)
+        openers.filter(opener => opener !== id)
       )
     }
 
-    const renderOpener = (opener, i) => {
-      const { username } = opener
-      const openerId = getId(opener)
+    const renderOpener = (openerId, i) => {
+      const username = getLabelOpenerFromId(openerId)
       return (
         <li className={css.openerListItem} key={`edit-opener-${username}-${i}`}>
           <div className={css.openerListItemLeftContent}>
@@ -232,7 +233,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
             I={DELETE}
             this={{
               $type: COMPOSTER_OUVREUR,
-              self: user && getId(opener) === `/users/${user.userId}`
+              self: user && openerId === `/users/${user.userId}`
             }}
           >
             <IconButton aria-label="remove" onClick={handleOpenerRemoval(openerId)} className={css.openerListItemDeleteIcon}>
@@ -406,7 +407,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
     )
   }
 
-  const mayRenderRefentInnerForm = formikProps => {
+  const mayRenderReferentInnerForm = formikProps => {
     const {
       values: { openers, isPermanenceAnEvent, canceled }
     } = formikProps
@@ -417,33 +418,35 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
         return null
       }
 
-      const renderOpenersToAdd = (allOpenersAvailable, openerAdded) => {
-        const openerAddedIds = openerAdded.map(getId)
-        return allOpenersAvailable.map(openerToAdd => {
-          const openerToAddId = getId(openerToAdd)
-          return (
-            <MenuItem key={openerToAddId} value={openerToAdd}>
-              <Checkbox checked={openerAddedIds.includes(openerToAddId)} />
-              <ListItemText primary={openerToAdd.username} />
-            </MenuItem>
-          )
-        })
-      }
-
-      const renderValue = selected => {
-        if (selected.length === 0) {
-          return <em>Ajouter des ouvreurs</em>
-        }
-
-        return 'Ouvreurs'
-      }
+      const renderOpenersToAdd = ((option, { selected }) => {
+        return (
+          <>
+            <Checkbox
+              name="openers"
+              value={option}
+              style={{ marginRight: 8 }}
+              checked={selected}
+            />
+            {getLabelOpenerFromId(option)}
+          </>
+        )
+      })
 
       return (
         <>
           <FormControl className={css.selectFormControl}>
-            <FormikSelect multiple className={css.select} classes={{ root: css.selectRoot }} name="openers" displayEmpty renderValue={renderValue}>
-              {renderOpenersToAdd(openersAvailable, openers)}
-            </FormikSelect>
+            <FormikAutocomplete
+              multiple
+              className={css.select}
+              classes={{ root: css.selectRoot }}
+              name="openers"
+              disableCloseOnSelect
+              options={openersAvailable.map(getId)}
+              onChange={(e, value) => formikProps.setFieldValue("openers", value)}
+              getOptionLabel={option => getLabelOpenerFromId(option)}
+              renderOption={renderOpenersToAdd}
+              renderInput={(params) => <TextField {...params} label="Ouvreurs" variant="outlined" />}
+            />
           </FormControl>
           <FormControl className={css.selectFormControl}>
             <FormikTextField
@@ -518,7 +521,7 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
         return (
           <Form>
             {mayRenderCurrentOpeners(formikProps)}
-            {mayRenderRefentInnerForm(formikProps, onCancel)}
+            {mayRenderReferentInnerForm(formikProps, onCancel)}
             {mayRenderOpenerInnerForm(formikProps)}
             <Can not I={MODIFY} this={COMPOSTER_PERMANENCE_MESSAGE}>
               {mayRenderEventMessage(permanence.eventTitle, permanence.eventMessage)}
