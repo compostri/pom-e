@@ -300,13 +300,10 @@ const PermanenceCardPopover = ({ permanence, onSubmit, onCancel }) => {
       setFieldValue('openers', [...openers, newOpener])
     }
 
-    const isUserAlreadyAddedHimSelf = openers.map(getId).includes(`/users/${user.userId}`)
+    const isUserAlreadyAddedHimSelf = openers.includes(`/users/${user.userId}`)
 
     const handleAddingCurrentOpener = () => {
-      handleOpenerAdding({
-        ...user,
-        '@id': `/users/${user.userId}`
-      })
+      handleOpenerAdding( `/users/${user.userId}`)
     }
 
     if (canceled) {
