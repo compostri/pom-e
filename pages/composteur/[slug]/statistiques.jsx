@@ -1,6 +1,5 @@
-import React, { useMemo } from 'react'
+import React, {useEffect, useMemo, useState} from 'react'
 import { Line } from 'react-chartjs-2'
-import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/styles'
 import { Paper, Typography, Box } from '@material-ui/core'
 import dayjs from 'dayjs'
@@ -9,7 +8,8 @@ import Head from 'next/head'
 import api from '~/utils/api'
 import palette from '~/variables'
 import ComposterContainer from '~/components/ComposterContainer'
-import { composterType, permanenceType } from '~/types'
+import { composterType } from '~/types'
+import PermanencesStatsFiltersForm from "~/components/forms/composter/PermanencesStatsFiltersForm";
 
 const useStyles = makeStyles(theme => ({
   graphContainer: {
@@ -69,7 +69,6 @@ const lineNbUsersStyle = {
 }
 
 const propTypes = {
-  permanences: PropTypes.arrayOf(permanenceType).isRequired,
   composter: composterType.isRequired
 }
 
@@ -94,66 +93,103 @@ const withOnePermanenceByDate = perms =>
     return [...acc, curr]
   }, [])
 
-const ComposterStatistiques = ({ composter, permanences }) => {
+
+
+const getPermanences = async (composter, startDate, endDate) => {
+  return startDate && endDate ? (await api.getPermanences({composterId: composter.rid, after: startDate, before: endDate}))['hydra:member'] : []
+}
+
+
+const ComposterStatistiques = ({ composter }) => {
   const classes = useStyles()
 
-  const permanencesData = useMemo(() => orderedByDate(withOnePermanenceByDate(permanences)), [permanences])
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
+  const [permanences, setPermanences] = useState([])
 
-  const { nbBucketsData, nbUsersData, days } = permanencesData.reduce(
-    (acc, { nbBuckets, nbUsers, date }) => {
-      return {
-        ...acc,
-        nbBucketsData: [...acc.nbBucketsData, zeroIfNull(nbBuckets)],
-        nbUsersData: [...acc.nbUsersData, zeroIfNull(nbUsers)],
-        days: [...acc.days, date]
-      }
-    },
-    { nbBucketsData: [], nbUsersData: [], days: [] }
-  )
+  const setFilterDate = useMemo(() => (startDate, endDate) => {
+    setStartDate(startDate)
+    setEndDate(endDate)
+  }, [] )
 
-  const data = {
-    labels: days,
-    datasets: [
-      {
-        ...lineNbUsersStyle,
-        label: "Nombre d'utilisateurs",
-        data: nbUsersData
+  useEffect( () => {
+    async function fetchData() {
+      const p = await getPermanences(composter, startDate, endDate)
+      setPermanences( p)
+    }
+    fetchData();
+  }, [startDate, endDate])
+
+
+    const permanencesData = useMemo(() => orderedByDate(withOnePermanenceByDate(permanences)), [permanences])
+
+    const { nbBucketsData, nbUsersData, days } = permanencesData.reduce(
+      (acc, { nbBuckets, nbUsers, date }) => {
+        return {
+          ...acc,
+          nbBucketsData: [...acc.nbBucketsData, zeroIfNull(nbBuckets)],
+          nbUsersData: [...acc.nbUsersData, zeroIfNull(nbUsers)],
+          days: [...acc.days, date]
+        }
       },
-      {
-        ...lineNbBucketsStyle,
-        label: 'Nombre de seaux',
-        data: nbBucketsData
-      }
-    ]
-  }
+      { nbBucketsData: [], nbUsersData: [], days: [] }
+    )
+
+    const data = {
+      labels: days,
+      datasets: [
+        {
+          ...lineNbUsersStyle,
+          label: "Nombre d'utilisateurs",
+          data: nbUsersData
+        },
+        {
+          ...lineNbBucketsStyle,
+          label: 'Nombre de seaux',
+          data: nbBucketsData
+        }
+      ]
+    }
 
   return (
     <ComposterContainer composter={composter}>
       <Head>
         <title>Les statistiques de {composter.name} - un composteur géré par Compostri</title>
       </Head>
-      <Paper className={classes.graphContainer}>
-        <Box className={classes.inner}>
-          <Typography variant="h2">Nombre d‘utilisateurs et de seaux par date</Typography>
-          <Line
-            data={data}
-            width={50}
-            height={300}
-            options={{
-              maintainAspectRatio: false,
-              scales: {
-                yAxes: [{ ticks: { beginAtZero: true } }],
-                xAxes: [{ type: 'time' }]
-              }
-            }}
-          />
-          {permanencesData.length === 0 && (
-            <Box className={classes.blur}>
-              <Box className={classes.noData}>
-                <Typography>Aucune donnée pour le moment</Typography>
+
+      <Paper>
+        <PermanencesStatsFiltersForm setFilterDate={setFilterDate}/>
+        <Box className={classes.graphContainer}>
+          <Box className={classes.inner}>
+
+
+            <Typography variant="h2">Nombre d‘utilisateurs et de seaux par date</Typography>
+            <Line
+              data={data}
+              width={50}
+              height={300}
+              options={{
+                maintainAspectRatio: false,
+                scales: {
+                  yAxes: [{ ticks: { beginAtZero: true } }],
+                  xAxes: [{
+                    type: 'time',
+                    time: {
+                      minUnit: 'day',
+                      tooltipFormat: 'DD/MM/YYYY',
+                    }
+                  }]
+                }
+              }}
+            />
+            {permanencesData.length === 0 && (
+              <Box className={classes.blur}>
+                <Box className={classes.noData}>
+                  <Typography>Aucune donnée pour le moment</Typography>
+                </Box>
               </Box>
-            </Box>
-          )}
+            )}
+          </Box>
         </Box>
       </Paper>
     </ComposterContainer>
@@ -165,15 +201,8 @@ ComposterStatistiques.propTypes = propTypes
 ComposterStatistiques.getInitialProps = async ({ query }) => {
   const { data: composter } = await api.getComposter(query.slug)
 
-  const before = dayjs().toISOString()
-  const after = dayjs()
-    .subtract(30, 'day')
-    .toISOString()
-  const permanences = (await api.getPermanences({ composterId: composter.rid, before, after }))['hydra:member']
-
   return {
-    composter,
-    permanences
+    composter
   }
 }
 
